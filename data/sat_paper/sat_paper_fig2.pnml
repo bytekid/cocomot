@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+   <net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+      <name>
+         <text>Fig 2</text>
+      </name>
+      <page id="n0">
+         <name>
+            <text/>
+         </name>
+         <place id="n0">
+            <name>
+               <text>pl0</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="n1">
+            <name>
+               <text>pl1</text>
+            </name>
+         </place>
+         <place id="n2">
+            <name>
+               <text>pl2</text>
+            </name>
+         </place>
+         <place id="n3">
+            <name>
+               <text>pl3</text>
+            </name>
+         </place>
+         <place id="n4">
+            <name>
+               <text>pl4</text>
+            </name>
+         </place>
+         <place id="n5">
+            <name>
+               <text>pl5</text>
+            </name>
+            <finalMarking>
+               <text>1</text>
+            </finalMarking>
+         </place>
+         <place id="n6">
+            <name>
+               <text>pl6</text>
+            </name>
+            <finalMarking>
+               <text>1</text>
+            </finalMarking>
+         </place>
+         
+         <transition id="n10">
+            <name>
+               <text>s</text>
+            </name>
+         </transition>
+         <transition id="n11">
+            <name>
+               <text>f</text>
+            </name>
+         </transition>
+         <transition id="n12">
+            <name>
+               <text>c</text>
+            </name>
+         </transition>
+         <transition id="n13">
+            <name>
+               <text>b</text>
+            </name>
+         </transition>
+         <transition id="n14">
+            <name>
+               <text>g</text>
+            </name>
+         </transition>
+         <transition id="n15">
+            <name>
+               <text>a</text>
+            </name>
+         </transition>
+         <transition id="n16">
+            <name>
+               <text>d</text>
+            </name>
+         </transition>
+         <transition id="n17"  invisible="true">
+            <name>
+               <text>Inv</text>
+            </name>
+         </transition>
+         
+         <arc id="arc29" source="n0" target="n10"></arc>
+         <arc id="arc30" source="n10" target="n1"></arc>
+         <arc id="arc31" source="n10" target="n2"></arc>
+         <arc id="arc32" source="n1" target="n11"></arc>
+         <arc id="arc33" source="n1" target="n12"></arc>
+         <arc id="arc34" source="n2" target="n14"></arc>
+         <arc id="arc35" source="n2" target="n13"></arc>
+         <arc id="arc36" source="n11" target="n3"></arc>
+         <arc id="arc37" source="n12" target="n3"></arc>
+         <arc id="arc38" source="n3" target="n17"></arc>
+         <arc id="arc39" source="n3" target="n15"></arc>
+         <arc id="arc38" source="n4" target="n15"></arc>
+         <arc id="arc40" source="n17" target="n5"></arc>
+         <arc id="arc41" source="n15" target="n5"></arc>
+         <arc id="arc41" source="n13" target="n4"></arc>
+         <arc id="arc43" source="n13" target="n6"></arc>
+         <arc id="arc44" source="n6" target="n16"></arc>
+         <arc id="arc45" source="n14" target="n6"></arc>
+         <arc id="arc46" source="n16" target="n6"></arc>
+      <finalmarkings />
+      <variables />
+    </page>
+   </net>
+</pnml>
