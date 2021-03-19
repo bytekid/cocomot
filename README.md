@@ -1,4 +1,4 @@
-# dpnsmt
+# CoCoMoT
 Conformance checking of DPNs by SMT.
 
 ## requirements
@@ -7,5 +7,5 @@ The script is written for python3, and requires currently the following:
  * pm4py (https://pm4py.fit.fraunhofer.de/)
 
 ## usage
- $ python3 check_conformance.py sat_paper/sat_paper_fig2.pnml sat_paper/sat_paper_fig2.xes
+ $ python3 cocomot.py data/sat_paper/sat_paper_fig2.pnml data/sat_paper/sat_paper_fig2.xes
 
