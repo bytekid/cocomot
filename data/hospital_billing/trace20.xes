@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<log>
+  <trace>
+    <string key="concept:name" value="DQL"/>
+    <event>
+      <boolean key="isCancelled" value="false"/>
+      <string key="diagnosis" value="UB"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:39.000+01:00"/>
+      <string key="caseType" value="A"/>
+      <string key="speciality" value="E"/>
+      <string key="org:resource" value="ResNC"/>
+      <string key="concept:name" value="NEW"/>
+      <boolean key="blocked" value="false"/>
+      <boolean key="isClosed" value="false"/>
+      <boolean key="flagD" value="false"/>
+      <boolean key="flagB" value="false"/>
+      <boolean key="flagA" value="false"/>
+      <string key="state" value="In progress"/>
+      <string key="lifecycle:transition" value="complete"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="Z"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:40.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="DJ"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:41.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="Y"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:42.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="TJ"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:43.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="DJ"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:44.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="AJ"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:45.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="UB"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:46.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="RE"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:47.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="RB"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:48.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="NE"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:49.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="CM"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:50.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="Y"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:51.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="P"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:52.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="Z"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:53.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="TJ"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:54.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="CN"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:55.000+01:00"/>
+    </event>
+    <event>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:56.000+01:00"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="LE"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="NEW"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-03-07T20:10:57.000+01:00"/>
+    </event>
+    <event>
+      <boolean key="isCancelled" value="true"/>
+      <string key="org:resource" value="ResDA"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="DELETE"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-11-13T10:21:12.000+01:00"/>
+    </event>
+  </trace>
+</log>
