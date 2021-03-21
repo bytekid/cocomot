@@ -15,6 +15,9 @@ class YicesSolver(Solver):
     self.ctx = Context(self.cfg)
     self.t_solve = 0
     self._timeout = 600
+
+  def are_equal_expr(self, a, b):
+    return a == b
   
   def true(self):
     return Terms.true()

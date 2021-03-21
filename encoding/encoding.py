@@ -187,7 +187,7 @@ class Encoding:
     # inertia
     keep = [v for v in vs if not v in t["write"] ] if "write" in t else vs
     keep_constr = [s.eq(dvars[i][v], dvars[i+1][v]) for v in keep \
-      if dvars[i][v] != dvars[i+1][v]] # skip if vars equal due to optimization
+      if not s.are_equal_expr(dvars[i][v], dvars[i+1][v]) ] # skip if vars equal
     return s.land([trans_constr] + keep_constr)
 
   def transition_constraints(self):

@@ -5,7 +5,11 @@ class Solver:
 
   @abstractmethod
   def __init__(self):
-      pass
+    pass
+
+  @abstractmethod
+  def are_equal_expr(self, a, b):
+    pass
   
   @abstractmethod
   def true(self):

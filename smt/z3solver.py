@@ -8,6 +8,9 @@ class Z3Solver(Solver):
 
   def __init__(self):
     self.ctx = Optimize()
+
+  def are_equal_expr(self, a, b):
+    return hash(a) == hash(b)
   
   def true(self):
     return And([])
@@ -22,7 +25,7 @@ class Z3Solver(Solver):
   
   # boolean variable with name
   def boolvar(self, n):
-    return Var(n)
+    return Bool(n)
   
   # integer variable with name
   def intvar(self, n):
@@ -50,7 +53,7 @@ class Z3Solver(Solver):
 
   # logical biimplication
   def iff(self, a, b):
-    return Iff(a, b)
+    return Not(Xor(a, b))
 
   # equality of arithmetic terms
   def eq(self, a, b):
