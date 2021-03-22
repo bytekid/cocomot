@@ -64,7 +64,6 @@ def print_trace_distance(index, trace, t_enc, ts_solv, cnt, distance):
     (index, cnt, len(trace)))
   print("DISTANCE : " + str(distance), flush=True)
   print("time/encode: %.2f  time/solve: %.2f" % (t_enc, ts_solv))
-  sys.stdout.flush()
 
 def print_trace_distance_verbose(dpn, trace, decoding):
   places = dict([ (p["id"], p) for p in dpn.places() ])
@@ -104,6 +103,7 @@ def print_trace_distance_verbose(dpn, trace, decoding):
   print_sequence(dpn, traceseq)
   print("\nMODEL SEQUENCE:")
   print_sequence(dpn, modelseq)
+  sys.stdout.flush()
 
 
 ### preprocessing
@@ -143,10 +143,13 @@ def conformance_check_trace(encoding, trace_data, verbosity):
 
   distance = model.eval_int(dist)
 
-  print_trace_distance(index, trace, t_encode2, t_solve, cnt, distance)
   if verbosity > 0:
     alignment_decoded = encoding.decode_alignment(trace, model)
+    print_trace_distance(index, trace, t_encode2, t_solve, cnt, distance)
     print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
+  else:
+    print_trace_distance(index, trace, t_encode2, t_solve, cnt, distance)
+
   return (distance, t_encode2, t_solve)
 
 
@@ -190,7 +193,14 @@ def conformance_check_traces(solver, traces, dpn, verbosity=0):
 if __name__ == "__main__":
   modelfile = sys.argv[1]
   logfile = sys.argv[2]
-  numprocs = int(sys.argv[3]) if len(sys.argv) > 3 else 1
+  verbose = False
+  numprocs = 1
+  if len(sys.argv) > 3:
+    if sys.argv[3] == "-v":
+      verbose = True
+      numprocs = int(sys.argv[4]) if len(sys.argv) > 4 else 1
+    else:
+      numprocs = int(sys.argv[3])
 
   dpn = DPN(read_pnml_input(modelfile))
   log = pm4py.read_xes(logfile)
@@ -223,7 +233,7 @@ if __name__ == "__main__":
         (trace, cnt) = parts[i]
         same_len_traces.append((i, trace, cnt))
       print("%d traces of length %d" % (len(same_len_traces), length))
-      res,tenc = conformance_check_traces(solver,same_len_traces,dpn)
+      res,tenc = conformance_check_traces(solver,same_len_traces,dpn, verbosity=verbose)
       for (d, t_enc, t_solv) in res:
         if d == None:
           timeouts += 1
@@ -241,7 +251,7 @@ if __name__ == "__main__":
     def work(job):
       solver = YicesSolver()
       (i, (trace, cnt)) = job
-      res, t_enc = conformance_check_traces(solver, [(i, trace, cnt)], dpn)
+      res, t_enc = conformance_check_traces(solver, [(i, trace, cnt)], dpn, verbosity=verbose)
       (distance, t_enc, t_solv) = res[0]
       solver.destroy()
       return (i, trace, cnt, distance, t_enc, t_solv)
@@ -253,7 +263,7 @@ if __name__ == "__main__":
     for r in results.get(10):
       (i, trace, cnt, d, t_enc, t_solv) = r
       if d != None:
-        print_trace_distance(i, trace, t_enc, t_solv, cnt, d)
+        #print_trace_distance(i, trace, t_enc, t_solv, cnt, d)
         distances[d] = distances[d] + 1 if d in distances else 1
       else:
         timeouts += 1

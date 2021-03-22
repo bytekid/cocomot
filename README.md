@@ -10,8 +10,11 @@ The script is written for python3, and requires currently the following:
 ## Usage
 Example calls are as follows:
  * $ python3 cocomot.py data/sat_paper/sat_paper_fig2.pnml data/sat_paper/sat_paper_fig2.xes
- * $ python3 cocomot.py data/road_traffic_billing/RoadFines_WithData.pnml data road_traffic_billing/road_fines_27.xes
- * $ python3 cocomot.py data/hospital_billing/Facturatie-Figure_15_6.pnml data/hospital_billing/trace20.xes 
+For verbose output (i.e., to obtain the alignment), add option "-v":
+ * $ python3 cocomot.py data/hospital_billing/Facturatie-Figure_15_6.pnml data/hospital_billing/trace20.xes -v
+In order to process a log in parallel, you can also add an argument specifying the number
+of processes to be used:
+ * $ python3 cocomot.py data/road_traffic_billing/RoadFines_WithData.pnml data/road_traffic_billing/road_fines_27.xes 4
 
 ## More data
 Complete log files for the road fine, hospital billing, and sepsis data sets are
