@@ -102,6 +102,7 @@ class Z3Solver(Solver):
 
   # minimize given expression
   def minimize(self, expr, max_val):
+    #print(self.ctx.statistics())
     val = self.ctx.minimize(expr)
     t_start = time.perf_counter()
     result = self.ctx.check()

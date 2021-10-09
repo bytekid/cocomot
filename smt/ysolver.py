@@ -136,7 +136,6 @@ class YicesSolver(Solver):
     while status == status0 and within_bnd(val):
       self.push()
       val += inc
-      print("next %d" % val)
       self.require([self.ge(self.num(val), expr)])
       t_start = time.perf_counter()
       status = self.ctx.check_context(timeout=self._timeout)

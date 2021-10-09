@@ -136,7 +136,7 @@ def conformance_check_trace(encoding, trace_data, verbosity):
 
   #FIXME step_bound may in general not be valid upper bound due to writes
   start = 3 * int((len(encoding._dpn._transitions) / 25)) + int(len(trace) / 12)
-  model = encoding.solver().minimize_upordown(dist, encoding.step_bound())
+  model = encoding.solver().minimize(dist, encoding.step_bound())
   t_solve = encoding.solver().t_solve
   if model == None: # timeout
     return (None, t_encode2, t_solve)
@@ -215,14 +215,16 @@ if __name__ == "__main__":
   timeouts = 0
 
   # get unique traces by data
+  t_start = time.perf_counter()
   naive_part = NaivePartitioning(log)
   interval_part = IntervalPartitioning(dpn, naive_part.representatives())
-  print("equivalence classes naive: %d, intervals: %d" % \
-    (naive_part.partition_count(), interval_part.partition_count()))
+  t_cluster =  time.perf_counter() - t_start
+  print("equivalence classes naive: %d, intervals: %d (clustering time %.2f)" % \
+    (naive_part.partition_count(), interval_part.partition_count(), t_cluster))
   i = 0
   parts = interval_part.partitions
   if numprocs == 1:
-    solver = YicesSolver()
+    solver = YicesSolver() # Z3Solver()
     i = 0
     while i < len(parts):
       (trace, cnt) = parts[i]
