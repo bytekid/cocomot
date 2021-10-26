@@ -173,7 +173,6 @@ def conformance_check_traces(solver, traces, dpn, verbosity=0):
   f_trans_range = encoding.transition_range()
   f_tokens = encoding.transition_constraints()
   f_final = encoding.final_state()
-  encoding.prepare_edit_distance(trace_length)
   solver.require([f_initial, f_trans_range, f_tokens, f_final])
   t_encode1 = time.perf_counter() - t_start
 

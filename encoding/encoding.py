@@ -204,11 +204,6 @@ class Encoding:
     return s.land([ step(i, t) \
       for i in range(0, self._step_bound) for t in self._dpn.reachable(i)])
 
-  # return pair of edit distance expression and side constraints
-  def prepare_edit_distance(self, len_trace):
-    self._vs_dist = self.edit_distance_vars(len_trace)
-
-
   # auxiliary for edit distance encoding below:
   # returns pairs (is_t, penalty expression) for all transitions t
   def sync_step(self, trace, i, j):
