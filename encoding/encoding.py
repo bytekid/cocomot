@@ -65,6 +65,20 @@ class Encoding:
       return s.intvar("d" + str(i) + "_" + str(j)) if i > 0 or j>0 else s.num(0)
     return [[var(i,j) \
       for j in range(0, trace_len+1)] for i in range(0, self._step_bound+1)]
+
+  # create variables for move types
+  def move_vars(self, trace_len, pre):
+    s = self._solver
+    var = lambda i, j: s.boolvar("move" + pre + str(i) + "_" + str(j))
+    return [[var(i,j) \
+      for j in range(0, trace_len+1)] for i in range(0, self._step_bound+1)]
+
+  # return pair of edit distance expression and side constraints
+  def prepare_edit_distance(self, len_trace):
+    self._vs_dist = self.edit_distance_vars(len_trace)
+    self._vs_syn_move = self.move_vars(len_trace, "s")
+    self._vs_log_move = self.move_vars(len_trace, "l")
+    self._vs_mod_move = self.move_vars(len_trace, "m")
     
   # fix initial state; initial data is fixed in data variable initialization
   def initial_state(self):
@@ -228,6 +242,8 @@ class Encoding:
   def edit_distance(self, trace):
     self._vs_dist = self.edit_distance_vars(len(trace))
     delta = self._vs_dist
+    vs_log = self._vs_log_move
+    vs_mod = self._vs_mod_move
     n = self._step_bound
     m = len(trace)
     s = self._solver
@@ -283,12 +299,13 @@ class Encoding:
     # 3. delta[0][j+1] = (j + 1)
     base_log = [ s.eq(delta[0][j+1], s.num(j + 1)) for j in range(0,m) ]
     # 4. if the ith step in the model and the jth step in the log have the
-    #    the same label,  delta[i+1][j+1] = delta[i][j] + penalty, where
-    #    penalty accounts for the data mismatch
-    step_equal = [ s.implies(is_t, \
-      s.ge(delta[i+1][j+1], s.plus(penalty, delta[i][j]) if pen else delta[i][j])) \
+    #    the same label,  delta[i+1][j+1] >= delta[i][j] + penalty, where
+    #    penalty accounts for the data mismatch (possibly 0)
+    sync_step = [ s.implies(is_t, \
+      s.ge(delta[i+1][j+1], \
+           s.plus(penalty, delta[i][j]) if has_penalty else delta[i][j])) \
         for i in range(0,n) for j in range(0,m) \
-        for (is_t, (penalty, pen)) in self.sync_step(trace, i, j)]
+        for (is_t, (penalty, has_penalty)) in self.sync_step(trace, i, j)]
 
     # 5. the ith step in the model and the jth step in the log have different 
     #    labels: delta[i+1][j+1] is minimum of delta[i][j+1], delta[i+1][j]
@@ -302,17 +319,29 @@ class Encoding:
         if trace[j]["label"] in reachable_labels or j == 0 or j == m-1:
           for (is_t, penalty) in async_step(i, j):
             mstep = s.plus(penalty, delta[i][j+1])
-            imp = s.implies(is_t, \
-              s.lor([ s.ge(delta[i+1][j+1], mstep), s.ge(delta[i+1][j+1],lstep)]))
-            side_constr.append(imp)
+            mod_step = s.implies(vs_mod[i+1][j+1], s.ge(delta[i+1][j+1], mstep))
+            log_step = s.implies(vs_log[i+1][j+1], s.ge(delta[i+1][j+1], lstep))
+            imp = s.implies(is_t, s.lor([ vs_mod[i+1][j+1], vs_log[i+1][j+1]]))
+            side_constr += [mod_step, log_step, imp]
         else:
           side_constr.append(s.ge(delta[i+1][j+1], lstep))
+
+    # restrict search space
+    for i in range(2,n):
+      for j in range(3,m):
+        c = s.implies(s.land([vs_log[i-1][j-1], vs_mod[i][j-1]]), s.neg(vs_log[i][j]))
+        side_constr.append(c)
+    for i in range(3,n):
+      for j in range(2,m):
+        c = s.implies(s.land([vs_mod[i-1][j-1], vs_log[i-1][j]]), s.neg(vs_mod[i][j]))
+        side_constr.append(c)
+    
     # 6. if the ith step in the model is silent, delta[i+1][j] = delta[i][j],
     #    that is, silent transitions do not increase the distance
     silent = [ s.implies(self._silents[i], s.eq(delta[i+1][j], delta[i][j])) \
       for i in range(0,n) for j in range(0,m+1) ]
     
-    constraints = non_neg + base_model + base_log + step_equal + side_constr + \
+    constraints = non_neg + base_model + base_log + sync_step + side_constr + \
       silent + ss + ws + bm
     return (delta[n][m], s.land(constraints))
 
