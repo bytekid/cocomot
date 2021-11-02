@@ -318,9 +318,7 @@ class Encoding:
       reachable_labels = set([ t["label"] for k in range(i, n) for t in dpn.reachable(k)])
       for j in range(0,m):
         # side constraints on log step (vertical move in matrix)
-        lstep = s.intvar("delta_log" + str(i) + str(j))
-        side_constr.append(s.eq(lstep, s.inc(delta[i+1][j])))
-        log_step = s.implies(vs_log[i+1][j+1], s.ge(delta[i+1][j+1], lstep))
+        log_step = s.implies(vs_log[i+1][j+1], s.ge(delta[i+1][j+1], s.inc(delta[i+1][j])))
         side_constr.append(log_step)
         # side constraints on model step (horizontal move in matrix)
         if trace[j]["label"] in reachable_labels or j == 0 or j == m-1:
@@ -331,7 +329,6 @@ class Encoding:
               s.lor([ vs_mod[i+1][j+1], vs_log[i+1][j+1]])]))
             side_constr.append(imp)
         else:
-          side_constr.append(s.ge(delta[i+1][j+1], lstep))
           side_constr.append(vs_log[i+1][j+1])
 
     # symmetry breaking: enforce log steps before model steps
@@ -371,24 +368,12 @@ class Encoding:
         transitions.append((tid, tlabel(tid)))
     
     alignment = [] # array mapping instant to on of {"log", "model", "parallel"}
-    print("\nDISTANCE:")
-    for j in range(0, len(vs_dist[0])):
-      d = ""
-      for i in range(0, len(vs_dist)):
-        d = d + " " + str(model.eval_int(vs_dist[i][j]))
-      print(d)    
-    print("\nLOG VARS:")
-    for j in range(0, len(vs_dist[0])):
-      dd = ""
-      for i in range(0, len(vs_dist)):
-        dd += " " + str(1 if model.eval_int(self._vs_log_move[i][j]) else 0)
-      print(dd)  
-    print("\nMOD VARS:")
-    for j in range(0, len(vs_dist[0])):
-      dd = ""
-      for i in range(0, len(vs_dist)):
-        dd += " " + str(1 if model.eval_int(self._vs_mod_move[i][j]) else 0)
-      print(dd)
+    #print("\nDISTANCE:")
+    #for j in range(0, len(vs_dist[0])):
+    #  d = ""
+    #  for i in range(0, len(vs_dist)):
+    #    d = d + " " + str(model.eval_int(vs_dist[i][j]))
+    #  print(d)
     i = self._step_bound # n
     j = len(trace) # m
     while i > 0 or j > 0:
