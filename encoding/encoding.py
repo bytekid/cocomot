@@ -227,6 +227,8 @@ class Encoding:
     def write_diff(t):
       diff = s.num(0)
       for x in t["write"]:
+        # FIXME: perhaps no penalty should be given if a write value is not
+        # mentioned in the trace but keeping the value beforehand is ok
         if x not in trace[j]["valuation"]:
           diff = s.inc(diff) # repeated inc is more efficient that constant ..
         else:
@@ -237,6 +239,7 @@ class Encoding:
     return [ (s.eq(self._vs_trans[i], s.num(t["id"])), write_diff(t)) \
       for t in self._dpn.reachable(i) \
       if "label" in t and t["label"] == trace[j]["label"] ]
+
 
   # return pair of edit distance expression and side constraints
   def edit_distance(self, trace):
@@ -314,26 +317,27 @@ class Encoding:
     for i in range(0,n):
       reachable_labels = set([ t["label"] for k in range(i, n) for t in dpn.reachable(k)])
       for j in range(0,m):
+        # side constraints on log step (vertical move in matrix)
         lstep = s.intvar("delta_log" + str(i) + str(j))
         side_constr.append(s.eq(lstep, s.inc(delta[i+1][j])))
+        log_step = s.implies(vs_log[i+1][j+1], s.ge(delta[i+1][j+1], lstep))
+        side_constr.append(log_step)
+        # side constraints on model step (horizontal move in matrix)
         if trace[j]["label"] in reachable_labels or j == 0 or j == m-1:
           for (is_t, penalty) in async_step(i, j):
             mstep = s.plus(penalty, delta[i][j+1])
             mod_step = s.implies(vs_mod[i+1][j+1], s.ge(delta[i+1][j+1], mstep))
-            log_step = s.implies(vs_log[i+1][j+1], s.ge(delta[i+1][j+1], lstep))
-            imp = s.implies(is_t, s.lor([ vs_mod[i+1][j+1], vs_log[i+1][j+1]]))
-            side_constr += [mod_step, log_step, imp]
+            imp = s.implies(is_t, s.land([mod_step,
+              s.lor([ vs_mod[i+1][j+1], vs_log[i+1][j+1]])]))
+            side_constr.append(imp)
         else:
           side_constr.append(s.ge(delta[i+1][j+1], lstep))
+          side_constr.append(vs_log[i+1][j+1])
 
-    # restrict search space
+    # symmetry breaking: enforce log steps before model steps
     for i in range(2,n):
       for j in range(3,m):
-        c = s.implies(s.land([vs_log[i-1][j-1], vs_mod[i][j-1]]), s.neg(vs_log[i][j]))
-        side_constr.append(c)
-    for i in range(3,n):
-      for j in range(2,m):
-        c = s.implies(s.land([vs_mod[i-1][j-1], vs_log[i-1][j]]), s.neg(vs_mod[i][j]))
+        c = s.implies(vs_mod[i][j-1], s.neg(vs_log[i][j]))
         side_constr.append(c)
     
     # 6. if the ith step in the model is silent, delta[i+1][j] = delta[i][j],
@@ -344,6 +348,7 @@ class Encoding:
     constraints = non_neg + base_model + base_log + sync_step + side_constr + \
       silent + ss + ws + bm
     return (delta[n][m], s.land(constraints))
+
 
   def decode_alignment(self, trace, model):
     dpn = self._dpn
@@ -366,12 +371,24 @@ class Encoding:
         transitions.append((tid, tlabel(tid)))
     
     alignment = [] # array mapping instant to on of {"log", "model", "parallel"}
-    #print("\nDISTANCE:")
-    #for i in range(0, len(vs_dist)):
-    #  d = ""
-    #  for j in range(0, len(vs_dist[0])):
-    #    d = d + " " + str(model.eval_int(vs_dist[i][j]))
-    #  print(d)
+    print("\nDISTANCE:")
+    for j in range(0, len(vs_dist[0])):
+      d = ""
+      for i in range(0, len(vs_dist)):
+        d = d + " " + str(model.eval_int(vs_dist[i][j]))
+      print(d)    
+    print("\nLOG VARS:")
+    for j in range(0, len(vs_dist[0])):
+      dd = ""
+      for i in range(0, len(vs_dist)):
+        dd += " " + str(1 if model.eval_int(self._vs_log_move[i][j]) else 0)
+      print(dd)  
+    print("\nMOD VARS:")
+    for j in range(0, len(vs_dist[0])):
+      dd = ""
+      for i in range(0, len(vs_dist)):
+        dd += " " + str(1 if model.eval_int(self._vs_mod_move[i][j]) else 0)
+      print(dd)
     i = self._step_bound # n
     j = len(trace) # m
     while i > 0 or j > 0:
@@ -390,7 +407,7 @@ class Encoding:
         dist_log = model.eval_int(vs_dist[i][j-1]) + 1
         tmodel = transs[transitions[i-1][0]]
         dist_model = model.eval_int(vs_dist[i-1][j]) + len(tmodel["write"]) + 1
-        assert(dist == dist_log or dist == dist_model)
+        # assert(dist == dist_log or dist == dist_model)
         if dist == dist_log:
           alignment.append("log")
           j -= 1
