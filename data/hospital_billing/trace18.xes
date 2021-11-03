@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<log>
+  <trace>
+    <string key="concept:name" value="DVB"/>
+    <event>
+      <boolean key="isCancelled" value="false"/>
+      <date key="time:timestamp" value="2013-02-03T16:13:02.000+01:00"/>
+      <string key="caseType" value="B"/>
+      <string key="speciality" value="F"/>
+      <string key="org:resource" value="ResBF"/>
+      <string key="concept:name" value="NEW"/>
+      <boolean key="blocked" value="false"/>
+      <boolean key="isClosed" value="true"/>
+      <boolean key="flagD" value="true"/>
+      <boolean key="flagB" value="false"/>
+      <boolean key="flagA" value="false"/>
+      <string key="state" value="In progress"/>
+      <string key="lifecycle:transition" value="complete"/>
+    </event>
+    <event>
+      <string key="diagnosis" value="JG"/>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="CHANGE DIAGN"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-02-03T16:13:23.000+01:00"/>
+    </event>
+    <event>
+      <string key="org:resource" value="ResA"/>
+      <string key="state" value="Closed"/>
+      <string key="closeCode" value="C"/>
+      <string key="concept:name" value="FIN"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-05-06T21:41:06.000+02:00"/>
+    </event>
+    <event>
+      <string key="state" value="Released"/>
+      <string key="concept:name" value="RELEASE"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-05-07T00:21:01.000+02:00"/>
+    </event>
+    <event>
+      <boolean key="actRed" value="false"/>
+      <string key="concept:name" value="CODE OK"/>
+      <boolean key="actOrange" value="false"/>
+      <boolean key="flagC" value="false"/>
+      <int key="msgCount" value="0"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <string key="version" value="B"/>
+      <date key="time:timestamp" value="2013-05-10T01:38:53.000+02:00"/>
+    </event>
+    <event>
+      <string key="org:resource" value="ResB"/>
+      <string key="state" value="Billed"/>
+      <string key="concept:name" value="BILLED"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-07-27T19:17:37.000+02:00"/>
+    </event>
+    <event>
+      <string key="org:resource" value="ResEB"/>
+      <string key="state" value="Invoice rejected"/>
+      <string key="concept:name" value="STORNO"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-09-19T13:31:37.000+02:00"/>
+    </event>
+    <event>
+      <string key="org:resource" value="ResDB"/>
+      <string key="state" value="Billable"/>
+      <string key="concept:name" value="REJECT"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-11-06T11:33:53.000+01:00"/>
+    </event>
+    <event>
+      <string key="state" value="In progress"/>
+      <string key="concept:name" value="REOPEN"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-11-06T11:52:02.000+01:00"/>
+    </event>
+    <event>
+      <string key="state" value="Closed"/>
+      <string key="concept:name" value="FIN"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-11-06T11:52:33.000+01:00"/>
+    </event>
+    <event>
+      <string key="state" value="Released"/>
+      <string key="concept:name" value="RELEASE"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-11-06T11:53:39.000+01:00"/>
+    </event>
+    <event>
+      <string key="concept:name" value="CODE OK"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <string key="version" value="D"/>
+      <date key="time:timestamp" value="2013-11-06T11:53:42.000+01:00"/>
+    </event>
+    <event>
+      <string key="state" value="Billed"/>
+      <string key="concept:name" value="BILLED"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2013-11-06T11:54:14.000+01:00"/>
+    </event>
+    <event>
+      <string key="state" value="Invoice rejected"/>
+      <string key="concept:name" value="STORNO"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2014-04-23T12:25:37.000+02:00"/>
+    </event>
+    <event>
+      <string key="state" value="Rejected"/>
+      <string key="concept:name" value="REJECT"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2014-04-23T12:25:43.000+02:00"/>
+    </event>
+    <event>
+      <string key="state" value="Released"/>
+      <string key="concept:name" value="RELEASE"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2014-04-23T12:25:51.000+02:00"/>
+    </event>
+    <event>
+      <string key="concept:name" value="CODE OK"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <string key="version" value="A"/>
+      <date key="time:timestamp" value="2014-04-23T12:25:54.000+02:00"/>
+    </event>
+    <event>
+      <string key="state" value="Billed"/>
+      <string key="concept:name" value="BILLED"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <date key="time:timestamp" value="2014-04-23T12:28:16.000+02:00"/>
+    </event>
+  </trace>
+</log>
