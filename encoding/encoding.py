@@ -318,7 +318,8 @@ class Encoding:
       reachable_labels = set([ t["label"] for k in range(i, n) for t in dpn.reachable(k)])
       for j in range(0,m):
         # side constraints on log step (vertical move in matrix)
-        log_step = s.implies(vs_log[i+1][j+1], s.ge(delta[i+1][j+1], s.inc(delta[i+1][j])))
+        log_step = s.implies(vs_log[i+1][j+1], \
+          s.ge(delta[i+1][j+1], s.inc(delta[i+1][j])))
         side_constr.append(log_step)
         # side constraints on model step (horizontal move in matrix)
         if trace[j]["label"] in reachable_labels or j == 0 or j == m-1:
