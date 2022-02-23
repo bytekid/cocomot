@@ -160,11 +160,13 @@ class YicesSolver(Solver):
     if status == Status.UNKNOWN:
       return None
     m = YicesModel(self.ctx) if status == Status.SAT else None
+    print("minimize", val, status == Status.SAT)
     self.pop()
     self.t_solve = time.perf_counter() - t_start
     while status != Status.SAT and val <= max_val:
       self.push()
       val += 1
+      print(val)
       self.require([self.eq(expr, self.num(val))])
       t_start = time.perf_counter()
       status = self.ctx.check_context(timeout=self._timeout)

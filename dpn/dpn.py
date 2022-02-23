@@ -50,15 +50,14 @@ class DPN:
   ### add silent transition to one final place (without label and constraint)
   def add_silent_finals(self, map):
     id = len(map) + 1
-    for p in self._places:
-      if "final" in p:
-        t = {"id": id, "invisible": True, "label":None }
-        self._transitions.append(t)
-        self._arcs.append({"source": p["id"], "target": id})
-        self._arcs.append({"target": p["id"], "source": id})
-        map[id] = t
-        id += 1
-        break
+    for p in self.final_places():
+      t = {"id": id, "invisible": True, "label":None }
+      self._transitions.append(t)
+      self._arcs.append({"source": p["id"], "target": id})
+      self._arcs.append({"target": p["id"], "source": id})
+      map[id] = t
+      id += 1
+      break
   
   def is_acyclic(self, pid):
     ps = [pid]
@@ -96,7 +95,11 @@ class DPN:
       start = [p for p in places.values() if "initial" in p and p["initial"]]
     else:
       start = [p for p in places.values() if "final" in p and p["final"]]
-    return min([ shortest(p, []) for p in start ])
+    # if initial marking is empty, return 0
+    return min([ shortest(p, []) for p in start ]) if len(start) > 0 else 0
+
+  def final_places(self):
+    return [ p for p in self._places if "final" in p and p["final"]]
 
   def shortest_accepted(self):
     finals = [ p["id"] for p in self._places if "final" in p and p["final"]]
@@ -122,7 +125,7 @@ class DPN:
     states = [ (set(ps),[]) ] # pairs of current marking and transition history
     seen_acylic = set([])
     for i in range(0, num_steps):
-      if i > 12 or len(states) > 22: # gets too expensive
+      if i > 12 or len(states) > 22: # gets too expensive, do approximation
         ts = [ t for (id, t) in transs.items() if fdists[id] < rem and i >= idists[id] ]
         seen_acylic_sub = [tid for tid in seen_acylic if tid not in [t["id"] for t in self._reachable[i-1]]]
         ts_sub = [t for t in ts if not t["id"] in seen_acylic_sub]
@@ -132,19 +135,18 @@ class DPN:
         self._reachable.append([])
         rem = num_steps - i
         for (marking, steps) in states:
-          for p in marking:
-            ts = [ l[tgt] for l in self._arcs if l[src] == p ]
-            for t in ts:
-              post_t = [ a[tgt] for a in self._arcs if a[src] == t]
-              pre_t = [ a[src] for a in self._arcs if a[tgt] == t]
-              if not set(pre_t).issubset(marking):
-                continue # this transition is not enabled, skip
-              markingx = marking.difference(pre_t).union(post_t)
-              statesx.append((markingx, steps + [t]))
-              if not transs[t] in self._reachable[i] and fdists[t] < rem:
-                self._reachable[i].append(transs[t])
-                if self.is_acyclic(t):
-                  seen_acylic = seen_acylic.union({t})
+          for t in self._transitions:
+            tid = t["id"]
+            pre_t = [ a[src] for a in self._arcs if a[tgt] == tid]
+            post_t = [ a[tgt] for a in self._arcs if a[src] == tid]
+            if not set(pre_t).issubset(marking):
+              continue # this transition is not enabled, skip
+            markingx = marking.difference(pre_t).union(post_t)
+            statesx.append((markingx, steps + [tid]))
+            if not transs[tid] in self._reachable[i] and fdists[tid] < rem:
+              self._reachable[i].append(transs[tid])
+              if self.is_acyclic(tid):
+                seen_acylic = seen_acylic.union({tid})
       states = statesx
 
 
@@ -178,7 +180,7 @@ class DPN:
     return vreach
 
   def has_single_token(self):
-    if self.has1token:
+    if self.has1token != None:
       return self.has1token
     
     for p in self.places():
@@ -188,7 +190,8 @@ class DPN:
         
     for t in self._transitions:
       outs = [ a for a in self._arcs if a["source"] == t["id"]]
-      if len(outs) > 1:
+      ins = [ a for a in self._arcs if a["target"] == t["id"]]
+      if len(outs) != len(ins):
         self.has1token = False
         return False
     self.has1token = True

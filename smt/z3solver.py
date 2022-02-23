@@ -129,7 +129,8 @@ class Z3Model(Model):
     self.model = ctx.model()
   
   def eval_bool(self, v):
-    return self.model.eval(v).as_bool()
+    val = self.model.eval(v)
+    return bool(val)
   
   def eval_int(self, v):
     if isinstance(v, int):

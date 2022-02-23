@@ -105,6 +105,10 @@ def print_trace_distance_verbose(dpn, trace, decoding):
   print_sequence(dpn, modelseq)
   sys.stdout.flush()
 
+def print_alignments_json(alignments):
+  for (trace, dist, alignment) in alignments:
+    alignment["distance"] = dist
+    print(trace, dist, alignment)
 
 ### preprocessing
 def preprocess_trace(trace, dpn):
@@ -116,7 +120,8 @@ def preprocess_trace(trace, dpn):
         val = e[v["name"]]
         valuation[v["name"]] = val if not isinstance(val,str) else \
           0 if val == "NIL" else ord(val[0])
-    simple_trace.append({"label" : e["concept:name"], "valuation": valuation})
+    if "concept:name" in e:
+      simple_trace.append({"label" : e["concept:name"], "valuation": valuation})
   return simple_trace
 
 
@@ -135,7 +140,6 @@ def conformance_check_trace(encoding, trace_data, verbosity):
   encoding.solver().require([dconstr])
 
   #FIXME step_bound may in general not be valid upper bound due to writes
-  start = 3 * int((len(encoding._dpn._transitions) / 25)) + int(len(trace) / 12)
   model = encoding.solver().minimize(dist, encoding.step_bound())
   t_solve = encoding.solver().t_solve
   if model == None: # timeout
@@ -147,10 +151,13 @@ def conformance_check_trace(encoding, trace_data, verbosity):
     alignment_decoded = encoding.decode_alignment(trace, model)
     print_trace_distance(index, trace, t_encode2, t_solve, cnt, distance)
     print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
-  else:
+  elif verbosity == 0:
     print_trace_distance(index, trace, t_encode2, t_solve, cnt, distance)
+    alignment_decoded = {}
+  else:
+    alignment_decoded = encoding.decode_alignment(trace, model)
 
-  return (distance, t_encode2, t_solve)
+  return (distance, alignment_decoded, t_encode2, t_solve)
 
 
 # conformance check multiple traces of same length
@@ -179,12 +186,12 @@ def conformance_check_traces(solver, traces, dpn, verbosity=0):
 
   results = []
   if len(traces) == 1:
-    results.append(conformance_check_trace(encoding, traces[0], verbosity))
+    results.append((trace, conformance_check_trace(encoding, traces[0], verbosity)))
   else:
     for trace_data in traces:
       solver.push()
       res = conformance_check_trace(encoding, trace_data, verbosity)
-      results.append(res)
+      results.append((trace, res))
       solver.pop()
   return results, t_encode1
 
@@ -193,12 +200,15 @@ def conformance_check_traces(solver, traces, dpn, verbosity=0):
 if __name__ == "__main__":
   modelfile = sys.argv[1]
   logfile = sys.argv[2]
-  verbose = False
+  verbose = 0
   numprocs = 1
   if len(sys.argv) > 3:
     if sys.argv[3] == "-v":
-      verbose = True
+      verbose = 1
       numprocs = int(sys.argv[4]) if len(sys.argv) > 4 else 1
+    elif sys.argv[3] == "-m":
+      verbose = -1
+      numprocs = 1
     else:
       numprocs = int(sys.argv[3])
 
@@ -213,6 +223,7 @@ if __name__ == "__main__":
   ts_solve = []
   distances = {}
   timeouts = 0
+  alignments = []
 
   # get unique traces by data
   t_start = time.perf_counter()
@@ -224,7 +235,7 @@ if __name__ == "__main__":
   i = 0
   parts = interval_part.partitions
   if numprocs == 1:
-    solver = YicesSolver() # Z3Solver()
+    solver = Z3Solver() # YicesSolver()
     i = 0
     while i < len(parts):
       (trace, cnt) = parts[i]
@@ -236,13 +247,14 @@ if __name__ == "__main__":
         same_len_traces.append((i, trace, cnt))
       print("%d traces of length %d" % (len(same_len_traces), length))
       res,tenc = conformance_check_traces(solver,same_len_traces,dpn, verbosity=verbose)
-      for (d, t_enc, t_solv) in res:
+      for (trace, (d, a, t_enc, t_solv)) in res:
         if d == None:
           timeouts += 1
         else:
           distances[d] = distances[d] + 1 if d in distances else 1
         ts_encode.append(t_enc)
         ts_solve.append(t_solv)
+        alignments.append((trace, d, a))
       solver.reset()
       i = i + 1
     solver.destroy()
@@ -275,12 +287,15 @@ if __name__ == "__main__":
   
   ts_solve.sort()
   ts_encode.sort()
-  mid = int(len(ts_encode)/2)
-  print("encoding time: total %.2f  avg %.2f median %.2f" % \
-    (sum(ts_encode ), sum(ts_encode)/len(ts_encode), ts_encode[mid]))
-  print("solving time:  total %.2f  avg %.2f median %.2f" % \
-    (sum(ts_solve ), sum(ts_solve)/len(ts_solve), ts_solve[mid]))
-  for (d, cnt) in distances.items():
-    print("distance %d: %d" % (d, cnt))
-  print("timeouts: %d" % timeouts)
+  if verbose >= 0:
+    mid = int(len(ts_encode)/2)
+    print("encoding time: total %.2f  avg %.2f median %.2f" % \
+      (sum(ts_encode ), sum(ts_encode)/len(ts_encode), ts_encode[mid]))
+    print("solving time:  total %.2f  avg %.2f median %.2f" % \
+      (sum(ts_solve ), sum(ts_solve)/len(ts_solve), ts_solve[mid]))
+    for (d, cnt) in distances.items():
+      print("distance %d: %d" % (d, cnt))
+    print("timeouts: %d" % timeouts)
+  else:
+    print_alignments_json(alignments)
   YicesSolver.shutdown()

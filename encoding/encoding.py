@@ -12,6 +12,7 @@ class Encoding:
     self._vs_data = self.data_vars()
     self._vs_mark = self.marking_vars()
     self._vs_trans = self.trans_vars()
+    self._run_is_empty = self._solver.boolvar("empty_run")
 
   def step_bound(self):
     return self._step_bound
@@ -98,8 +99,13 @@ class Encoding:
     s = self._solver
     dpn = self._dpn
     tvs = self._vs_trans
-      
-    rng = lambda i,v: s.lor([s.eq(v, s.num(t["id"])) for t in dpn.reachable(i)])
+    
+    def rng(i, v):
+      reach = dpn.reachable(i)
+      if len(reach) > 0:
+        return s.lor([s.eq(v, s.num(t["id"])) for t in reach])
+      else:
+        return s.true()
     rng_constr = [rng(i, v) for (i, v) in enumerate(tvs)]
     # optimization: the following serves only for symmetry breaking:
     # if transition is tau (i.e., final filler transition) then so is the next
@@ -114,13 +120,19 @@ class Encoding:
     s = self._solver
     places = self._dpn.places()
     mvs = self._vs_mark
+    bound = self._step_bound
+    self._finals = [s.boolvar("final"+str(i)) for i in range(0, bound + 1)]
+
     if self._dpn.has_single_token():
       fmark = [ p["id"] for p in places if "final" in p ]
-      return s.land([ mvs[self._step_bound][p] for p in fmark ])
+      return s.land([ mvs[bound][p] for p in fmark ])
     else:
       fmark = [ (p["id"], p["final"] if "final" in p else 0) for p in places ]
-      eqs = [ s.eq(mvs[self._step_bound][p], s.num(c)) for (p, c) in fmark ]
-      return s.land(eqs)
+      final = lambda i: s.land([ s.eq(mvs[i][p], s.num(c)) for (p,c) in fmark ])
+
+      fs = [ s.iff(v, final(i)) for (i,v) in enumerate(self._finals) ]
+      return s.land(fs + [s.lor(self._finals[1:])])
+
     
   # token game for transition t and instant i (case of unbounded net)
   def token_game_unbounded(self, t, i):
@@ -268,7 +280,7 @@ class Encoding:
     wcost = dict([ (t["id"], v) for (t,v) in zip(dpn.transitions(), wcostvars)])
     
     def async_step(i, j):
-      return [ (s.eq(vs_trans[i], s.num(t["id"])), wcost[t["id"]]) \
+      return [ (s.eq(vs_trans[i], s.num(t["id"])), s.ite(self._finals[i], s.num(0), wcost[t["id"]])) \
         for t in dpn.reachable(i) \
         if not t["invisible"] and t["label"] != trace[j]["label"] ]
     
@@ -279,8 +291,9 @@ class Encoding:
         s.ite(s.eq(var, s.num(t[0])), wcost[t[1]["id"]], c), etrans, s.num(0))
 
     def is_silent(i): # transition i is silent
-      return s.lor([ s.eq(vs_trans[i], s.num(id)) \
-        for (id, t) in etrans if t in dpn.reachable(i) and t["invisible"] ])
+      sreach = [ t for t in etrans if t in dpn.reachable(i) and t["invisible"]]
+      return s.lor([ s.eq(vs_trans[i], s.num(id)) for (id, t) in sreach ])
+    
     silents2 = [ is_silent(i) for i in range(0,n) ]
     self._silents = [s.boolvar("silent"+str(i)) for i in range(0,n) ]
     ss = [ s.iff(v,e) for (v,e) in zip(self._silents, silents2)]
@@ -359,26 +372,43 @@ class Encoding:
     valuations = [] # array mapping instant to valuation
     markings = [] # array mapping instant to dictionary mapping place to count
     transitions = [] # array mapping instant to transition label
-    for i in range(0, self.step_bound() + 1):
+    fmark = [ (i,p["final"] if "final" in p else 0) for (i,p) in places.items()]
+
+    #run_length = model.eval_int(self._length_of_run)
+    #print("run length ", run_length)
+    run_length = self._step_bound
+
+    is_final = lambda m: all( c==(places[p]["final"] if "final" in places[p] else 0) for (p,c) in m)
+    last_final = None
+    for i in range(0, run_length + 1):
       val = [ (x, float(model.eval_real(v))) for (x,v) in vs_data[i].items()]
       valuations.append(dict(val))
       mark = [(p,model.eval_int(c)) for (p,c) in list(vs_mark[i].items())]
       markings.append(dict(mark))
-      if i < self.step_bound():
+      print("marking", i, mark, is_final(mark))
+      if last_final == False and is_final(mark):
+        run_length = i 
+        print("fix run length to ", i)
+        break
+      else:
+        last_final = False
+      if i < run_length:
         tid = model.eval_int(self._vs_trans[i])
+        print("transition ", i, tlabel(tid))
         transitions.append((tid, tlabel(tid)))
     
-    alignment = [] # array mapping instant to on of {"log", "model", "parallel"}
-    #print("\nDISTANCE:")
-    #for j in range(0, len(vs_dist[0])):
-    #  d = ""
-    #  for i in range(0, len(vs_dist)):
-    #    d = d + " " + str(model.eval_int(vs_dist[i][j]))
-    #  print(d)
-    i = self._step_bound # n
+    alignment = [] # array mapping instant to one of {"log", "model","parallel"}
+    print("\nDISTANCE:")
+    for j in range(0, len(vs_dist[0])):
+      d = ""
+      for i in range(0, len(vs_dist)):
+        d = d + " " + str(model.eval_int(vs_dist[i][j]))
+      print(d)
+
+    i = run_length # self._step_bound # n
     j = len(trace) # m
     while i > 0 or j > 0:
-      if j == 0 or model.eval_bool(self._silents[i-1]):
+      if j == 0 or (i > 0 and model.eval_bool(self._silents[i-1])):
         alignment.append("model")
         i -= 1
       elif i == 0:

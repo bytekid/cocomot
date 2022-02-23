@@ -98,6 +98,18 @@ def read_pnml_input(pnmlfile):
     if len(init) > 0:
       p["initial"] = int(init[0].getElementsByTagName('text')[0].firstChild.nodeValue)
     dpn["places"].append(p)
+
+  # in case finalmarkings are given separately
+  #final = dom.getElementsByTagName('net')[0].getElementsByTagName('finalmarkings')
+  #for i in range(0, len(final)):
+  #  if len(final[i].getElementsByTagName('place')) > 0:
+  #    place = final[i].getElementsByTagName('place')[0]
+  #    id = place.getAttribute('idref')
+  #    count = place.getElementsByTagName('text')[0]
+  #    for p in dpn["places"]:
+  #      if p["id"] == id:
+  #        p["final"] = 1
+  #        break
   
   # variables
   varlist = dom.getElementsByTagName('variable')
