@@ -110,6 +110,16 @@ def print_alignments_json(alignments):
   for (trace, dist, alignment) in alignments:
     for a in alignment:
       a["transitions"] = [ label for (_,label) in a["transitions"]]
+      del a["valuations"]
+      all_mlists = []
+      print(a["markings"])
+      for m in a["markings"]:
+        mlist = []
+        for (p,c) in m.items():
+          for j in range(0,c):
+            mlist.append(p)
+        all_mlists.append(mlist)
+      a["markings"] = all_mlists
     data = {"trace" : trace[1], "alignments": alignment}
     print(json.dumps(data, indent=2))
 
@@ -151,7 +161,7 @@ def conformance_check_trace_many(encoding, trace_data, verbosity, number):
       return (None, alignments, t_encode2, t_solve)
   
     alignment_decoded = encoding.decode_alignment(trace, model)
-    #print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
+    print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
     alignments.append(alignment_decoded)
     encoding.solver().require([encoding.negate(alignment_decoded)])
   return (-1, alignments, t_encode2, t_solve)

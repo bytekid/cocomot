@@ -13,6 +13,7 @@ class Encoding:
     self._vs_mark = self.marking_vars()
     self._vs_trans = self.trans_vars()
     self._run_is_empty = self._solver.boolvar("empty_run")
+    self._run_length = self._solver.boolvar("run_length")
 
   def step_bound(self):
     return self._step_bound
@@ -268,7 +269,6 @@ class Encoding:
     etrans = [(t["id"], t) for t in dpn.transitions()]
     trans_dict = dict(etrans)
     vars = dpn.variables()
-    runlength0 = s.boolvar("run_length_0")
 
     # write cost of a transition (to determine model step penalty)
     # optimization: more efficient to use variables instead of just constants
@@ -313,7 +313,7 @@ class Encoding:
     # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + wcost
     #    where wcost is the writing cost of the ith transition in the model
     incdelta0 = [s.intvar("incd0"+str(i)) for i in range(0,n) ]
-    mod = lambda x: s.ite(runlength0, s.num(0), x) \
+    mod = lambda x: s.ite(self._run_is_empty, s.num(0), x) \
       if 0 == m and not self._dpn.has_single_token() else x
     bm = [ s.eq(incdelta0[i], mod(s.plus(delta[i][0], wcosts(i)))) for i in range(0,n)]
     base_model = [ s.implies(s.neg(self._silents[i]), \
@@ -362,18 +362,21 @@ class Encoding:
     silent = [ s.implies(self._silents[i], s.eq(delta[i+1][j], delta[i][j])) \
       for i in range(0,n) for j in range(0,m+1) ]
     
-    rl0 = [ s.iff(runlength0,s.land([s.neg(v) for v in self._finals[1:]]),
-      s.implies(runlength0, s.eq(delta[n][m],self._vs_dist[0][m] ))]
+    rl0 = [s.iff(self._run_is_empty,s.land([s.neg(v) for v in self._finals[1:]])),
+      s.implies(self._run_is_empty, s.eq(delta[n][m], self._vs_dist[0][m]))]
 
     constraints = non_neg + base_model + base_log + sync_step + side_constr + \
-      silent + ss + ws + bm + [rl0]
+      silent + ss + ws + bm + rl0
     return (delta[n][m], s.land(constraints))
 
   def negate(self, alignment):
     # FIXME no data for now
     transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
     s = self._solver
-    reqs = [self._finals[len(alignment["transitions"])]]
+    if len(alignment["transitions"]) == 0:
+      reqs = [self._run_is_empty]
+    else:
+      reqs = [self._finals[len(alignment["transitions"])]]
     for (i,(tid, tlabel)) in enumerate(alignment["transitions"]):
       reqs.append(s.eq(self._vs_trans[i], tid))
     return s.neg(s.land(reqs))
@@ -397,20 +400,20 @@ class Encoding:
     fin_instants = [i for i in range(0,n+1) if model.eval_bool(self._finals[i])]
     dist_at = lambda i: model.eval_int(vs_dist[i][len(trace)])
     fdists = [ (i,model.eval_int(vs_dist[i][len(trace)])) for i in fin_instants]
-    (run_length, distance) = \
-      reduce(lambda md1, md2: md1 if md1[1] <= md2[1] else md2, fdists, fdists[0])
-    #print(fin_instants, "length:", run_length, "distance:", distance)
+    if model.eval_bool(self._run_is_empty):
+      #print("run empty")
+      (run_length, distance) = fdists[0]
+    else:
+      #print("run not empty")
+      (run_length, distance) = \
+        reduce(lambda md1, md2: md1 if md1[1] <= md2[1] else md2, fdists[2:], fdists[1])
+    print("final at", fin_instants, "length:", run_length, "distance:", distance, fdists)
 
     for i in range(0, run_length + 1):
       val = [ (x, float(model.eval_real(v))) for (x,v) in vs_data[i].items()]
       valuations.append(dict(val))
-      mark = [(p,model.eval_int(c)) for (p,c) in list(vs_mark[i].items())]
-      print(mark)
-      mlist = []
-      for (p,c) in mark:
-        for j in range(0,c):
-          mlist.append(places[p]["name"])
-      markings.append(mlist)
+      mark = [(places[p]["id"],model.eval_int(c)) for (p,c) in list(vs_mark[i].items())]
+      markings.append(dict(mark))
       if i < run_length:
         tid = model.eval_int(self._vs_trans[i])
         transitions.append((tid, tlabel(tid)))
@@ -454,6 +457,6 @@ class Encoding:
       "markings":    markings, 
       "valuations":  valuations,
       "alignment":   alignment,
-      "distance":    distance
+      "cost":    distance
     }
   
