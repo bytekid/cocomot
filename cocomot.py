@@ -2,6 +2,7 @@ import sys
 import time
 import multiprocessing
 import pm4py
+import json
 
 from smt.ysolver import YicesSolver
 from smt.z3solver import *
@@ -107,8 +108,10 @@ def print_trace_distance_verbose(dpn, trace, decoding):
 
 def print_alignments_json(alignments):
   for (trace, dist, alignment) in alignments:
-    alignment["distance"] = dist
-    print(trace, dist, alignment)
+    for a in alignment:
+      a["transitions"] = [ label for (_,label) in a["transitions"]]
+    data = {"trace" : trace[1], "alignments": alignment}
+    print(json.dumps(data, indent=2))
 
 ### preprocessing
 def preprocess_trace(trace, dpn):
@@ -130,6 +133,28 @@ def preprocess_log(log, dpn):
   for trace in log:
     log_processed.append(preprocess_trace(trace, dpn))
   return log_processed
+
+def conformance_check_trace_many(encoding, trace_data, verbosity, number):
+  (index, trace, cnt) = trace_data
+  t_start = time.perf_counter()
+  (dist, dconstr) = encoding.edit_distance(trace)
+  t_encode2 = time.perf_counter() - t_start
+  encoding.solver().require([dconstr])
+  alignments = []
+  print("\n##### CONFORMANCE CHECK TRACE %d (%d instances, length %d)" % \
+    (index, cnt, len(trace)))
+  for i in range(0, number):
+    model = encoding.solver().minimize(dist, encoding.step_bound())
+    t_solve = encoding.solver().t_solve
+    if model == None: # timeout
+      print("(no further alignments found)")
+      return (None, alignments, t_encode2, t_solve)
+  
+    alignment_decoded = encoding.decode_alignment(trace, model)
+    #print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
+    alignments.append(alignment_decoded)
+    encoding.solver().require([encoding.negate(alignment_decoded)])
+  return (-1, alignments, t_encode2, t_solve)
 
 def conformance_check_trace(encoding, trace_data, verbosity):
   (index, trace, cnt) = trace_data
@@ -161,7 +186,7 @@ def conformance_check_trace(encoding, trace_data, verbosity):
 
 
 # conformance check multiple traces of same length
-def conformance_check_traces(solver, traces, dpn, verbosity=0):
+def conformance_check_traces(solver, traces, dpn, verbosity=0, many=None):
   # compute length of shortest path to final state 
   shortest_acc_path = dpn.shortest_accepted()
   # estimate of upper bound on steps to be considered: length of trace + length
@@ -186,11 +211,14 @@ def conformance_check_traces(solver, traces, dpn, verbosity=0):
 
   results = []
   if len(traces) == 1:
-    results.append((trace, conformance_check_trace(encoding, traces[0], verbosity)))
+    res = conformance_check_trace(encoding, traces[0], verbosity) if not many \
+      else conformance_check_trace_many(encoding, traces[0], verbosity, many)
+    results.append((traces[0], res))
   else:
-    for trace_data in traces:
+    for trace in traces:
       solver.push()
-      res = conformance_check_trace(encoding, trace_data, verbosity)
+      res = conformance_check_trace(encoding, trace,verbosity) if not many \
+        else conformance_check_trace_many(encoding, trace, verbosity, many)
       results.append((trace, res))
       solver.pop()
   return results, t_encode1
@@ -202,6 +230,7 @@ if __name__ == "__main__":
   logfile = sys.argv[2]
   verbose = 0
   numprocs = 1
+  many = None
   if len(sys.argv) > 3:
     if sys.argv[3] == "-v":
       verbose = 1
@@ -209,6 +238,7 @@ if __name__ == "__main__":
     elif sys.argv[3] == "-m":
       verbose = -1
       numprocs = 1
+      many = int(sys.argv[4]) if len(sys.argv) > 4 else 2
     else:
       numprocs = int(sys.argv[3])
 
@@ -245,8 +275,8 @@ if __name__ == "__main__":
         i = i+1
         (trace, cnt) = parts[i]
         same_len_traces.append((i, trace, cnt))
-      print("%d traces of length %d" % (len(same_len_traces), length))
-      res,tenc = conformance_check_traces(solver,same_len_traces,dpn, verbosity=verbose)
+      #print("%d traces of length %d" % (len(same_len_traces), length))
+      res,tenc = conformance_check_traces(solver,same_len_traces,dpn, verbosity=verbose, many = many)
       for (trace, (d, a, t_enc, t_solv)) in res:
         if d == None:
           timeouts += 1

@@ -131,7 +131,7 @@ class Encoding:
       final = lambda i: s.land([ s.eq(mvs[i][p], s.num(c)) for (p,c) in fmark ])
 
       fs = [ s.iff(v, final(i)) for (i,v) in enumerate(self._finals) ]
-      return s.land(fs + [s.lor(self._finals[1:])])
+      return s.land(fs + [s.lor(self._finals)])
 
     
   # token game for transition t and instant i (case of unbounded net)
@@ -280,7 +280,10 @@ class Encoding:
     wcost = dict([ (t["id"], v) for (t,v) in zip(dpn.transitions(), wcostvars)])
     
     def async_step(i, j):
-      return [ (s.eq(vs_trans[i], s.num(t["id"])), s.ite(self._finals[i], s.num(0), wcost[t["id"]])) \
+      # FIXME if final marking reached, penalty 0 in last row of matrix
+      mod = lambda x: s.num(0) \
+        if j == m - 1 and not self._dpn.has_single_token() else x
+      return [ (s.eq(vs_trans[i], s.num(t["id"])), mod(wcost[t["id"]])) \
         for t in dpn.reachable(i) \
         if not t["invisible"] and t["label"] != trace[j]["label"] ]
     
@@ -309,7 +312,8 @@ class Encoding:
     # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + wcost
     #    where wcost is the writing cost of the ith transition in the model
     incdelta0 = [s.intvar("incd0"+str(i)) for i in range(0,n) ]
-    bm = [ s.eq(incdelta0[i], s.plus(delta[i][0], wcosts(i))) for i in range(0,n)]
+    mod = lambda x: s.num(0) if 0 == m and not self._dpn.has_single_token() else x
+    bm = [ s.eq(incdelta0[i], mod(s.plus(delta[i][0], wcosts(i)))) for i in range(0,n)]
     base_model = [ s.implies(s.neg(self._silents[i]), \
       s.ge(delta[i+1][0], incdelta0[i])) for i in range(0,n)]
     # 3. delta[0][j+1] = (j + 1)
@@ -356,15 +360,26 @@ class Encoding:
     silent = [ s.implies(self._silents[i], s.eq(delta[i+1][j], delta[i][j])) \
       for i in range(0,n) for j in range(0,m+1) ]
     
+    runlength0 = s.implies(s.land([s.neg(v) for v in self._finals[1:]]), \
+      s.eq(delta[n][m],self._vs_dist[0][m] ))
+
     constraints = non_neg + base_model + base_log + sync_step + side_constr + \
-      silent + ss + ws + bm
+      silent + ss + ws + bm + [runlength0]
     return (delta[n][m], s.land(constraints))
 
+  def negate(self, alignment):
+    # FIXME no data for now
+    transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
+    s = self._solver
+    reqs = [self._finals[len(alignment["transitions"])]]
+    for (i,(tid, tlabel)) in enumerate(alignment["transitions"]):
+      reqs.append(s.eq(self._vs_trans[i], tid))
+    return s.neg(s.land(reqs))
 
   def decode_alignment(self, trace, model):
     dpn = self._dpn
     places = dict([ (p["id"], p) for p in dpn.places() ])
-    transs = dict([ (p["id"], p) for p in dpn.transitions() ])
+    transs = dict([ (t["id"], t) for t in dpn.transitions() ])
     tlabel = lambda i: "tau" if not transs[i]["label"] else transs[i]["label"]
     vs_data = self._vs_data
     vs_mark = self._vs_mark
@@ -373,28 +388,29 @@ class Encoding:
     markings = [] # array mapping instant to dictionary mapping place to count
     transitions = [] # array mapping instant to transition label
     fmark = [ (i,p["final"] if "final" in p else 0) for (i,p) in places.items()]
+    n = self._step_bound
+    m = len(trace)
 
-    #run_length = model.eval_int(self._length_of_run)
-    #print("run length ", run_length)
-    run_length = self._step_bound
+    # determine run length
+    fin_instants = [i for i in range(0,n+1) if model.eval_bool(self._finals[i])]
+    dist_at = lambda i: model.eval_int(vs_dist[i][len(trace)])
+    fdists = [ (i,model.eval_int(vs_dist[i][len(trace)])) for i in fin_instants]
+    (run_length, distance) = \
+      reduce(lambda md1, md2: md1 if md1[1] <= md2[1] else md2, fdists, fdists[0])
+    #print(fin_instants, "length:", run_length, "distance:", distance)
 
-    is_final = lambda m: all( c==(places[p]["final"] if "final" in places[p] else 0) for (p,c) in m)
-    last_final = None
     for i in range(0, run_length + 1):
       val = [ (x, float(model.eval_real(v))) for (x,v) in vs_data[i].items()]
       valuations.append(dict(val))
       mark = [(p,model.eval_int(c)) for (p,c) in list(vs_mark[i].items())]
-      markings.append(dict(mark))
-      print("marking", i, mark, is_final(mark))
-      if last_final == False and is_final(mark):
-        run_length = i 
-        print("fix run length to ", i)
-        break
-      else:
-        last_final = False
+      print(mark)
+      mlist = []
+      for (p,c) in mark:
+        for j in range(0,c):
+          mlist.append(places[p]["name"])
+      markings.append(mlist)
       if i < run_length:
         tid = model.eval_int(self._vs_trans[i])
-        print("transition ", i, tlabel(tid))
         transitions.append((tid, tlabel(tid)))
     
     alignment = [] # array mapping instant to one of {"log", "model","parallel"}
@@ -435,6 +451,7 @@ class Encoding:
       "transitions": transitions,
       "markings":    markings, 
       "valuations":  valuations,
-      "alignment":   alignment
+      "alignment":   alignment,
+      "distance":    distance
     }
   
