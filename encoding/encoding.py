@@ -268,6 +268,7 @@ class Encoding:
     etrans = [(t["id"], t) for t in dpn.transitions()]
     trans_dict = dict(etrans)
     vars = dpn.variables()
+    runlength0 = s.boolvar("run_length_0")
 
     # write cost of a transition (to determine model step penalty)
     # optimization: more efficient to use variables instead of just constants
@@ -312,7 +313,8 @@ class Encoding:
     # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + wcost
     #    where wcost is the writing cost of the ith transition in the model
     incdelta0 = [s.intvar("incd0"+str(i)) for i in range(0,n) ]
-    mod = lambda x: s.num(0) if 0 == m and not self._dpn.has_single_token() else x
+    mod = lambda x: s.ite(runlength0, s.num(0), x) \
+      if 0 == m and not self._dpn.has_single_token() else x
     bm = [ s.eq(incdelta0[i], mod(s.plus(delta[i][0], wcosts(i)))) for i in range(0,n)]
     base_model = [ s.implies(s.neg(self._silents[i]), \
       s.ge(delta[i+1][0], incdelta0[i])) for i in range(0,n)]
@@ -360,11 +362,11 @@ class Encoding:
     silent = [ s.implies(self._silents[i], s.eq(delta[i+1][j], delta[i][j])) \
       for i in range(0,n) for j in range(0,m+1) ]
     
-    runlength0 = s.implies(s.land([s.neg(v) for v in self._finals[1:]]), \
-      s.eq(delta[n][m],self._vs_dist[0][m] ))
+    rl0 = [ s.iff(runlength0,s.land([s.neg(v) for v in self._finals[1:]]),
+      s.implies(runlength0, s.eq(delta[n][m],self._vs_dist[0][m] ))]
 
     constraints = non_neg + base_model + base_log + sync_step + side_constr + \
-      silent + ss + ws + bm + [runlength0]
+      silent + ss + ws + bm + [rl0]
     return (delta[n][m], s.land(constraints))
 
   def negate(self, alignment):
