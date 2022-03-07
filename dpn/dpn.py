@@ -51,7 +51,7 @@ class DPN:
   def add_silent_finals(self, map):
     id = len(map) + 1
     for p in self.final_places():
-      t = {"id": id, "invisible": True, "label":None }
+      t = {"id": id, "invisible": True, "label":None, "write":[] }
       self._transitions.append(t)
       self._arcs.append({"source": p["id"], "target": id})
       self._arcs.append({"target": p["id"], "source": id})

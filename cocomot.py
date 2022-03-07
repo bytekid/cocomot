@@ -2,7 +2,9 @@ import sys
 import time
 import multiprocessing
 import pm4py
+from pm4py.objects.log.importer.xes import importer as xes_importer
 import json
+import getopt
 
 from smt.ysolver import YicesSolver
 from smt.z3solver import *
@@ -108,7 +110,7 @@ def print_trace_distance_verbose(dpn, trace, decoding):
 
 def print_alignments_json(alignments):
   for (trace, dist, alignment) in alignments:
-    for a in alignment:
+    for a in (alignment if isinstance(alignment, list) else [alignment]):
       a["transitions"] = [ label for (_,label) in a["transitions"]]
       del a["valuations"]
       all_mlists = []
@@ -121,7 +123,6 @@ def print_alignments_json(alignments):
         all_mlists.append(mlist)
       a["markings"] = all_mlists
     data = {"trace" : trace[1], "alignments": alignment}
-    print(json.dumps(data, indent=2))
 
 ### preprocessing
 def preprocess_trace(trace, dpn):
@@ -235,25 +236,12 @@ def conformance_check_traces(solver, traces, dpn, verbosity=0, many=None):
 
 
 ### main
-if __name__ == "__main__":
-  modelfile = sys.argv[1]
-  logfile = sys.argv[2]
-  verbose = 0
-  numprocs = 1
-  many = None
-  if len(sys.argv) > 3:
-    if sys.argv[3] == "-v":
-      verbose = 1
-      numprocs = int(sys.argv[4]) if len(sys.argv) > 4 else 1
-    elif sys.argv[3] == "-m":
-      verbose = -1
-      numprocs = 1
-      many = int(sys.argv[4]) if len(sys.argv) > 4 else 2
-    else:
-      numprocs = int(sys.argv[3])
+def cocomot(modelfile, logfile, numprocs, verbose, many):
 
   dpn = DPN(read_pnml_input(modelfile))
-  log = pm4py.read_xes(logfile)
+  #log = pm4py.read_xes(logfile)
+  log = xes_importer.apply(logfile)
+
 
   # preprocessing
   log = preprocess_log(log, dpn)
@@ -337,5 +325,45 @@ if __name__ == "__main__":
       print("distance %d: %d" % (d, cnt))
     print("timeouts: %d" % timeouts)
   else:
+    print(alignments)
     print_alignments_json(alignments)
   YicesSolver.shutdown()
+
+def process_args(argv):
+  usage = "cocomot.py <model_file> <log_file> [-p <property_string> | -s] [-x]"
+  model_file = None
+  log_file = None
+  many = False
+  numprocs = 1
+  verbose = 0
+  try:
+    opts, args = getopt.getopt(argv,"hxvm:l:n:")
+  except getopt.GetoptError:
+    print(usage)
+    sys.exit(2)
+  for (opt, arg) in opts:
+    if opt == '-h':
+      print(usage)
+      sys.exit()
+    elif opt == "-m":
+      model_file = arg
+    elif opt == "-l":
+      log_file = arg
+    elif opt == "-x":
+      many = True
+    elif opt == "-v":
+      verbose = True
+    elif opt == "-n":
+      numprocs = int(arg)
+  return {
+    "model": model_file, 
+    "log": log_file, 
+    "verbose": verbose, 
+    "numprocs":numprocs,
+    "many": many
+  }
+
+if __name__ == "__main__":
+  ps = process_args(sys.argv[1:])
+  cocomot(ps["model"], ps["log"], ps["numprocs"], ps["verbose"], ps["many"])
+  
