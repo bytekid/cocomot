@@ -9,6 +9,7 @@ class DPN:
     self._transitions = dpn_as_array["transitions"]
     self._variables = dpn_as_array["variables"]
     self._arcs = dpn_as_array["arcs"]
+    self._silent_final_transitions = []
     self.add_silent_finals(map)
     self.compute_shortest_paths()
     self.has1token = None
@@ -56,11 +57,15 @@ class DPN:
     for p in self.final_places():
       t = {"id": id, "invisible": True, "label":None, "write":[] }
       self._transitions.append(t)
+      self._silent_final_transitions.append(t["id"])
       self._arcs.append({"source": p["id"], "target": id})
       self._arcs.append({"target": p["id"], "source": id})
       map[id] = t
       id += 1
       break
+  
+  def is_silent_final_transition(self, id):
+    return id in self._silent_final_transitions
   
   def is_acyclic(self, pid):
     ps = [pid]

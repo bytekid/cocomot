@@ -297,8 +297,8 @@ class Encoding:
         s.ite(s.eq(var, s.num(t[0])), wcost[t[1]["id"]], c), etrans, s.num(0))
 
     def is_silent(i): # transition i is silent
-      sreach = [ t for t in etrans if t in dpn.reachable(i) and t["invisible"]]
-      return s.lor([ s.eq(vs_trans[i], s.num(id)) for (id, t) in sreach ])
+      return s.lor([ s.eq(vs_trans[i], s.num(id)) \
+        for (id, t) in etrans if t in dpn.reachable(i) and t["invisible"] ])
     
     silents2 = [ is_silent(i) for i in range(0,n) ]
     self._silents = [s.boolvar("silent"+str(i)) for i in range(0,n) ]
@@ -431,7 +431,8 @@ class Encoding:
     alignment = [] # array mapping instant to one of {"log", "model","parallel"}
     while i > 0 or j > 0:
       if j == 0 or (i > 0 and model.eval_bool(self._silents[i-1])):
-        alignment.append("model")
+        if not dpn.is_silent_final_transition(transitions[i-1][0]):
+          alignment.append("model")
         i -= 1
       elif i == 0:
         alignment.append("log")
