@@ -129,11 +129,14 @@ class Encoding:
     else:
       fmark = [ (p["id"], p["final"] if "final" in p else 0) for p in places ]
       final = lambda i: s.land([ s.eq(mvs[i][p], s.num(c)) for (p,c) in fmark ])
-
-      rl = self._run_length
-      fs = [ s.iff(v, final(i)) for (i,v) in enumerate(self._finals) ]
-      rls = [ s.implies(s.eq(rl, s.num(i)), final(i)) for (i,v) in enumerate(self._finals) ]
-      return s.land(fs + rls + [s.lor(self._finals)])
+      if self._dpn.has_final_places():
+        return final(bound)
+      else:
+        rl = self._run_length
+        fs = [ s.iff(v, final(i)) for (i,v) in enumerate(self._finals) ]
+        rls = [ s.implies(s.eq(rl, s.num(i)), final(i)) \
+          for (i,v) in enumerate(self._finals) ]
+        return s.land(fs + rls + [s.lor(self._finals)])
 
     
   # token game for transition t and instant i (case of unbounded net)
@@ -362,13 +365,12 @@ class Encoding:
     # run length, only relevant for multiple tokens
     rl = [s.ge(self._run_length, s.num(0)), s.ge(s.num(n), self._run_length)]
     
-    if self._dpn.has_single_token():
+    if self._dpn.has_final_places():
       min_expr = delta[n][m]
     else:
-      min_expr = delta[n][m]
-      #min_expr = delta[0][m]
-      #for i in range(1,n+1):
-      #  min_expr = s.ite(s.eq(self._run_length, s.num(i)), delta[i][m],min_expr)
+      min_expr = delta[0][m]
+      for i in range(1,n+1):
+        min_expr = s.ite(s.eq(self._run_length, s.num(i)), delta[i][m],min_expr)
 
     constraints = non_neg + base_model + base_log + sync_step + side_constr + \
       silent + ss + ws + bm + rl
@@ -402,16 +404,11 @@ class Encoding:
     m = len(trace)
 
     # determine run length
-    fin_instants = [i for i in range(0,n+1) if model.eval_bool(self._finals[i])]
-    dist_at = lambda i: model.eval_int(vs_dist[i][len(trace)])
-    fdists = [ (i,model.eval_int(vs_dist[i][len(trace)])) for i in fin_instants]
-    if self._dpn.has_single_token():
-      (run_length, _) = \
-        reduce(lambda a, b: md1 if a[1] <= b[1] else b, fdists[2:], fdists[1])
+    if self._dpn.has_final_places():
+      run_length = n
     else:
       run_length = model.eval_int(self._run_length)
     distance = model.eval_int(vs_dist[run_length][len(trace)])
-    print("final at", fdists, "length:", run_length, "distance:", distance)
 
     for i in range(0, run_length + 1):
       val = [ (x, float(model.eval_real(v))) for (x,v) in vs_data[i].items()]
@@ -456,7 +453,6 @@ class Encoding:
           alignment.append("model")
           i -= 1
     alignment.reverse()
-    print("cost by enc ", distance)
     return {
       "transitions": transitions,
       "markings":    markings, 

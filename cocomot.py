@@ -263,7 +263,7 @@ def cocomot(modelfile, logfile, numprocs, verbose, many):
   i = 0
   parts = interval_part.partitions
   if numprocs == 1:
-    solver = Z3Solver() # YicesSolver()
+    solver = YicesSolver() # Z3Solver()
     i = 0
     while i < len(parts):
       (trace, cnt) = parts[i]
