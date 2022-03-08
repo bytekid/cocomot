@@ -1,7 +1,6 @@
 import sys
 import time
 import multiprocessing
-import pm4py
 from pm4py.objects.log.importer.xes import importer as xes_importer
 import json
 import getopt
@@ -13,6 +12,7 @@ from cluster.partitioning import NaivePartitioning, IntervalPartitioning
 from dpn.dpn import DPN
 from encoding.encoding import Encoding
 from dpn.expr import Expr
+import uncertainty.read
 
 ### printing
 def spaces(n):
@@ -167,6 +167,7 @@ def conformance_check_trace_many(encoding, trace_data, verbosity, number):
     encoding.solver().require([encoding.negate(alignment_decoded)])
   return (-1, alignments, t_encode2, t_solve)
 
+
 def conformance_check_trace(encoding, trace_data, verbosity):
   (index, trace, cnt) = trace_data
   t_start = time.perf_counter()
@@ -234,13 +235,19 @@ def conformance_check_traces(solver, traces, dpn, verbosity=0, many=None):
       solver.pop()
   return results, t_encode1
 
+def read_log(logfile):
+  if "uncertainty" in open(logfile, "r").read():
+    #return 
+    uncertainty.read.xes(logfile)
+    exit(0)
+  else:
+    return xes_importer.apply(logfile)
 
 ### main
 def cocomot(modelfile, logfile, numprocs, verbose, many):
 
   dpn = DPN(read_pnml_input(modelfile))
-  #log = pm4py.read_xes(logfile)
-  log = xes_importer.apply(logfile)
+  log = read_log(logfile)
 
 
   # preprocessing
