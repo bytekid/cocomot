@@ -145,7 +145,7 @@ def preprocess_log(log, dpn):
     log_processed.append(preprocess_trace(trace, dpn))
   return log_processed
 
-def conformance_check_trace_many(encoding, trace_data, verbosity, number):
+def conformance_check_trace_many(encoding, trace_data, number):
   (index, trace, cnt) = trace_data
   t_start = time.perf_counter()
   (dist, dconstr) = encoding.edit_distance(trace)
@@ -184,11 +184,11 @@ def conformance_check_trace(encoding, trace_data, verbosity):
 
   distance = model.eval_int(dist)
 
-  if verbosity > 0:
+  if verbosity > 1:
     alignment_decoded = encoding.decode_alignment(trace, model)
     print_trace_distance(index, trace, t_encode2, t_solve, cnt, distance)
     print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
-  elif verbosity == 0:
+  elif verbosity > 0:
     print_trace_distance(index, trace, t_encode2, t_solve, cnt, distance)
     alignment_decoded = {}
   else:
@@ -196,19 +196,15 @@ def conformance_check_trace(encoding, trace_data, verbosity):
 
   return (distance, alignment_decoded, t_encode2, t_solve)
 
-
-# conformance check multiple traces of same length
-def conformance_check_traces(solver, traces, dpn, verbosity=0, many=None):
-  # compute length of shortest path to final state 
-  shortest_acc_path = dpn.shortest_accepted()
+# conformance check one trace
+def create_encoding(solver, example_trace, dpn):
   # estimate of upper bound on steps to be considered: length of trace + length
   # of shortest accepting path
   # FIXME step bound if not state machine
-  trace_length = len(traces[0][1])
-  step_bound = trace_length + shortest_acc_path
+  trace_length = len(example_trace)
+  step_bound = trace_length + dpn.shortest_accepted()
   dpn.compute_reachable(step_bound)
 
-  # create encoding object
   encoding = Encoding(dpn, solver, step_bound)
 
   # encoding parts
@@ -220,6 +216,17 @@ def conformance_check_traces(solver, traces, dpn, verbosity=0, many=None):
   encoding.prepare_edit_distance(trace_length)
   solver.require([f_initial, f_trans_range, f_tokens, f_final])
   t_encode1 = time.perf_counter() - t_start
+  return (encoding, t_encode1)
+
+# conformance check one trace
+def conformance_check_single_trace(solver, trace_record, dpn, verbosity=0, many=None):
+  (_, trace, _) = trace_record
+  (encoding, _) = create_encoding(solver, trace, dpn)
+  return conformance_check_trace(encoding, trace_record, verbosity)
+
+# conformance check multiple traces of same length
+def conformance_check_traces(solver, traces, dpn, verbosity=0, many=None):
+  (encoding, t_encode1) = create_encoding(solver, traces[0][1], dpn)
 
   results = []
   if len(traces) == 1:
@@ -230,25 +237,23 @@ def conformance_check_traces(solver, traces, dpn, verbosity=0, many=None):
     for trace in traces:
       solver.push()
       res = conformance_check_trace(encoding, trace,verbosity) if not many \
-        else conformance_check_trace_many(encoding, trace, verbosity, many)
+        else conformance_check_trace_many(encoding, trace, many)
       results.append((trace, res))
       solver.pop()
   return results, t_encode1
 
 def read_log(logfile):
   if "uncertainty" in open(logfile, "r").read():
-    #return 
     uncertainty.read.xes(logfile)
     exit(0)
   else:
     return xes_importer.apply(logfile)
 
 ### main
-def cocomot(modelfile, logfile, numprocs, verbose, many):
+def cocomot(modelfile, logfile, numprocs=1, verbose=1, many=False):
 
   dpn = DPN(read_pnml_input(modelfile))
   log = read_log(logfile)
-
 
   # preprocessing
   log = preprocess_log(log, dpn)
@@ -322,7 +327,7 @@ def cocomot(modelfile, logfile, numprocs, verbose, many):
   
   ts_solve.sort()
   ts_encode.sort()
-  if verbose >= 0:
+  if verbose > 0:
     mid = int(len(ts_encode)/2)
     print("encoding time: total %.2f  avg %.2f median %.2f" % \
       (sum(ts_encode ), sum(ts_encode)/len(ts_encode), ts_encode[mid]))
@@ -342,7 +347,7 @@ def process_args(argv):
   log_file = None
   many = False
   numprocs = 1
-  verbose = 0
+  verbose = 1
   try:
     opts, args = getopt.getopt(argv,"hxvm:l:n:")
   except getopt.GetoptError:

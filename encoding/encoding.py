@@ -419,12 +419,12 @@ class Encoding:
         tid = model.eval_int(self._vs_trans[i])
         transitions.append((tid, tlabel(tid)))
     
-    print("\nDISTANCE:")
-    for j in range(0, len(vs_dist[0])):
-      d = ""
-      for i in range(0, len(vs_dist)):
-        d = d + " " + str(model.eval_int(vs_dist[i][j]))
-      print(d)
+    #print("\nDISTANCE:")
+    #for j in range(0, len(vs_dist[0])):
+    #  d = ""
+    #  for i in range(0, len(vs_dist)):
+    #    d = d + " " + str(model.eval_int(vs_dist[i][j]))
+    #  print(d)
 
     i = run_length # self._step_bound # n
     j = len(trace) # m
