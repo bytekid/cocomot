@@ -13,6 +13,7 @@ from dpn.dpn import DPN
 from encoding.encoding import Encoding
 from dpn.expr import Expr
 import uncertainty.read
+from uncertainty.encoding import UncertaintyEncoding
 
 ### printing
 def spaces(n):
@@ -197,7 +198,7 @@ def conformance_check_trace(encoding, trace_data, verbosity):
   return (distance, alignment_decoded, t_encode2, t_solve)
 
 # conformance check one trace
-def create_encoding(solver, example_trace, dpn):
+def create_encoding(solver, example_trace, dpn, uncertain=False):
   # estimate of upper bound on steps to be considered: length of trace + length
   # of shortest accepting path
   # FIXME step bound if not state machine
@@ -205,7 +206,8 @@ def create_encoding(solver, example_trace, dpn):
   step_bound = trace_length + dpn.shortest_accepted()
   dpn.compute_reachable(step_bound)
 
-  encoding = Encoding(dpn, solver, step_bound)
+  encoding = UncertaintyEncoding(dpn, solver, step_bound) if uncertain else \
+    Encoding(dpn, solver, step_bound)
 
   # encoding parts
   t_start = time.perf_counter()
@@ -244,17 +246,26 @@ def conformance_check_traces(solver, traces, dpn, verbosity=0, many=None):
 
 def read_log(logfile):
   if "uncertainty" in open(logfile, "r").read():
-    uncertainty.read.xes(logfile)
-    exit(0)
+    return (uncertainty.read.xes(logfile), True)
   else:
-    return xes_importer.apply(logfile)
+    return (xes_importer.apply(logfile), False)
 
 ### main
-def cocomot(modelfile, logfile, numprocs=1, verbose=1, many=False):
+def cocomot_uncertain(dpn, log, verbose=1):
+  solver = YicesSolver()
+  results = []
+  for trace in log:
+    (encoding, _) = create_encoding(solver, trace, dpn, uncertain=True)
+    (dist, dconstr) = encoding.edit_distance_min(trace)
+    encoding.solver().require([dconstr])
+    model = encoding.solver().minimize(dist, encoding.step_bound()+10)
+    distance = None if model == None else model.eval_int(dist)
+    #print("distance", distance)
+    results.append(distance)
+  return results
 
-  dpn = DPN(read_pnml_input(modelfile))
-  log = read_log(logfile)
 
+def cocomot(dpn, log, numprocs=1, verbose=1, many=False):
   # preprocessing
   log = preprocess_log(log, dpn)
   print("number of traces: %d" % len(log))
@@ -377,5 +388,10 @@ def process_args(argv):
 
 if __name__ == "__main__":
   ps = process_args(sys.argv[1:])
-  cocomot(ps["model"], ps["log"], ps["numprocs"], ps["verbose"], ps["many"])
+  dpn = DPN(read_pnml_input(ps["model"]))
+  (log, has_uncertainty) = read_log(ps["log"])
+  if not has_uncertainty:
+    cocomot(dpn, log, ps["numprocs"], ps["verbose"], ps["many"])
+  else:
+    cocomot_uncertain(dpn, log, ps["verbose"])
   

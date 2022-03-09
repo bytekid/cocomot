@@ -260,7 +260,6 @@ class Encoding:
 
   # return pair of edit distance expression and side constraints
   def edit_distance(self, trace):
-    self._vs_dist = self.edit_distance_vars(len(trace))
     delta = self._vs_dist
     vs_log = self._vs_log_move
     vs_mod = self._vs_mod_move
@@ -285,12 +284,11 @@ class Encoding:
     wcost = dict([ (t["id"], v) for (t,v) in zip(dpn.transitions(), wcostvars)])
     
     def async_step(i, j):
-      # FIXME if final marking reached, penalty 0 in last row of matrix
       return [ (s.eq(vs_trans[i], s.num(t["id"])), wcost[t["id"]]) \
         for t in dpn.reachable(i) \
         if not t["invisible"] and t["label"] != trace[j]["label"] ]
     
-    # write costs for vs_trans[i], alternative over all transitions
+    # write costs for vs_trans[i ], alternative over all transitions
     def wcosts(i):
       var = vs_trans[i]
       return reduce(lambda c,t: \

@@ -150,6 +150,10 @@ class YicesSolver(Solver):
       m = mlast
     return m
 
+  def is_sat(self):
+    status = self.ctx.check_context(timeout=self._timeout)
+    return status == Status.SAT
+
   # minimize given expression
   def minimize(self, expr, max_val, start = 0):
     self.push()
