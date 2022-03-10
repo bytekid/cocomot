@@ -73,10 +73,11 @@ def print_trace_distance_verbose(dpn, trace, decoding):
   places = dict([ (p["id"], p) for p in dpn.places() ])
   transs = dict([ (p["id"], p) for p in dpn.transitions() ])
   valuations = []
+  run = decoding["run"]
   print("\nMARKING:")
-  for i in range(0, len(decoding["markings"])):
+  for i in range(0, len(run["markings"])):
     marking = ""
-    for (p,count) in list(decoding["markings"][i].items()):
+    for (p,count) in list(run["markings"][i].items()):
       for c in range(0, count):
         marking = marking + (" " if marking else "") + str(places[p]["name"])
     print("  %d: %s" % (i, marking))
@@ -86,9 +87,9 @@ def print_trace_distance_verbose(dpn, trace, decoding):
   idx = 0
   for i in range(0, len(decoding["alignment"])):
     if decoding["alignment"][i] != "log":
-      (tid, tlab) = decoding["transitions"][idx]
+      (tid, tlab) = run["transitions"][idx]
       if tlab != "tau":
-        val = decoding["valuations"][idx + 1]
+        val = run["valuations"][idx + 1]
         step = { "id": tid, "label": tlab, "valuation": val }
         modelseq.append(step)
       idx += 1
@@ -97,10 +98,10 @@ def print_trace_distance_verbose(dpn, trace, decoding):
   traceseq = []
   idx = 0
   for i in range(0, len(decoding["alignment"])):
-    if decoding["alignment"][i] != "model":
+    if decoding["alignment"][i] not in ["model", "skip"]:
       traceseq.append(trace[idx])
       idx += 1
-    else:
+    elif decoding["alignment"][i] != "skip":
       traceseq.append(None)
 
   print("LOG SEQUENCE:")
@@ -169,7 +170,7 @@ def conformance_check_trace_many(encoding, trace_data, number):
   return (-1, alignments, t_encode2, t_solve)
 
 
-def conformance_check_trace(encoding, trace_data, verbosity):
+def conformance_check_trace(encoding, trace_data, verbose):
   (index, trace, cnt) = trace_data
   t_start = time.perf_counter()
   (dist, dconstr) = encoding.edit_distance(trace)
@@ -185,11 +186,11 @@ def conformance_check_trace(encoding, trace_data, verbosity):
 
   distance = model.eval_int(dist)
 
-  if verbosity > 1:
+  if verbose > 1:
     alignment_decoded = encoding.decode_alignment(trace, model)
     print_trace_distance(index, trace, t_encode2, t_solve, cnt, distance)
     print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
-  elif verbosity > 0:
+  elif verbose > 0:
     print_trace_distance(index, trace, t_encode2, t_solve, cnt, distance)
     alignment_decoded = {}
   else:
@@ -221,24 +222,24 @@ def create_encoding(solver, example_trace, dpn, uncertain=False):
   return (encoding, t_encode1)
 
 # conformance check one trace
-def conformance_check_single_trace(solver, trace_record, dpn, verbosity=0, many=None):
+def conformance_check_single_trace(solver, trace_record, dpn, verbose=0, many=None):
   (_, trace, _) = trace_record
   (encoding, _) = create_encoding(solver, trace, dpn)
-  return conformance_check_trace(encoding, trace_record, verbosity)
+  return conformance_check_trace(encoding, trace_record, verbose)
 
 # conformance check multiple traces of same length
-def conformance_check_traces(solver, traces, dpn, verbosity=0, many=None):
+def conformance_check_traces(solver, traces, dpn, verbose=0, many=None):
   (encoding, t_encode1) = create_encoding(solver, traces[0][1], dpn)
 
   results = []
   if len(traces) == 1:
-    res = conformance_check_trace(encoding, traces[0], verbosity) if not many \
-      else conformance_check_trace_many(encoding, traces[0], verbosity, many)
+    res = conformance_check_trace(encoding, traces[0], verbose) if not many \
+      else conformance_check_trace_many(encoding, traces[0], verbose, many)
     results.append((traces[0], res))
   else:
     for trace in traces:
       solver.push()
-      res = conformance_check_trace(encoding, trace,verbosity) if not many \
+      res = conformance_check_trace(encoding, trace,verbose) if not many \
         else conformance_check_trace_many(encoding, trace, many)
       results.append((trace, res))
       solver.pop()
@@ -260,7 +261,10 @@ def cocomot_uncertain(dpn, log, verbose=1):
     encoding.solver().require([dconstr])
     model = encoding.solver().minimize(dist, encoding.step_bound()+10)
     distance = None if model == None else model.eval_int(dist)
-    #print("distance", distance)
+    result = encoding.decode_alignment(trace, model)
+    print("distance", distance)
+    if verbose > 0:
+      print_trace_distance_verbose(encoding._dpn, result["trace"], result)
     results.append(distance)
   return results
 
@@ -297,7 +301,7 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=False):
         (trace, cnt) = parts[i]
         same_len_traces.append((i, trace, cnt))
       #print("%d traces of length %d" % (len(same_len_traces), length))
-      res,tenc = conformance_check_traces(solver,same_len_traces,dpn, verbosity=verbose, many = many)
+      res,tenc = conformance_check_traces(solver,same_len_traces,dpn, verbose=verbose, many = many)
       for (trace, (d, a, t_enc, t_solv)) in res:
         if d == None:
           timeouts += 1
@@ -316,7 +320,7 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=False):
     def work(job):
       solver = YicesSolver()
       (i, (trace, cnt)) = job
-      res, t_enc = conformance_check_traces(solver, [(i, trace, cnt)], dpn, verbosity=verbose)
+      res, t_enc = conformance_check_traces(solver, [(i, trace, cnt)], dpn, verbose=verbose)
       (distance, t_enc, t_solv) = res[0]
       solver.destroy()
       return (i, trace, cnt, distance, t_enc, t_solv)

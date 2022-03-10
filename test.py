@@ -30,8 +30,10 @@ if __name__ == "__main__":
       trace = log[0] if is_uncertain else cocomot.preprocess_log(log, dpn)[0]
       slv = YicesSolver()
       start = time.time()
-      res = cocomot.cocomot_uncertain(dpn, [trace]) if is_uncertain else \
-        cocomot.conformance_check_single_trace(slv, (0,trace,1),dpn,verbosity=0)
+      if is_uncertain:
+        res = cocomot.cocomot_uncertain(dpn, [trace], verbose=0)
+      else:
+        res = cocomot.conformance_check_single_trace(slv, (0,trace,1),dpn,verbose=0)
       duration = time.time() - start
       computed_distance = res[0]
       oks += 1 if computed_distance == real_distance else 0

@@ -63,6 +63,14 @@ class Z3Solver(Solver):
   def lt(self, a, b):
     return a < b
 
+  # less-than-or-equal on arithmetic terms
+  def le(self, a, b):
+    return a <= b
+
+  # greater-than on arithmetic terms
+  def gt(self, a, b):
+    return a > b
+
   # greater-or-equal on arithmetic terms
   def ge(self, a, b):
     return a >= b
@@ -83,6 +91,9 @@ class Z3Solver(Solver):
   def ite(self, cond, a, b):
     return If(cond, a, b)
 
+  def distinct(self, xs):
+    return Distinct(xs)
+
   # minimum of two arithmetic expressions
   def min(self, a, b):
     return self.ite(self.lt(a, b), a, b)
@@ -99,6 +110,9 @@ class Z3Solver(Solver):
   # add list of assertions
   def require(self, formulas):
     self.ctx.add(formulas)
+
+  def is_sat(self):
+    return self.ctx.check() == z3.sat
 
   # minimize given expression
   def minimize(self, expr, max_val):

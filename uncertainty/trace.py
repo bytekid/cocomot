@@ -20,6 +20,10 @@ class UncertainActivity:
   def labels(self):
     return self._activities.keys()
 
+  def fix(self, a):
+    assert(a in self._activities.keys())
+    self._activities = {a:1}
+
   def __str__(self):
     if not self.is_uncertain():
       return list(self._activities.keys())[0]
@@ -44,6 +48,11 @@ class UncertainTimestamp:
     else:
       return str(self._lower)
 
+  def fix(self, t):
+    assert(self._lower <= t and t <= self._upper)
+    self._lower = t
+    self._upper = t
+
 
 class UncertainDataValue:
   def __init__(self, name, values):
@@ -59,6 +68,9 @@ class UncertainDataValue:
 
 
 class UncertainEvent:
+  
+  id_counter = 0
+
   def __init__(self, indeterminacy, activity, time, data):
     self._indet = indeterminacy
     assert(isinstance(indeterminacy, Indeterminacy))
@@ -67,6 +79,8 @@ class UncertainEvent:
     self._time = time
     assert(isinstance(time, UncertainTimestamp))
     self._data = data # UncertainDataValue list
+    self._id = UncertainEvent.id_counter
+    UncertainEvent.id_counter += 1
 
   def __str__(self):
     d = "["
@@ -78,12 +92,57 @@ class UncertainEvent:
   def is_indeterminate(self):
     return self._indet._value < 1
   
+  def has_uncertain_time(self):
+    return self._time.is_uncertain()
+  
+  def upper_time(self):
+    return self._time._upper
+  
+  def lower_time(self):
+    return self._time._lower
+  
   def labels(self):
     return self._activity.labels()
+
+  def fix_determinacy(self):
+    self._indet._value = 1
+
+  def fix_label(self, a):
+    self._activity.fix(a)
+
+  def fix_time(self, t):
+    self._time.fix(t)
+  
+  def project(self):
+    # return standard event as dictionary
+    # by the time of the call, all relevant uncertainties should be removed,
+    # so take arbitrary admissible value
+    valuation = dict([ (d._name, d._values[0]) for d in self._data ])
+    return {
+      "label": list(self._activity._activities.keys())[0],
+      "time": self._time._lower,
+      "valuation": valuation
+    }
 
 class UncertainTrace:
   def __init__(self, events):
     self._events = events
+    self.normalize_time()
+
+  def normalize_time(self):
+    # replace all times by float values for simpler treatment in encoding
+    events = self._events
+    times = [e.lower_time() for e in events] + [e.upper_time() for e in events]
+    times = dict([ (t,i) for (i, t) in enumerate(sorted(times)) ])
+    for e in events:
+      e._time._lower = float(times[e._time._lower])
+      e._time._upper = float(times[e._time._upper])
+
+  def has_uncertain_time(self):
+    return any( e.has_uncertain_time() for e in self._events )
+
+  def drop(self, key):
+    del self._events[key]
 
   def __str__(self):
     s = "{\n"
@@ -93,3 +152,6 @@ class UncertainTrace:
 
   def __len__(self):
     return len(self._events)
+
+  def __getitem__(self, key):
+    return self._events[key]

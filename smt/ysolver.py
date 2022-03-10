@@ -73,9 +73,17 @@ class YicesSolver(Solver):
   def lt(self, a, b):
     return Terms.arith_lt_atom(a, b)
 
+  # less-than-or equal on arithmetic terms
+  def le(self, a, b):
+    return Terms.arith_leq_atom(a, b)
+
   # greater-or-equal on arithmetic terms
   def ge(self, a, b):
     return Terms.arith_geq_atom(a, b)
+
+  # greater-than on arithmetic terms
+  def gt(self, a, b):
+    return Terms.arith_gt_atom(a, b)
 
   # increment of arithmetic term by 1
   def inc(self, a):

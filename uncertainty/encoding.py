@@ -14,23 +14,58 @@ class UncertaintyEncoding(Encoding):
     s = self._solver
     self._vs_drop = [ s.boolvar("drop" + str(j)) for j in range(0, trace_len+1)]
 
+  def order_constraints(self, trace):
+    m = len(trace)
+    s = self._solver
+    events = trace._events
+
+    vs_time = [ (e, s.realvar("time" + str(j)), s.intvar("pos" + str(j))) \
+      for (j, e) in enumerate(events) ] #T_ei and P_ei
+    vs_trace = [ s.intvar("time" + str(j)) for j in range(0, m)]  # L_i
+    self._vs_trace = vs_trace
+    self._vs_time = dict([ (e._id, v) for (e,v,_) in vs_time])
+    self._vs_pos = dict([ (e._id, v) for (e,_,v) in vs_time])
+
+    # time values for events are in range
+    cs = []
+    for (e, v, _) in vs_time:
+      low = s.real(e.lower_time())
+      upp = s.real(e.upper_time())
+      cs += [s.ge(upp, v), s.ge(v, low)]
+
+    # values taken by vs_trace are ids of events
+    for j in range(0,m):
+      cs += [s.lor([s.eq(vs_trace[j], s.num(id)) for id in self._vs_time.keys()])]
+    
+    pairs = [ (e1, e2) for e1 in vs_time for e2 in vs_time if e1 != e2]
+    # position and time
+    cs.append(s.distinct([ vp for (_, _, vp) in vs_time ]))
+    for ((e1, vt1, vp1), (e2, vt2, vp2)) in pairs:
+      cs.append(s.implies(s.lt(vp1, vp2), s.le(vt1, vt2)))
+      cs.append(s.implies(s.lt(vt1, vt2), s.lt(vp1, vp2)))
+
+    # nth-event variables are inverse of position variables 
+    for (e, _, vp) in vs_time:
+      for j in range(0,m):
+        cs.append(s.iff(s.eq(vp, s.num(j)), s.eq(vs_trace[j], s.num(e._id))))
+    
+    return (vs_trace, s.land(cs))
+
+
   # return pair of edit distance expression and side constraints
-  def edit_distance_parametric(self, trace, lcost, mcost, syncost):
+  def edit_distance_parametric(self, trace, lcost, mcost, syncost, pcost):
+    # lcost, mcost, syncost, pcost are costs of log, model, synchronous, and
+    # projection/skip moves; they all take only the index/indices as arguments
     delta = self._vs_dist
-    vs_log = self._vs_log_move
-    vs_mod = self._vs_mod_move
+    #FIXME use self._vs_log_move, self._vs_mod_move?
     n = self._step_bound
     m = len(trace)
     s = self._solver
     dpn = self._dpn
-    vs_trans = self._vs_trans
-    vs_data = self._vs_data
     etrans = [(t["id"], t) for t in dpn.transitions()]
-    trans_dict = dict(etrans)
-    vars = dpn.variables()
 
     def is_silent(i): # transition i is silent
-      return s.lor([ s.eq(vs_trans[i], s.num(id)) \
+      return s.lor([ s.eq(self._vs_trans[i], s.num(id)) \
         for (id, t) in etrans if t in dpn.reachable(i) and t["invisible"] ])
     
     is_silents = [ is_silent(i) for i in range(0,n) ]
@@ -52,26 +87,17 @@ class UncertaintyEncoding(Encoding):
     # 3. delta[0][j+1] = delta[0][j] + P_L
     log0 = [ s.eq(delta[0][j+1], s.plus(delta[0][j], lcost(j))) \
       for j in range(0,m) ]
-    # 4. delta[i+1][j+1] >= delta[i][j] + sync move penalty, where
-    #    penalty accounts for the data mismatch (possibly 0)
-    #sync = [ s.ge(delta[i+1][j+1], s.plus(syncost(i, j), delta[i][j])) \
-    #    for i in range(0,n) for j in range(0,m) ]
-    # 5. delta[i+1][j+1] >= delta[i+1][j] + log move penalty
-    #log = [ s.ge(delta[i+1][j+1], s.plus(lcost(j), delta[i+1][j])) \
-    #    for i in range(0,n) for j in range(0,m) ]
-    # 5. delta[i+1][j+1] >= delta[i+1][j] + log move penalty
-    #model = [ s.ge(delta[i+1][j+1], s.plus(mcostmod(i), delta[i][j+1])) \
-    #    for i in range(0,n) for j in range(0,m) ]
+    # 4. encode delta[i+1][j+1] >= min(...) as one of
+    #  delta[i+1][j+1] >= delta[i][j] + sync move penalty
+    #  delta[i+1][j+1] >= delta[i+1][j] + log move or log skip penalty
+    #  delta[i+1][j+1] >= delta[i+1][j] + model move penalty
     steps = [ s.lor([s.ge(delta[i+1][j+1], s.plus(syncost(i, j), delta[i][j])),\
                      s.ge(delta[i+1][j+1], s.plus(lcost(j), delta[i+1][j])), \
+                     s.ge(delta[i+1][j+1], s.plus(pcost(j), delta[i+1][j])), \
                      s.ge(delta[i+1][j+1], s.plus(mcostmod(i),delta[i][j+1]))])\
       for i in range(0,n) for j in range(0,m) ]
 
-    # symmetry breaking: enforce log steps before model steps
-    #for i in range(2,n):
-    #  for j in range(3,m):
-    #    c = s.implies(vs_mod[i][j-1], s.neg(vs_log[i][j]))
-    #    side_constr.append(c)
+    #FIXME symmetry breaking: enforce log steps before model steps?
     
     # run length, only relevant for multiple tokens
     length = [s.ge(self._run_length, s.num(0)),s.ge(s.num(n), self._run_length)]
@@ -86,19 +112,129 @@ class UncertaintyEncoding(Encoding):
     constraints = non_neg + model0 + log0 + steps + length + silent
     return (min_expr, s.land(constraints))
 
-  def edit_distance_min(self, trace):
+
+  def edit_distance_min_fixed_order(self, trace):
     s = self._solver
-    lcost = lambda i: s.num(0 if trace._events[i].is_indeterminate() else 1)
-    mcost = lambda _ : s.num(1)
+    cost1 = lambda _ : s.num(1)
+    pcost = lambda i: s.num(0 if trace._events[i].is_indeterminate() else 1000)
     
     def syncost(i,j):
-      #print("syncost", i)
-      #print([ (i, t["id"], t["label"]) \
-      #  for t in self._dpn.reachable(i) \
-      #  if "label" in t and t["label"] in trace._events[j].labels() ])
       is_poss_label = [s.eq(self._vs_trans[i], s.num(t["id"])) \
         for t in self._dpn.reachable(i) \
         if "label" in t and t["label"] in trace._events[j].labels() ]
       return s.ite(s.lor(is_poss_label), s.num(0), s.num(1000))
+  
+    self._penalties = (cost1, cost1, syncost, pcost)
+    return self.edit_distance_parametric(trace, cost1, cost1, syncost, pcost)
+  
+
+  def edit_distance_min_var_order(self, trace):
+    s = self._solver
+    one = s.num(1)
+    # vs_trace[i] gets value of trace event id that is taken at instant i
+    vs_trace, order_constr = self.order_constraints(trace)
+
+    cost1 = lambda _ : one
+    indet_events = [ e._id for e in trace._events if e.is_indeterminate()]
+    def pcost(i):
+      is_indet_id = s.lor([s.eq(vs_trace[i], id) for id in indet_events]) 
+      return s.ite(is_indet_id, s.num(0),s.num(1000))
     
-    return self.edit_distance_parametric(trace, lcost, mcost, syncost)
+    def syncost(i,j):
+      poss_labels = []
+      trans_events = [ (t,e) \
+        for t in self._dpn.reachable(i) for e in trace._events \
+        if "label" in t and t["label"] in e.labels()]
+      for (t,e) in trans_events:
+        is_event = s.eq(vs_trace[i], s.num(e._id))
+        is_trans = s.eq(self._vs_trans[i], s.num(t["id"]))
+        poss_labels.append(s.land([is_event, is_trans]))
+      return s.ite(s.lor(poss_labels), s.num(0), s.num(1000))
+  
+    self._penalties = (cost1, cost1, syncost, pcost)
+    emin,cs = self.edit_distance_parametric(trace, cost1, cost1, syncost, pcost)
+    return (emin, s.land([cs, order_constr]))
+  
+
+  def edit_distance_min(self, trace):
+    if not trace.has_uncertain_time():
+      return self.edit_distance_min_fixed_order(trace)
+    else:
+      return self.edit_distance_min_var_order(trace)
+
+  def decode_ordering(self, trace, model):
+    #print("vs_trace", [ model.eval_int(self._vs_trace[j]) for j in range(0, len(trace))])
+    #print("vs_time", [ (id, model.eval_real(v)) for (id, v) in self._vs_time.items()])
+    #print("vs_pos", [ (id, model.eval_int(v)) for (id, v) in self._vs_pos.items()])
+    if trace.has_uncertain_time():
+      ord_trace = []
+      traceid_map = dict([ (e._id, e) for e in trace._events ])
+      for j in range(0, len(trace)):
+        id = model.eval_int(self._vs_trace[j])
+        uevent = traceid_map[id]
+        uevent.fix_time(model.eval_real(self._vs_time[id]))
+        ord_trace.append(uevent)
+    else:
+      ord_trace = trace
+    return ord_trace
+
+  def decode_alignment(self, trace, model):
+    m = len(trace)
+    vs_dist = self._vs_dist
+    run_length = self.decode_run_length(model)
+    distance = model.eval_int(vs_dist[run_length][len(trace)])
+    run = self.decode_process_run(model, run_length)
+    (markings, transitions, valuations) = run
+
+    ord_trace = self.decode_ordering(trace, model)
+    #self.print_distance_matrix(model)
+
+    i = self._step_bound # n
+    j = len(ord_trace) # m
+    (lcost, mcost, syncost, pcost) = self._penalties
+    alignment = [] # array mapping instant to one of {"log", "model","parallel", "skip"}
+    while i > 0 or j > 0:
+      if j == 0 or (i > 0 and model.eval_bool(self._silents[i-1])):
+        if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
+          alignment.append("model")
+        i -= 1
+      elif i == 0:
+        alignment.append("log")
+        j -= 1
+      else:
+        dist = model.eval_int(vs_dist[i][j])
+        dlog = model.eval_int(vs_dist[i][j-1]) + model.eval_int(lcost(j-1))
+        dskip = model.eval_int(vs_dist[i][j-1]) + model.eval_int(pcost(j-1))
+        dmodel = model.eval_int(vs_dist[i-1][j]) + model.eval_int(mcost(i-1))
+        dsyn = model.eval_int(vs_dist[i-1][j-1]) + model.eval_int(syncost(i-1,j-1))
+        if dist == dskip:
+          alignment.append("skip")
+          ord_trace.drop(j-1) # modify ordtrace to skip this guy
+          j -= 1
+        elif dist == dlog:
+          alignment.append("log")
+          ord_trace[j-1].fix_determinacy()
+          j -= 1
+        elif dist == dmodel:
+          alignment.append("model")
+          i -= 1
+        else:
+          assert(dist == dsyn)
+          alignment.append("parallel")
+          ord_trace[j-1].fix_label(transitions[i-1][1]) # modify ordtrace
+          ord_trace[j-1].fix_determinacy()
+          i -= 1
+          j -= 1
+    alignment.reverse()
+    return {
+      "run": {
+        "transitions": transitions,
+        "markings":    markings, 
+        "valuations":  valuations
+      },
+      "trace": [ e.project() for e in ord_trace],
+      "alignment":   alignment,
+      "cost":    distance
+    }
+    
+        

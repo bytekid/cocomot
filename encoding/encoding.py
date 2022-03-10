@@ -374,6 +374,57 @@ class Encoding:
       silent + ss + ws + bm + rl
     return (min_expr, s.land(constraints))
 
+  def edit_distance_parametric(self, trace, lcost, mcost, syncost):
+    delta = self._vs_dist
+    #FIXME use self._vs_log_move, self._vs_mod_move
+    n = self._step_bound
+    m = len(trace)
+    s = self._solver
+    dpn = self._dpn
+    etrans = [(t["id"], t) for t in dpn.transitions()]
+
+    def is_silent(i): # transition i is silent
+      return s.lor([ s.eq(self._vs_trans[i], s.num(id)) \
+        for (id, t) in etrans if t in dpn.reachable(i) and t["invisible"] ])
+    
+    is_silents = [ is_silent(i) for i in range(0,n) ]
+    self._silents = [s.boolvar("silent"+str(i)) for i in range(0,n) ]
+    silent = [ s.iff(v,e) for (v,e) in zip(self._silents, is_silents)]
+    mcostmod = lambda i: s.ite(self._silents[i], s.num(0), mcost(i))
+    # 1. all intermediate distances delta[i][j] are non-negative
+    non_neg = [s.ge(delta[i][j], s.num(0))\
+      for i in range(0,n+1) for j in range(0,m+1)]
+    # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + P_M
+    model0 = [ s.ge(delta[i+1][0], s.plus(mcostmod(i), delta[i][0])) \
+        for i in range(0,n) ]
+    # 3. delta[0][j+1] = delta[0][j] + P_L
+    log0 = [ s.eq(delta[0][j+1], s.plus(delta[0][j], lcost(j))) \
+      for j in range(0,m) ]
+    # 4. one of
+    #  delta[i+1][j+1] >= delta[i][j] + sync move penalty
+    #  delta[i+1][j+1] >= delta[i+1][j] + log move penalty
+    #  delta[i+1][j+1] >= delta[i+1][j] + model move penalty
+    steps = [ s.lor([s.ge(delta[i+1][j+1], s.plus(syncost(i, j), delta[i][j])),\
+                     s.ge(delta[i+1][j+1], s.plus(lcost(j), delta[i+1][j])), \
+                     s.ge(delta[i+1][j+1], s.plus(mcostmod(i),delta[i][j+1]))])\
+      for i in range(0,n) for j in range(0,m) ]
+
+    #FIXME symmetry breaking: enforce log steps before model steps
+    
+    # run length, only relevant for multiple tokens
+    length = [s.ge(self._run_length, s.num(0)),s.ge(s.num(n), self._run_length)]
+    
+    if self._dpn.has_final_places():
+      min_expr = delta[n][m]
+    else:
+      min_expr = delta[0][m]
+      for i in range(1,n+1):
+        min_expr = s.ite(s.eq(self._run_length, s.num(i)), delta[i][m],min_expr)
+
+    constraints = non_neg + model0 + log0 + steps + length + silent
+    return (min_expr, s.land(constraints))
+
+
   def negate(self, alignment):
     # FIXME no data for now
     transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
@@ -386,27 +437,16 @@ class Encoding:
       reqs.append(s.eq(self._vs_trans[i], tid))
     return s.neg(s.land(reqs))
 
-  def decode_alignment(self, trace, model):
+  def decode_process_run(self, model, run_length):
     dpn = self._dpn
     places = dict([ (p["id"], p) for p in dpn.places() ])
     transs = dict([ (t["id"], t) for t in dpn.transitions() ])
     tlabel = lambda i: "tau" if not transs[i]["label"] else transs[i]["label"]
     vs_data = self._vs_data
     vs_mark = self._vs_mark
-    vs_dist = self._vs_dist
     valuations = [] # array mapping instant to valuation
     markings = [] # array mapping instant to dictionary mapping place to count
     transitions = [] # array mapping instant to transition label
-    fmark = [ (i,p["final"] if "final" in p else 0) for (i,p) in places.items()]
-    n = self._step_bound
-    m = len(trace)
-
-    # determine run length
-    if self._dpn.has_final_places():
-      run_length = n
-    else:
-      run_length = model.eval_int(self._run_length)
-    distance = model.eval_int(vs_dist[run_length][len(trace)])
 
     for i in range(0, run_length + 1):
       val = [ (x, float(model.eval_real(v))) for (x,v) in vs_data[i].items()]
@@ -416,20 +456,38 @@ class Encoding:
       if i < run_length:
         tid = model.eval_int(self._vs_trans[i])
         transitions.append((tid, tlabel(tid)))
-    
-    #print("\nDISTANCE:")
-    #for j in range(0, len(vs_dist[0])):
-    #  d = ""
-    #  for i in range(0, len(vs_dist)):
-    #    d = d + " " + str(model.eval_int(vs_dist[i][j]))
-    #  print(d)
+    return (markings, transitions, valuations)
+
+  def decode_run_length(self, model):
+    if self._dpn.has_final_places():
+      return self._step_bound
+    else:
+      return model.eval_int(self._run_length)
+
+  def print_distance_matrix(self, model):
+    print("\nDISTANCES:")
+    for j in range(0, len(self._vs_dist[0])):
+      d = ""
+      for i in range(0, len(self._vs_dist)):
+        d = d + " " + str(model.eval_int(self._vs_dist[i][j]))
+      print(d)
+
+  def decode_alignment(self, trace, model):
+    m = len(trace)
+    vs_dist = self._vs_dist
+    transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
+    run_length = self.decode_run_length(model)
+    distance = model.eval_int(vs_dist[run_length][len(trace)])
+    run = self.decode_process_run(model, run_length)
+    (markings, transitions, valuations) = run
+    #self.print_distance_matrix(model)
 
     i = run_length # self._step_bound # n
     j = len(trace) # m
     alignment = [] # array mapping instant to one of {"log", "model","parallel"}
     while i > 0 or j > 0:
       if j == 0 or (i > 0 and model.eval_bool(self._silents[i-1])):
-        if not dpn.is_silent_final_transition(transitions[i-1][0]):
+        if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
           alignment.append("model")
         i -= 1
       elif i == 0:
@@ -453,9 +511,11 @@ class Encoding:
           i -= 1
     alignment.reverse()
     return {
-      "transitions": transitions,
-      "markings":    markings, 
-      "valuations":  valuations,
+      "run": {
+        "transitions": transitions,
+        "markings":    markings, 
+        "valuations":  valuations
+      },
       "alignment":   alignment,
       "cost":    distance
     }
