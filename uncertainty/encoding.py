@@ -3,6 +3,7 @@ from itertools import groupby
 
 from dpn.expr import Expr
 from encoding.encoding import *
+from uncertainty.trace import UncertainTrace
 
 class UncertaintyEncoding(Encoding):
 
@@ -137,7 +138,7 @@ class UncertaintyEncoding(Encoding):
     cost1 = lambda _ : one
     indet_events = [ e._id for e in trace._events if e.is_indeterminate()]
     def pcost(i):
-      is_indet_id = s.lor([s.eq(vs_trace[i], id) for id in indet_events]) 
+      is_indet_id = s.lor([s.eq(vs_trace[i], s.num(id)) for id in indet_events]) 
       return s.ite(is_indet_id, s.num(0),s.num(1000))
     
     def syncost(i,j):
@@ -163,9 +164,6 @@ class UncertaintyEncoding(Encoding):
       return self.edit_distance_min_var_order(trace)
 
   def decode_ordering(self, trace, model):
-    #print("vs_trace", [ model.eval_int(self._vs_trace[j]) for j in range(0, len(trace))])
-    #print("vs_time", [ (id, model.eval_real(v)) for (id, v) in self._vs_time.items()])
-    #print("vs_pos", [ (id, model.eval_int(v)) for (id, v) in self._vs_pos.items()])
     if trace.has_uncertain_time():
       ord_trace = []
       traceid_map = dict([ (e._id, e) for e in trace._events ])
@@ -174,6 +172,7 @@ class UncertaintyEncoding(Encoding):
         uevent = traceid_map[id]
         uevent.fix_time(model.eval_real(self._vs_time[id]))
         ord_trace.append(uevent)
+      ord_trace = UncertainTrace(ord_trace)
     else:
       ord_trace = trace
     return ord_trace
@@ -183,18 +182,19 @@ class UncertaintyEncoding(Encoding):
     vs_dist = self._vs_dist
     run_length = self.decode_run_length(model)
     distance = model.eval_int(vs_dist[run_length][len(trace)])
+    #print("distance", distance)
     run = self.decode_process_run(model, run_length)
     (markings, transitions, valuations) = run
 
     ord_trace = self.decode_ordering(trace, model)
     #self.print_distance_matrix(model)
 
-    i = self._step_bound # n
+    i = run_length # n
     j = len(ord_trace) # m
     (lcost, mcost, syncost, pcost) = self._penalties
     alignment = [] # array mapping instant to one of {"log", "model","parallel", "skip"}
     while i > 0 or j > 0:
-      if j == 0 or (i > 0 and model.eval_bool(self._silents[i-1])):
+      if j == 0:
         if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
           alignment.append("model")
         i -= 1
@@ -205,7 +205,8 @@ class UncertaintyEncoding(Encoding):
         dist = model.eval_int(vs_dist[i][j])
         dlog = model.eval_int(vs_dist[i][j-1]) + model.eval_int(lcost(j-1))
         dskip = model.eval_int(vs_dist[i][j-1]) + model.eval_int(pcost(j-1))
-        dmodel = model.eval_int(vs_dist[i-1][j]) + model.eval_int(mcost(i-1))
+        dmodelsilent = model.eval_int(vs_dist[i-1][j])
+        dmodel = dmodelsilent + model.eval_int(mcost(i-1))
         dsyn = model.eval_int(vs_dist[i-1][j-1]) + model.eval_int(syncost(i-1,j-1))
         if dist == dskip:
           alignment.append("skip")
@@ -217,6 +218,10 @@ class UncertaintyEncoding(Encoding):
           j -= 1
         elif dist == dmodel:
           alignment.append("model")
+          i -= 1
+        elif dist == dmodelsilent and model.eval_bool(self._silents[i-1]):
+          if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
+            alignment.append("model")
           i -= 1
         else:
           assert(dist == dsyn)
