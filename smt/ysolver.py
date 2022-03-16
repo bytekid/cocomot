@@ -101,10 +101,6 @@ class YicesSolver(Solver):
   def ite(self, cond, a, b):
     return Terms.ite(cond, a, b)
 
-  # minimum of two arithmetic expressions
-  def min(self, a, b):
-    return self.ite(self.lt(a, b), a, b)
-
   def distinct(self, xs):
     return Terms.distinct(xs)
 

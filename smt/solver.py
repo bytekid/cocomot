@@ -101,9 +101,12 @@ class Solver:
     pass
 
   # minimum of two arithmetic expressions
-  @abstractmethod
   def min(self, a, b):
-    pass
+    return self.ite(self.lt(a, b), a, b)
+
+  # maximum of two arithmetic expressions
+  def max(self, a, b):
+    return self.ite(self.lt(a, b), b, a)
 
   @abstractmethod
   def push(self):

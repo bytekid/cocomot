@@ -201,11 +201,10 @@ def conformance_check_trace(encoding, trace_data, verbose):
   return (distance, alignment_decoded, t_encode2, t_solve)
 
 # conformance check one trace
-def create_encoding(solver, example_trace, dpn, uncertain=False):
+def create_encoding(solver, trace_length, dpn, uncertain=False):
   # estimate of upper bound on steps to be considered: length of trace + length
   # of shortest accepting path
   # FIXME step bound if not state machine
-  trace_length = len(example_trace)
   step_bound = trace_length + dpn.shortest_accepted()
   dpn.compute_reachable(step_bound)
 
@@ -226,12 +225,12 @@ def create_encoding(solver, example_trace, dpn, uncertain=False):
 # conformance check one trace
 def conformance_check_single_trace(solver, trace_record, dpn, verbose=0, many=None):
   (_, trace, _) = trace_record
-  (encoding, _) = create_encoding(solver, trace, dpn)
+  (encoding, _) = create_encoding(solver, len(trace), dpn)
   return conformance_check_trace(encoding, trace_record, verbose)
 
 # conformance check multiple traces of same length
 def conformance_check_traces(solver, traces, dpn, verbose=0, many=None):
-  (encoding, t_encode1) = create_encoding(solver, traces[0][1], dpn)
+  (encoding, t_encode1) = create_encoding(solver, len(traces[0][1]), dpn)
 
   results = []
   if len(traces) == 1:
@@ -247,6 +246,35 @@ def conformance_check_traces(solver, traces, dpn, verbose=0, many=None):
       solver.pop()
   return results, t_encode1
 
+# conformance check multiple traces of same length
+def conformance_check_multi(log, dpn, verbose=0):
+  log = preprocess_log(log, dpn)
+  tracepart = NaivePartitioning(log)
+  length = max([ len(t) for (t,_) in tracepart.partitions ])
+
+  solver = Z3Solver()
+  (encoding, _) = create_encoding(solver, length, dpn)
+  dmax = None
+  for (trace, count) in tracepart.partitions:
+    (dist, dconstr) = encoding.edit_distance(trace)
+    solver.require([dconstr])
+    dmax = solver.max(dmax, dist) if dmax != None else dist
+
+  #FIXME step_bound may in general not be valid upper bound due to writes
+  model = encoding.solver().minimize(dmax, encoding.step_bound())
+  if model == None: # timeout
+    return (None, t_encode2, 0)
+
+  cost = model.eval_int(dmax)
+  print("MULTI-ALIGNMENT COST %d" % cost)
+  alignments = []
+  for (trace, count) in tracepart.partitions:
+    a = encoding.decode_alignment(trace, model)
+    alignments.append(a)
+    print_trace_distance_verbose(dpn, trace, a)
+  return alignments, cost
+
+
 def read_log(logfile):
   if "uncertainty" in open(logfile, "r").read():
     return (uncertainty.read.xes(logfile), True)
@@ -258,7 +286,7 @@ def cocomot_uncertain(dpn, log, verbose=1):
   solver = YicesSolver()
   results = []
   for trace in log:
-    (encoding, _) = create_encoding(solver, trace, dpn, uncertain=True)
+    (encoding, _) = create_encoding(solver, len(trace), dpn, uncertain=True)
     (dist, dconstr) = encoding.edit_distance_min(trace)
     encoding.solver().require([dconstr])
     model = encoding.solver().minimize(dist, encoding.step_bound()+10)
@@ -363,10 +391,11 @@ def process_args(argv):
   model_file = None
   log_file = None
   many = None
+  multi = None
   numprocs = 1
   verbose = 1
   try:
-    opts, args = getopt.getopt(argv,"hv:m:l:n:x:")
+    opts, args = getopt.getopt(argv,"huv:m:l:n:x:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(2)
@@ -380,6 +409,8 @@ def process_args(argv):
       log_file = arg
     elif opt == "-x":
       many = int(arg)
+    elif opt == "-u":
+      multi = True
     elif opt == "-v":
       verbose = int(arg)
     elif opt == "-n":
@@ -389,15 +420,18 @@ def process_args(argv):
     "log": log_file, 
     "verbose": verbose, 
     "numprocs":numprocs,
-    "many": many
+    "many": many,
+    "multi": multi
   }
 
 if __name__ == "__main__":
   ps = process_args(sys.argv[1:])
   dpn = DPN(read_pnml_input(ps["model"]))
   (log, has_uncertainty) = read_log(ps["log"])
-  if not has_uncertainty:
+  if not has_uncertainty and not ps["multi"]:
     cocomot(dpn, log, ps["numprocs"], ps["verbose"], ps["many"])
+  elif not has_uncertainty:
+    conformance_check_multi(log, dpn, ps["verbose"])
   else:
     cocomot_uncertain(dpn, log, ps["verbose"])
   

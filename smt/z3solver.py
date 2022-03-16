@@ -93,10 +93,6 @@ class Z3Solver(Solver):
 
   def distinct(self, xs):
     return Distinct(xs)
-
-  # minimum of two arithmetic expressions
-  def min(self, a, b):
-    return self.ite(self.lt(a, b), a, b)
   
   def simplify(self, e):
     return simplify(e)
