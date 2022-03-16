@@ -429,13 +429,26 @@ class Encoding:
     # FIXME no data for now
     transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
     s = self._solver
-    if len(alignment["transitions"]) == 0:
-      reqs = [s.eq(s.num(0), self._run_length)]
+    length = len(alignment["run"]["transitions"])
+    if length == 0:
+      reqs = [s.eq(s.num(0), s.num(self._run_length))]
     else:
-      reqs = [self._finals[len(alignment["transitions"])]]
-    for (i,(tid, tlabel)) in enumerate(alignment["transitions"]):
-      reqs.append(s.eq(self._vs_trans[i], tid))
+      #reqs = [self._finals[length]]
+      reqs = []
+      # negate border transitions
+      run = alignment["run"]["transitions"]
+      reqs.append(s.eq(self._vs_trans[0], s.num(run[0][0])))
+      # last transition
+      last_id = s.num(run[length - 1][0])
+      is_last = []
+      for i in range(1, self._step_bound+1):
+        is_last.append(s.land([s.eq(self._vs_trans[i-1], s.num(last_id)), self._finals[i]]))
+      reqs.append(s.lor(is_last))
+    #for (i,(tid, tlabel)) in enumerate(alignment["run"]["transitions"]):
+    #  reqs.append(s.eq(self._vs_trans[i], s.num(tid)))
+    print("negate", str(s.neg(s.land(reqs)) ))
     return s.neg(s.land(reqs))
+
 
   def decode_process_run(self, model, run_length):
     dpn = self._dpn

@@ -67,20 +67,20 @@ def print_trace_distance(index, trace, t_enc, ts_solv, cnt, distance):
   print("##### CONFORMANCE CHECK TRACE %d (%d instances, length %d)" % \
     (index, cnt, len(trace)))
   print("DISTANCE : " + str(distance), flush=True)
-  print("time/encode: %.2f  time/solve: %.2f" % (t_enc, ts_solv))
+  #print("time/encode: %.2f  time/solve: %.2f" % (t_enc, ts_solv))
 
 def print_trace_distance_verbose(dpn, trace, decoding):
   places = dict([ (p["id"], p) for p in dpn.places() ])
   transs = dict([ (p["id"], p) for p in dpn.transitions() ])
   valuations = []
   run = decoding["run"]
-  print("\nMARKING:")
-  for i in range(0, len(run["markings"])):
-    marking = ""
-    for (p,count) in list(run["markings"][i].items()):
-      for c in range(0, count):
-        marking = marking + (" " if marking else "") + str(places[p]["name"])
-    print("  %d: %s" % (i, marking))
+  #print("\nMARKING:")
+  #for i in range(0, len(run["markings"])):
+  #  marking = ""
+  #  for (p,count) in list(run["markings"][i].items()):
+  #    for c in range(0, count):
+  #      marking = marking + (" " if marking else "") + str(places[p]["name"])
+  #  print("  %d: %s" % (i, marking))
 
   # shift model and log sequences to account for >> in alignment
   modelseq = []
@@ -113,18 +113,19 @@ def print_trace_distance_verbose(dpn, trace, decoding):
 def print_alignments_json(alignments):
   for (trace, dist, alignment) in alignments:
     for a in (alignment if isinstance(alignment, list) else [alignment]):
-      a["transitions"] = [ label for (_,label) in a["transitions"]]
-      del a["valuations"]
+      run = a["run"]
+      run["transitions"] = [ label for (_,label) in run["transitions"]]
+      del run["valuations"]
       all_mlists = []
-      print(a["markings"])
-      for m in a["markings"]:
+      for m in run["markings"]:
         mlist = []
         for (p,c) in m.items():
           for j in range(0,c):
             mlist.append(p)
         all_mlists.append(mlist)
-      a["markings"] = all_mlists
+      run["markings"] = all_mlists
     data = {"trace" : trace[1], "alignments": alignment}
+    print(json.dumps(data, indent=2))
 
 ### preprocessing
 def preprocess_trace(trace, dpn):
@@ -164,6 +165,7 @@ def conformance_check_trace_many(encoding, trace_data, number):
       return (None, alignments, t_encode2, t_solve)
   
     alignment_decoded = encoding.decode_alignment(trace, model)
+    print("\nDISTANCE:", alignment_decoded["cost"])
     print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
     alignments.append(alignment_decoded)
     encoding.solver().require([encoding.negate(alignment_decoded)])
@@ -234,7 +236,7 @@ def conformance_check_traces(solver, traces, dpn, verbose=0, many=None):
   results = []
   if len(traces) == 1:
     res = conformance_check_trace(encoding, traces[0], verbose) if not many \
-      else conformance_check_trace_many(encoding, traces[0], verbose, many)
+      else conformance_check_trace_many(encoding, traces[0], many)
     results.append((traces[0], res))
   else:
     for trace in traces:
@@ -269,7 +271,7 @@ def cocomot_uncertain(dpn, log, verbose=1):
   return results
 
 
-def cocomot(dpn, log, numprocs=1, verbose=1, many=False):
+def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
   # preprocessing
   log = preprocess_log(log, dpn)
   print("number of traces: %d" % len(log))
@@ -290,7 +292,7 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=False):
   i = 0
   parts = interval_part.partitions
   if numprocs == 1:
-    solver = YicesSolver() # Z3Solver()
+    solver = Z3Solver() # YicesSolver() #
     i = 0
     while i < len(parts):
       (trace, cnt) = parts[i]
@@ -348,23 +350,23 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=False):
       (sum(ts_encode ), sum(ts_encode)/len(ts_encode), ts_encode[mid]))
     print("solving time:  total %.2f  avg %.2f median %.2f" % \
       (sum(ts_solve ), sum(ts_solve)/len(ts_solve), ts_solve[mid]))
-    for (d, cnt) in distances.items():
-      print("distance %d: %d" % (d, cnt))
-    print("timeouts: %d" % timeouts)
+    if not many:
+      for (d, cnt) in distances.items():
+        print("distance %d: %d" % (d, cnt))
+      print("timeouts: %d" % timeouts)
   else:
-    print(alignments)
     print_alignments_json(alignments)
   YicesSolver.shutdown()
 
 def process_args(argv):
-  usage = "cocomot.py <model_file> <log_file> [-p <property_string> | -s] [-x]"
+  usage = "cocomot.py <model_file> <log_file> [-p <property_string> | -s] [-x <number>]"
   model_file = None
   log_file = None
-  many = False
+  many = None
   numprocs = 1
   verbose = 1
   try:
-    opts, args = getopt.getopt(argv,"hxvm:l:n:")
+    opts, args = getopt.getopt(argv,"hv:m:l:n:x:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(2)
@@ -377,9 +379,9 @@ def process_args(argv):
     elif opt == "-l":
       log_file = arg
     elif opt == "-x":
-      many = True
+      many = int(arg)
     elif opt == "-v":
-      verbose = True
+      verbose = int(arg)
     elif opt == "-n":
       numprocs = int(arg)
   return {

@@ -147,7 +147,7 @@ class UncertaintyEncoding(Encoding):
         for t in self._dpn.reachable(i) for e in trace._events \
         if "label" in t and t["label"] in e.labels()]
       for (t,e) in trans_events:
-        is_event = s.eq(vs_trace[i], s.num(e._id))
+        is_event = s.eq(vs_trace[j], s.num(e._id))
         is_trans = s.eq(self._vs_trans[i], s.num(t["id"]))
         poss_labels.append(s.land([is_event, is_trans]))
       return s.ite(s.lor(poss_labels), s.num(0), s.num(1000))
