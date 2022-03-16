@@ -430,10 +430,15 @@ class Encoding:
     transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
     s = self._solver
     length = len(alignment["run"]["transitions"])
+
+    def is_silent_final(i):
+      return s.lor([s.eq(self._vs_trans[i], s.num(id)) for id in self._dpn._silent_final_transitions])
+    
     if length == 0:
       reqs = [s.eq(s.num(0), s.num(self._run_length))]
+      therun = reqs
     else:
-      #reqs = [self._finals[length]]
+      therun = []
       reqs = []
       # negate border transitions
       run = alignment["run"]["transitions"]
@@ -442,12 +447,15 @@ class Encoding:
       last_id = s.num(run[length - 1][0])
       is_last = []
       for i in range(1, self._step_bound+1):
-        is_last.append(s.land([s.eq(self._vs_trans[i-1], s.num(last_id)), self._finals[i]]))
+        is_last.append(s.land([s.eq(self._vs_trans[i-1], s.num(last_id)), s.eq(s.num(i), s.num(self._run_length))]))
       reqs.append(s.lor(is_last))
-    #for (i,(tid, tlabel)) in enumerate(alignment["run"]["transitions"]):
-    #  reqs.append(s.eq(self._vs_trans[i], s.num(tid)))
-    print("negate", str(s.neg(s.land(reqs)) ))
-    return s.neg(s.land(reqs))
+      for (i,(tid, tlabel)) in enumerate(alignment["run"]["transitions"]):
+        therun.append(s.eq(self._vs_trans[i], s.num(tid)))
+      if len(self._dpn._silent_final_transitions) > 0 and length < self._step_bound:
+        therun.append(is_silent_final(length))
+    res = s.land([s.neg(s.land(reqs)), s.neg(s.land(therun))])
+    #print("negate", str(res))
+    return res
 
 
   def decode_process_run(self, model, run_length):
@@ -468,7 +476,8 @@ class Encoding:
       markings.append(dict(mark))
       if i < run_length:
         tid = model.eval_int(self._vs_trans[i])
-        transitions.append((tid, tlabel(tid)))
+        if not self._dpn.is_silent_final_transition(tid):
+          transitions.append((tid, tlabel(tid)))
     return (markings, transitions, valuations)
 
   def decode_run_length(self, model):
@@ -489,10 +498,11 @@ class Encoding:
     m = len(trace)
     vs_dist = self._vs_dist
     transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
-    run_length = self.decode_run_length(model)
-    distance = model.eval_int(vs_dist[run_length][len(trace)])
-    run = self.decode_process_run(model, run_length)
+    run_length_dec = self.decode_run_length(model)
+    distance = model.eval_int(vs_dist[run_length_dec][len(trace)])
+    run = self.decode_process_run(model, run_length_dec)
     (markings, transitions, valuations) = run
+    run_length = len(transitions)
     #self.print_distance_matrix(model)
 
     i = run_length # self._step_bound # n
