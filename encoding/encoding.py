@@ -5,7 +5,7 @@ from dpn.expr import Expr
 
 class Encoding:
 
-  def __init__(self, dpn, solver, step_bound):
+  def __init__(self, dpn, solver, step_bound, all_solutions = False):
     self._dpn = dpn
     self._solver = solver
     self._step_bound = step_bound
@@ -13,6 +13,7 @@ class Encoding:
     self._vs_mark = self.marking_vars()
     self._vs_trans = self.trans_vars()
     self._run_length = self._solver.intvar("run_length")
+    self._all_solutions = all_solutions
 
   def step_bound(self):
     return self._step_bound
@@ -350,10 +351,12 @@ class Encoding:
           side_constr.append(vs_log[i+1][j+1])
 
     # symmetry breaking: enforce log steps before model steps
-    for i in range(2,n):
-      for j in range(3,m):
-        c = s.implies(vs_mod[i][j-1], s.neg(vs_log[i][j]))
-        side_constr.append(c)
+    # not done if all solutions will be computed, to not compromise completeness
+    if not self._all_solutions:
+      for i in range(2,n):
+        for j in range(3,m):
+          c = s.implies(vs_mod[i][j-1], s.neg(vs_log[i][j]))
+          side_constr.append(c)
     
     # 6. if the ith step in the model is silent, delta[i+1][j] = delta[i][j],
     #    that is, silent transitions do not increase the distance

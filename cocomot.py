@@ -201,7 +201,7 @@ def conformance_check_trace(encoding, trace_data, verbose):
   return (distance, alignment_decoded, t_encode2, t_solve)
 
 # conformance check one trace
-def create_encoding(solver, trace_length, dpn, uncertain=False):
+def create_encoding(solver, trace_length, dpn, uncertain=False, all_sol=False):
   # estimate of upper bound on steps to be considered: length of trace + length
   # of shortest accepting path
   # FIXME step bound if not state machine
@@ -209,7 +209,7 @@ def create_encoding(solver, trace_length, dpn, uncertain=False):
   dpn.compute_reachable(step_bound)
 
   encoding = UncertaintyEncoding(dpn, solver, step_bound) if uncertain else \
-    Encoding(dpn, solver, step_bound)
+    Encoding(dpn, solver, step_bound, all_solutions =all_sol)
 
   # encoding parts
   t_start = time.perf_counter()
@@ -225,26 +225,26 @@ def create_encoding(solver, trace_length, dpn, uncertain=False):
 # conformance check one trace
 def conformance_check_single_trace(solver, trace_record, dpn, verbose=0, many=None):
   (_, trace, _) = trace_record
-  (encoding, _) = create_encoding(solver, len(trace), dpn)
+  (encoding, _) = create_encoding(solver, len(trace), dpn, all_sol=many)
   return conformance_check_trace(encoding, trace_record, verbose)
 
 # conformance check multiple traces of same length
 def conformance_check_traces(solver, traces, dpn, verbose=0, many=None):
-  (encoding, t_encode1) = create_encoding(solver, len(traces[0][1]), dpn)
+  (enc, t_enc1) = create_encoding(solver, len(traces[0][1]), dpn, all_sol=many)
 
   results = []
   if len(traces) == 1:
-    res = conformance_check_trace(encoding, traces[0], verbose) if not many \
-      else conformance_check_trace_many(encoding, traces[0], many)
+    res = conformance_check_trace(enc, traces[0], verbose) if not many \
+      else conformance_check_trace_many(enc, traces[0], many)
     results.append((traces[0], res))
   else:
     for trace in traces:
       solver.push()
-      res = conformance_check_trace(encoding, trace,verbose) if not many \
-        else conformance_check_trace_many(encoding, trace, many)
+      res = conformance_check_trace(enc, trace,verbose) if not many \
+        else conformance_check_trace_many(enc, trace, many)
       results.append((trace, res))
       solver.pop()
-  return results, t_encode1
+  return results, t_enc1
 
 # multi- or anti-alignment conformance checking
 def conformance_check_aggregated(log, dpn, verbose, anti):
