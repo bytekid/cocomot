@@ -470,6 +470,7 @@ class Encoding:
     transitions = [] # array mapping instant to transition label
 
     for i in range(0, run_length + 1):
+      print([ (x, v) for (x,v) in vs_data[i].items()])
       val = [ (x, float(model.eval_real(v))) for (x,v) in vs_data[i].items()]
       valuations.append(dict(val))
       mark = [(places[p]["id"],model.eval_int(c)) for (p,c) in list(vs_mark[i].items())]
