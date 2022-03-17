@@ -155,5 +155,7 @@ class Z3Model(Model):
     return self.model.eval(v).as_long()
   
   def eval_real(self, v):
+    if isinstance(v, float) or isinstance(v, int):
+      return float(v)
     return float(self.model.eval(v).as_fraction())
   

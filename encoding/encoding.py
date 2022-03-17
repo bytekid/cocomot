@@ -468,12 +468,13 @@ class Encoding:
     valuations = [] # array mapping instant to valuation
     markings = [] # array mapping instant to dictionary mapping place to count
     transitions = [] # array mapping instant to transition label
+    eval_mark = lambda v: int(model.eval_bool(v)) \
+      if self._dpn.has_single_token() else model.eval_int(v) 
 
     for i in range(0, run_length + 1):
-      print([ (x, v) for (x,v) in vs_data[i].items()])
-      val = [ (x, float(model.eval_real(v))) for (x,v) in vs_data[i].items()]
+      val = [ (x, model.eval_real(v)) for (x,v) in vs_data[i].items()]
       valuations.append(dict(val))
-      mark = [(places[p]["id"],model.eval_int(c)) for (p,c) in list(vs_mark[i].items())]
+      mark = [(places[p]["id"],eval_mark(c)) for (p,c) in vs_mark[i].items()]
       markings.append(dict(mark))
       if i < run_length:
         tid = model.eval_int(self._vs_trans[i])
