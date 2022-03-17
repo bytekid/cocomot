@@ -110,9 +110,16 @@ class Z3Solver(Solver):
   def is_sat(self):
     return self.ctx.check() == z3.sat
 
+  # maximize given expression
+  def maximize(self, expr, bound_val):
+    val = self.ctx.maximize(expr)
+    t_start = time.perf_counter()
+    result = self.ctx.check()
+    self.t_solve = time.perf_counter() - t_start
+    return Z3Model(self.ctx) if result == z3.sat else None
+
   # minimize given expression
   def minimize(self, expr, max_val):
-    #print(self.ctx.statistics())
     val = self.ctx.minimize(expr)
     t_start = time.perf_counter()
     result = self.ctx.check()

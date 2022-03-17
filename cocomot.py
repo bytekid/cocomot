@@ -246,27 +246,30 @@ def conformance_check_traces(solver, traces, dpn, verbose=0, many=None):
       solver.pop()
   return results, t_encode1
 
-# conformance check multiple traces of same length
-def conformance_check_multi(log, dpn, verbose=0):
+# multi- or anti-alignment conformance checking
+def conformance_check_aggregated(log, dpn, verbose, anti):
   log = preprocess_log(log, dpn)
   tracepart = NaivePartitioning(log)
-  length = max([ len(t) for (t,_) in tracepart.partitions ])
+  length = anti if anti else max([ len(t) for (t,_) in tracepart.partitions ])
 
   solver = Z3Solver()
+  # switch between multi- and anti-alignment
+  dist_aggregate = solver.max if not anti else solver.min
+  optimize = solver.minimize if not anti else solver.maximize
+
   (encoding, _) = create_encoding(solver, length, dpn)
-  dmax = None
+  dopt = None
   for (trace, count) in tracepart.partitions:
     (dist, dconstr) = encoding.edit_distance(trace)
     solver.require([dconstr])
-    dmax = solver.max(dmax, dist) if dmax != None else dist
+    dopt = dist_aggregate(dopt, dist) if dopt != None else dist
 
-  #FIXME step_bound may in general not be valid upper bound due to writes
-  model = encoding.solver().minimize(dmax, encoding.step_bound())
+  model = optimize(dopt, encoding.step_bound())
   if model == None: # timeout
     return (None, t_encode2, 0)
 
-  cost = model.eval_int(dmax)
-  print("MULTI-ALIGNMENT COST %d" % cost)
+  cost = model.eval_int(dopt)
+  print("%s-ALIGNMENT COST %d" % ("ANTI" if anti else "MULTI", cost))
   alignments = []
   for (trace, count) in tracepart.partitions:
     a = encoding.decode_alignment(trace, model)
@@ -274,6 +277,13 @@ def conformance_check_multi(log, dpn, verbose=0):
     print_trace_distance_verbose(dpn, trace, a)
   return alignments, cost
 
+# multi-alignment conformance checking
+def conformance_check_multi(log, dpn, verbose=0):
+  return conformance_check_aggregated(log, dpn, verbose, anti=None)
+
+# anti-alignment conformance checking
+def conformance_check_anti(log, dpn, verbose, anti_bound):
+  return conformance_check_aggregated(log, dpn, verbose, anti=anti_bound)
 
 def read_log(logfile):
   if "uncertainty" in open(logfile, "r").read():
@@ -392,10 +402,11 @@ def process_args(argv):
   log_file = None
   many = None
   multi = None
+  anti = None
   numprocs = 1
   verbose = 1
   try:
-    opts, args = getopt.getopt(argv,"huv:m:l:n:x:")
+    opts, args = getopt.getopt(argv,"huv:m:l:n:x:a:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(2)
@@ -411,27 +422,32 @@ def process_args(argv):
       many = int(arg)
     elif opt == "-u":
       multi = True
+    elif opt == "-a":
+      anti = int(arg)
     elif opt == "-v":
       verbose = int(arg)
     elif opt == "-n":
       numprocs = int(arg)
   return {
-    "model": model_file, 
-    "log": log_file, 
-    "verbose": verbose, 
-    "numprocs":numprocs,
+    "anti": anti,
+    "log": log_file,
     "many": many,
-    "multi": multi
+    "model": model_file, 
+    "multi": multi,
+    "numprocs":numprocs,
+    "verbose": verbose
   }
 
 if __name__ == "__main__":
   ps = process_args(sys.argv[1:])
   dpn = DPN(read_pnml_input(ps["model"]))
   (log, has_uncertainty) = read_log(ps["log"])
-  if not has_uncertainty and not ps["multi"]:
-    cocomot(dpn, log, ps["numprocs"], ps["verbose"], ps["many"])
-  elif not has_uncertainty:
+  if ps["multi"]:
     conformance_check_multi(log, dpn, ps["verbose"])
-  else:
+  elif ps["anti"]:
+    conformance_check_anti(log, dpn, ps["verbose"], ps["anti"])
+  elif has_uncertainty:
     cocomot_uncertain(dpn, log, ps["verbose"])
+  else:
+    cocomot(dpn, log, ps["numprocs"], ps["verbose"], ps["many"])
   
