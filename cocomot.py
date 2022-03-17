@@ -5,8 +5,9 @@ from pm4py.objects.log.importer.xes import importer as xes_importer
 import json
 import getopt
 
+#from smt.cvc5solver import CVC5Solver
 from smt.ysolver import YicesSolver
-from smt.z3solver import *
+from smt.z3solver import Z3Solver
 from dpn.read import read_json_input, read_pnml_input
 from cluster.partitioning import NaivePartitioning, IntervalPartitioning
 from dpn.dpn import DPN
@@ -169,6 +170,7 @@ def conformance_check_trace_many(encoding, trace_data, number):
     print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
     alignments.append(alignment_decoded)
     encoding.solver().require([encoding.negate(alignment_decoded)])
+    model.destroy()
   return (-1, alignments, t_encode2, t_solve)
 
 
@@ -197,7 +199,7 @@ def conformance_check_trace(encoding, trace_data, verbose):
     alignment_decoded = {}
   else:
     alignment_decoded = encoding.decode_alignment(trace, model)
-
+  model.destroy()
   return (distance, alignment_decoded, t_encode2, t_solve)
 
 # conformance check one trace
@@ -275,6 +277,7 @@ def conformance_check_aggregated(log, dpn, verbose, anti):
     a = encoding.decode_alignment(trace, model)
     alignments.append(a)
     print_trace_distance_verbose(dpn, trace, a)
+  model.destroy()
   return alignments, cost
 
 # multi-alignment conformance checking
@@ -306,6 +309,7 @@ def cocomot_uncertain(dpn, log, verbose=1):
     if verbose > 0:
       print_trace_distance_verbose(encoding._dpn, result["trace"], result)
     results.append(distance)
+    model.destroy()
   return results
 
 
@@ -330,7 +334,7 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
   i = 0
   parts = interval_part.partitions
   if numprocs == 1:
-    solver = Z3Solver() # YicesSolver() #
+    solver = YicesSolver() # CVC5Solver()  # Z3Solver() # 
     i = 0
     while i < len(parts):
       (trace, cnt) = parts[i]

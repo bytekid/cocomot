@@ -159,4 +159,7 @@ class Model:
   @abstractmethod
   def eval_real(self, v):
     pass
+
+  def destroy(self):
+    pass
   

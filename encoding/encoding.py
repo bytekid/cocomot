@@ -472,7 +472,7 @@ class Encoding:
     markings = [] # array mapping instant to dictionary mapping place to count
     transitions = [] # array mapping instant to transition label
     eval_mark = lambda v: int(model.eval_bool(v)) \
-      if self._dpn.has_single_token() else model.eval_int(v) 
+      if self._dpn.has_single_token() else model.eval_int(v)
 
     for i in range(0, run_length + 1):
       val = [ (x, model.eval_real(v)) for (x,v) in vs_data[i].items()]
