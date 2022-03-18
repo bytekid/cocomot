@@ -68,7 +68,7 @@ def print_trace_distance(index, trace, t_enc, ts_solv, cnt, distance):
   print("##### CONFORMANCE CHECK TRACE %d (%d instances, length %d)" % \
     (index, cnt, len(trace)))
   print("DISTANCE : " + str(distance), flush=True)
-  #print("time/encode: %.2f  time/solve: %.2f" % (t_enc, ts_solv))
+  print("time/encode: %.2f  time/solve: %.2f" % (t_enc, ts_solv))
 
 def print_trace_distance_verbose(dpn, trace, decoding):
   places = dict([ (p["id"], p) for p in dpn.places() ])
@@ -312,6 +312,13 @@ def cocomot_uncertain(dpn, log, verbose=1):
     model.destroy()
   return results
 
+def work(job):
+  solver = YicesSolver()
+  (i, (trace, cnt), dpn) = job
+  res, t_enc = conformance_check_traces(solver, [(i, trace, cnt)], dpn)
+  (distance, _, t_enc, t_solv) = res[0][1]
+  solver.destroy()
+  return (i, trace, cnt, distance, t_enc, t_solv)
 
 def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
   # preprocessing
@@ -359,24 +366,18 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
     solver.destroy()
   else:
     print("Parallel checking with %d processes ..." % numprocs)
-    jobs = enumerate(parts)
-
-    def work(job):
-      solver = YicesSolver()
-      (i, (trace, cnt)) = job
-      res, t_enc = conformance_check_traces(solver, [(i, trace, cnt)], dpn, verbose=verbose)
-      (distance, t_enc, t_solv) = res[0]
-      solver.destroy()
-      return (i, trace, cnt, distance, t_enc, t_solv)
+    jobs = [ (i, t, dpn) for (i,t) in enumerate(parts) ]
+    #for j in jobs:
+    #  work(j)
 
     pool = multiprocessing.Pool(numprocs)
     results = pool.map_async(work, jobs)
     pool.close()
     pool.join()
-    for r in results.get(10):
+    for r in results.get():
       (i, trace, cnt, d, t_enc, t_solv) = r
       if d != None:
-        #print_trace_distance(i, trace, t_enc, t_solv, cnt, d)
+        print_trace_distance(i, trace, t_enc, t_solv, cnt, d)
         distances[d] = distances[d] + 1 if d in distances else 1
       else:
         timeouts += 1
