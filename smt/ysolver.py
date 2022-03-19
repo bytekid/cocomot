@@ -171,10 +171,10 @@ class YicesSolver(Solver):
     self.pop()
     self.t_solve = time.perf_counter() - t_start
     while status != Status.SAT and val <= max_val:
-      self.require([self.ge(expr, self.num(val))])
+      #self.require([self.ge(expr, self.num(val))])
       self.push()
       val += 1
-      self.require([self.le(expr, self.num(val))])
+      self.require([self.eq(expr, self.num(val))])
       t_start = time.perf_counter()
       status = self.ctx.check_context(timeout=self._timeout)
       if status == Status.UNKNOWN:
