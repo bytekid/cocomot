@@ -49,7 +49,7 @@ class Encoding:
     s = self._solver
     def mvar(i, id):
       name = "marked_" + str(i) + "_" + str(id)
-      return s.boolvar(name) if self._dpn.has_single_token() else s.intvar(name)
+      return s.boolvar(name) if self._dpn.is_one_bounded() else s.intvar(name)
     # create dictionary of variables for given instant i
     mvs = lambda i: dict([(p["id"], mvar(i,p["id"])) for p in self._dpn.places()])
     # create dictionaries of variables for all instants i
@@ -88,7 +88,7 @@ class Encoding:
     mvs = self._vs_mark
     mcount = [(p["id"], p["initial"] if "initial" in p else 0) \
       for p in self._dpn.places()]
-    if self._dpn.has_single_token():
+    if self._dpn.is_one_bounded():
       marking0 = [ mvs[0][p] if c > 0 else s.neg(mvs[0][p]) for (p,c) in mcount]
     else:
       marking0 = [ s.eq(mvs[0][p], s.num(c)) for (p, c) in mcount ]
@@ -124,7 +124,7 @@ class Encoding:
     bound = self._step_bound
     self._finals = [s.boolvar("final"+str(i)) for i in range(0, bound + 1)]
 
-    if self._dpn.has_single_token():
+    if self._dpn.is_one_bounded():
       fmark = [ p["id"] for p in places if "final" in p ]
       return s.land([ mvs[bound][p] for p in fmark ])
     else:
@@ -227,7 +227,7 @@ class Encoding:
     # conditions on transition at instant i being t
     def step(i, t):
       tvar = self._vs_trans[i]
-      mark_chng = self.token_game_1bounded(t,i) if self._dpn.has_single_token() \
+      mark_chng = self.token_game_1bounded(t,i) if self._dpn.is_one_bounded() \
         else self.token_game_unbounded(t, i)
       data_chng = self.data_constraints(t, i)
       return s.implies(s.eq(tvar,s.num(t["id"])), s.land([mark_chng,data_chng]))
@@ -472,7 +472,7 @@ class Encoding:
     markings = [] # array mapping instant to dictionary mapping place to count
     transitions = [] # array mapping instant to transition label
     eval_mark = lambda v: int(model.eval_bool(v)) \
-      if self._dpn.has_single_token() else model.eval_int(v)
+      if self._dpn.is_one_bounded() else model.eval_int(v)
 
     for i in range(0, run_length + 1):
       val = [ (x, model.eval_real(v)) for (x,v) in vs_data[i].items()]

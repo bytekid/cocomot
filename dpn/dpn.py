@@ -132,12 +132,14 @@ class DPN:
     ps = [ p["id"] for p in self._places if "initial" in p ]
     states = [ (set(ps),[]) ] # pairs of current marking and transition history
     seen_acylic = set([])
+    is_one_bounded = True
     for i in range(0, num_steps):
       if i > 12 or len(states) > 22: # gets too expensive, do approximation
         ts = [ t for (id, t) in transs.items() if fdists[id] < rem and i >= idists[id] ]
         seen_acylic_sub = [tid for tid in seen_acylic if tid not in [t["id"] for t in self._reachable[i-1]]]
         ts_sub = [t for t in ts if not t["id"] in seen_acylic_sub]
         self._reachable.append(ts_sub)
+        is_one_bounded = False # too expensive
       else:
         statesx = []
         self._reachable.append([])
@@ -149,13 +151,17 @@ class DPN:
             post_t = [ a[tgt] for a in self._arcs if a[src] == tid]
             if not set(pre_t).issubset(marking):
               continue # this transition is not enabled, skip
+            m = list(marking.difference(pre_t)) + post_t
             markingx = marking.difference(pre_t).union(post_t)
+            if len(m) > len(markingx):
+              is_one_bounded = False
             statesx.append((markingx, steps + [tid]))
             if not transs[tid] in self._reachable[i] and fdists[tid] < rem:
               self._reachable[i].append(transs[tid])
               if self.is_acyclic(tid):
                 seen_acylic = seen_acylic.union({tid})
       states = statesx
+      self._is_one_bounded = is_one_bounded
 
 
   def compute_reachable(self, num_steps):
@@ -186,6 +192,12 @@ class DPN:
       vs = [v for t in self._reachable[i] if "write" in t for v in t["write"]]
       vreach.append(list(set(vs)))
     return vreach
+
+  def is_one_bounded(self):
+    if self._is_one_bounded != None:
+      return self._is_one_bounded
+    self.simulate_markings()
+    return self._is_one_bounded
 
   def has_single_token(self):
     if self.has1token != None:
