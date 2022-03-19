@@ -65,8 +65,6 @@ def print_sequence(dpn, seq, tab = 12):
 
 
 def print_trace_distance(index, trace, t_enc, ts_solv, cnt, distance):
-  print("##### CONFORMANCE CHECK TRACE %d (%d instances, length %d)" % \
-    (index, cnt, len(trace)))
   print("DISTANCE : " + str(distance), flush=True)
   print("time/encode: %.2f  time/solve: %.2f" % (t_enc, ts_solv))
 
@@ -181,6 +179,10 @@ def conformance_check_trace(encoding, trace_data, verbose):
   t_encode2 = time.perf_counter() - t_start
 
   encoding.solver().require([dconstr])
+  if verbose > 0:
+    print("##### CONFORMANCE CHECK TRACE %d (%d instances, length %d)" % \
+    (index, cnt, len(trace)))
+    sys.stdout.flush()
 
   #FIXME step_bound may in general not be valid upper bound due to writes
   model = encoding.solver().minimize(dist, encoding.step_bound())
@@ -323,7 +325,8 @@ def work(job):
 def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
   # preprocessing
   log = preprocess_log(log, dpn)
-  print("number of traces: %d" % len(log))
+  if len(log) > 1:
+    print("number of traces: %d" % len(log))
 
   ts_encode = []
   ts_solve = []
@@ -336,8 +339,9 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
   naive_part = NaivePartitioning(log)
   interval_part = IntervalPartitioning(dpn, naive_part.representatives())
   t_cluster =  time.perf_counter() - t_start
-  print("equivalence classes naive: %d, intervals: %d (clustering time %.2f)" % \
-    (naive_part.partition_count(), interval_part.partition_count(), t_cluster))
+  if len(log) > 1:
+    print("equivalence classes naive: %d, intervals: %d (clustering time %.2f)" % \
+      (naive_part.partition_count(), interval_part.partition_count(), t_cluster))
   i = 0
   parts = interval_part.partitions
   if numprocs == 1:
@@ -387,7 +391,7 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
   
   ts_solve.sort()
   ts_encode.sort()
-  if verbose > 0:
+  if verbose > 0 and len(log) > 1:
     mid = int(len(ts_encode)/2)
     print("encoding time: total %.2f  avg %.2f median %.2f" % \
       (sum(ts_encode ), sum(ts_encode)/len(ts_encode), ts_encode[mid]))
@@ -397,7 +401,7 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
       for (d, cnt) in distances.items():
         print("distance %d: %d" % (d, cnt))
       print("timeouts: %d" % timeouts)
-  else:
+  elif verbose > 1:
     print_alignments_json(alignments)
   YicesSolver.shutdown()
 
