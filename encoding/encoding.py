@@ -276,24 +276,30 @@ class Encoding:
 
     # write cost of a transition (to determine model step penalty)
     # optimization: more efficient to use variables instead of just constants
-    def wcost(t):
+    def wcostint(t):
       write_t = len(t["write"] if "write" in t else [])
       return 0 if t["invisible"] else 1 + write_t # unless silent: #writes + 1
+    wcs = [(t["id"], wcostint(t)) for t in dpn.transitions() ]
+    per_cost = [ (c, [tid for (tid,c2) in wcs if c==c2]) for (_,c) in wcs ]
     wcostvars = [s.intvar("wcost"+str(t["id"])) for t in dpn.transitions() ]
-    ws = [ s.eq(v, s.num(wcost(t))) \
+    ws = [ s.eq(v, s.num(wcostint(t))) \
       for (v, t) in zip(wcostvars, dpn.transitions()) ]
-    wcost = dict([ (t["id"], v) for (t,v) in zip(dpn.transitions(), wcostvars)])
+    wcostd = dict([ (t["id"], v) for (t,v) in zip(dpn.transitions(), wcostvars)])
     
     def async_step(i, j):
-      return [ (s.eq(vs_trans[i], s.num(t["id"])), wcost[t["id"]]) \
+      return [ (s.eq(vs_trans[i], s.num(t["id"])), wcostd[t["id"]]) \
         for t in dpn.reachable(i) \
         if not t["invisible"] and t["label"] != trace[j]["label"] ]
     
     # write costs for vs_trans[i ], alternative over all transitions
-    def wcosts(i):
+    def wcost(i):
       var = vs_trans[i]
-      return reduce(lambda c,t: \
-        s.ite(s.eq(var, s.num(t[0])), wcost[t[1]["id"]], c), etrans, s.num(0))
+      reach = dpn.reachable(i)
+      return reduce(lambda c, wc: \
+        s.ite(s.lor([s.eq(var, s.num(tid)) for tid in wc[1] if tid in reach]), \
+          s.num(wc[0]), c), per_cost[1:], s.num(per_cost[0][0]))
+    wcosts = [s.intvar("wcosti"+str(i)) for i in range(0,n) ]
+    ws += [ s.eq(v, wcost(i)) for (i,v) in enumerate(wcosts) ]
 
     def is_silent(i): # transition i is silent
       return s.lor([ s.eq(vs_trans[i], s.num(id)) \
@@ -314,7 +320,7 @@ class Encoding:
     # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + wcost
     #    where wcost is the writing cost of the ith transition in the model
     incdelta0 = [s.intvar("incd0"+str(i)) for i in range(0,n) ]
-    bm = [ s.eq(incdelta0[i], s.plus(delta[i][0], wcosts(i))) for i in range(0,n)]
+    bm = [ s.eq(incdelta0[i], s.plus(delta[i][0], wcosts[i])) for i in range(0,n)]
     base_model = [ s.implies(s.neg(self._silents[i]), \
       s.ge(delta[i+1][0], incdelta0[i])) for i in range(0,n)]
     # 3. delta[0][j+1] = (j + 1)

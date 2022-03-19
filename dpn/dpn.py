@@ -9,10 +9,11 @@ class DPN:
     self._transitions = dpn_as_array["transitions"]
     self._variables = dpn_as_array["variables"]
     self._arcs = dpn_as_array["arcs"]
+    self.has1token = None
+    self._is_one_bounded = None
     self._silent_final_transitions = []
     self.add_silent_finals(map)
     self.compute_shortest_paths()
-    self.has1token = None
   
   def places(self):
     return self._places
@@ -194,6 +195,8 @@ class DPN:
     return vreach
 
   def is_one_bounded(self):
+    if self.has1token:
+      return True
     if self._is_one_bounded != None:
       return self._is_one_bounded
     self.simulate_markings()
