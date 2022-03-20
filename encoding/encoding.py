@@ -248,7 +248,7 @@ class Encoding:
         # FIXME: perhaps no penalty should be given if a write value is not
         # mentioned in the trace but keeping the value beforehand is ok
         if x not in trace[j]["valuation"]:
-          diff = s.inc(diff) # repeated inc is more efficient that constant ..
+          diff = s.inc(diff) 
         else:
           val = Expr.numval(trace[j]["valuation"][x])
           diff = s.ite(s.eq(subst_prime[x], s.real(val)), diff, s.inc(diff))
@@ -382,6 +382,7 @@ class Encoding:
     constraints = non_neg + base_model + base_log + sync_step + side_constr + \
       silent + ss + ws + bm + rl
     return (min_expr, s.land(constraints))
+
 
   def edit_distance_parametric(self, trace, lcost, mcost, syncost):
     delta = self._vs_dist

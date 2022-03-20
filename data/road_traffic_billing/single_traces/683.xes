@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<log xes.version="1849-2016" xes.features="nested-attributes" xmlns="http://www.xes-standard.org/">
+	<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext" />
+	<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext" />
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext" />
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext" />
+	<string key="lifecycle:model" value="standard" />
+	<string key="concept:name" value="Road Fines - Full Log" />
+	<trace>
+		<string key="concept:name" value="C15195" />
+		<event>
+			<string key="org:resource" value="31" />
+			<string key="matricola" value="31" />
+			<float key="totalPaymentAmount" value="0.0" />
+			<string key="dismissal" value="NIL" />
+			<string key="concept:name" value="Create Fine" />
+			<float key="amount" value="137.55" />
+			<string key="article" value="80" />
+			<date key="time:timestamp" value="2004-04-15T00:00:00+02:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="vehicleClass" value="M" />
+			<string key="vehicleType" value="YAMAHA MAJESTIX" />
+			<int key="points" value="0" />
+		</event>
+		<event>
+			<float key="expense" value="0.0" />
+			<date key="time:timestamp" value="2004-04-15T00:00:00+02:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="concept:name" value="Send Fine" />
+			<int key="delaySend" value="0" />
+		</event>
+		<event>
+			<date key="time:timestamp" value="2004-04-15T00:00:00+02:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="concept:name" value="Insert Fine Notification" />
+			<string key="notificationType" value="P" />
+		</event>
+		<event>
+			<float key="amount" value="275.1" />
+			<date key="time:timestamp" value="2004-06-14T00:00:00+02:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="concept:name" value="Add penalty" />
+		</event>
+		<event>
+			<float key="paymentAmount" value="137.55" />
+			<date key="time:timestamp" value="2004-06-14T00:00:00+02:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<float key="totalPaymentAmount" value="137.55" />
+			<string key="concept:name" value="Payment" />
+		</event>
+	</trace>
+</log>

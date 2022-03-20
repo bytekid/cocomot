@@ -73,6 +73,13 @@ class IntervalPartitioning:
         j += 1
       self.partitions.append((trace, j - i))
       i = j
+      self._cmps = cmps
+      self._dpn = dpn
+    
+  def equivalent(self, t1, t2):
+    dpn = self._dpn
+    cmps = self._cmps
+    return self.trace_profile(t1, dpn, cmps) == self.trace_profile(t2, dpn, cmps)
 
   def representatives(self):
     return [ t for (t,_) in self.partitions ]

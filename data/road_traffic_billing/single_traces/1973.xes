@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<log xes.version="1849-2016" xes.features="nested-attributes" xmlns="http://www.xes-standard.org/">
+	<extension name="Lifecycle" prefix="lifecycle" uri="http://www.xes-standard.org/lifecycle.xesext" />
+	<extension name="Organizational" prefix="org" uri="http://www.xes-standard.org/org.xesext" />
+	<extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext" />
+	<extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext" />
+	<string key="lifecycle:model" value="standard" />
+	<string key="concept:name" value="Road Fines - Full Log" />
+	<trace>
+		<string key="concept:name" value="N61376" />
+		<event>
+			<string key="org:resource" value="555" />
+			<string key="matricola" value="555" />
+			<float key="totalPaymentAmount" value="0.0" />
+			<string key="dismissal" value="NIL" />
+			<string key="concept:name" value="Create Fine" />
+			<float key="amount" value="33.6" />
+			<string key="article" value="157" />
+			<date key="time:timestamp" value="2004-08-01T00:00:00+02:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="vehicleClass" value="A" />
+			<string key="vehicleType" value="VOLKSWAGEN" />
+			<int key="points" value="0" />
+		</event>
+		<event>
+			<float key="expense" value="16.0" />
+			<date key="time:timestamp" value="2004-12-17T00:00:00+01:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="concept:name" value="Send Fine" />
+			<int key="delaySend" value="3313" />
+		</event>
+		<event>
+			<date key="time:timestamp" value="2005-01-07T00:00:00+01:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="notificationType" value="P" />
+			<string key="lastSent" value="P" />
+			<string key="concept:name" value="Insert Fine Notification" />
+		</event>
+		<event>
+			<date key="time:timestamp" value="2005-03-07T00:00:00+01:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="concept:name" value="Insert Date Appeal to Prefecture" />
+			<int key="delayPrefecture" value="1416" />
+		</event>
+		<event>
+			<float key="amount" value="68.77" />
+			<date key="time:timestamp" value="2005-03-08T00:00:00+01:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="concept:name" value="Add penalty" />
+		</event>
+		<event>
+			<date key="time:timestamp" value="2005-09-01T00:00:00+02:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="concept:name" value="Receive Result Appeal from Prefecture" />
+		</event>
+		<event>
+			<date key="time:timestamp" value="2005-09-10T00:00:00+02:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="concept:name" value="Notify Result Appeal to Offender" />
+		</event>
+		<event>
+			<int key="delayJudge" value="6527" />
+			<string key="org:resource" value="0" />
+			<date key="time:timestamp" value="2005-10-06T00:00:00+02:00" />
+			<string key="lifecycle:transition" value="complete" />
+			<string key="matricola" value="0" />
+			<string key="dismissal" value="G" />
+			<string key="concept:name" value="Appeal to Judge" />
+		</event>
+	</trace>
+</log>
