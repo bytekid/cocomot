@@ -188,7 +188,7 @@ def conformance_check_trace(encoding, trace_data, verbose):
   model = encoding.solver().minimize(dist, encoding.step_bound())
   t_solve = encoding.solver().t_solve
   if model == None: # timeout
-    return (None, t_encode2, t_solve)
+    return (None, None, t_encode2, t_solve)
 
   distance = model.eval_int(dist)
 
