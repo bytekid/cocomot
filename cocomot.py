@@ -112,6 +112,8 @@ def print_trace_distance_verbose(dpn, trace, decoding):
 def print_alignments_json(alignments):
   for (trace, dist, alignment) in alignments:
     for a in (alignment if isinstance(alignment, list) else [alignment]):
+      if not a:
+        continue
       run = a["run"]
       run["transitions"] = [ label for (_,label) in run["transitions"]]
       del run["valuations"]
@@ -209,7 +211,7 @@ def create_encoding(solver, trace_length, dpn, uncertain=False, all_sol=False):
   # estimate of upper bound on steps to be considered: length of trace + length
   # of shortest accepting path
   # FIXME step bound if not state machine
-  step_bound = trace_length + dpn.shortest_accepted()
+  step_bound = trace_length + dpn.shortest_accepted() + 2
   dpn.compute_reachable(step_bound)
 
   encoding = UncertaintyEncoding(dpn, solver, step_bound) if uncertain else \
