@@ -130,7 +130,6 @@ def print_alignments_json(alignments):
     data = {"trace" : trace[1], "alignments": alignment}
     print(json.dumps(data, indent=2))
 
-### preprocessing
 def preprocess_trace(trace, dpn):
   simple_trace = []
   for e in trace:
