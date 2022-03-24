@@ -7,13 +7,15 @@ from uncertainty.trace import UncertainTrace
 
 class UncertaintyEncoding(Encoding):
 
-  def __init__(self, dpn, solver, step_bound):
+  def __init__(self, dpn, solver, step_bound, ukind):
     super().__init__(dpn, solver, step_bound)
+    self.__uncertainty_kind = ukind
 
   def prepare_edit_distance(self, trace_len):
     super().prepare_edit_distance(trace_len)
     s = self._solver
-    self._vs_drop = [ s.boolvar("drop" + str(j)) for j in range(0, trace_len+1)]
+    self._vs_drop = [ s.boolvar("drop" + str(j)) for j in range(0, trace_len)]
+    self._vs_act = [ s.intvar("act" + str(j)) for j in range(0, trace_len)]
 
   def order_constraints(self, trace):
     m = len(trace)
@@ -52,6 +54,15 @@ class UncertaintyEncoding(Encoding):
     
     return (vs_trace, s.land(cs))
 
+  def trace_constraints(self, trace):
+    s = self._solver
+    vs_act = self._vs_act
+    cs = []
+    for j in range(0, len(trace)):
+      labels = trace._events[j]._activity._activities
+      cs += [s.le(s.num(0), vs_act[j]), s.lt(vs_act[j], s.num(len(labels)))]
+    return s.land(cs)
+
 
   # return pair of edit distance expression and side constraints
   def edit_distance_parametric(self, trace, lcost, mcost, syncost, pcost):
@@ -64,6 +75,7 @@ class UncertaintyEncoding(Encoding):
     s = self._solver
     dpn = self._dpn
     etrans = [(t["id"], t) for t in dpn.transitions()]
+    vs_drop = self._vs_drop
 
     def is_silent(i): # transition i is silent
       return s.lor([ s.eq(self._vs_trans[i], s.num(id)) \
@@ -94,7 +106,7 @@ class UncertaintyEncoding(Encoding):
     #  delta[i+1][j+1] >= delta[i+1][j] + model move penalty
     steps = [ s.lor([s.ge(delta[i+1][j+1], s.plus(syncost(i, j), delta[i][j])),\
                      s.ge(delta[i+1][j+1], s.plus(lcost(j), delta[i+1][j])), \
-                     s.ge(delta[i+1][j+1], s.plus(pcost(j), delta[i+1][j])), \
+                     s.land([vs_drop[j], s.ge(delta[i+1][j+1], s.plus(pcost(j), delta[i+1][j]))]), \
                      s.ge(delta[i+1][j+1], s.plus(mcostmod(i),delta[i][j+1]))])\
       for i in range(0,n) for j in range(0,m) ]
 
@@ -163,6 +175,72 @@ class UncertaintyEncoding(Encoding):
     else:
       return self.edit_distance_min_var_order(trace)
 
+
+  def sync_costs(self, trace, i, j):
+    subst_prime = dict([ (x, v) for (x, v) in self._vs_data[i+1].items() ])
+    s = self._solver
+    vs_act = self._vs_act
+
+    def write_diff(t): # FIXME uncertain data
+      diff = s.num(0)
+      for x in t["write"]:
+        if x not in trace[j]["valuation"]:
+          diff = s.inc(diff) 
+        else:
+          val = Expr.numval(trace[j]["valuation"][x])
+          diff = s.ite(s.eq(subst_prime[x], s.real(val)), diff, s.inc(diff))
+      return diff
+
+    return [ (s.land([s.eq(self._vs_trans[i], s.num(t["id"])), s.eq(vs_act[j], s.num(k))]), 
+              s.mult(write_diff(t), s.real(1-p))) \
+      for t in self._dpn.reachable(i) \
+      for (k, (l, p)) in enumerate(trace._events[j]._activity._activities.items()) \
+      if "label" in t and t["label"] == l ]
+
+  def edit_distance_fitness_var_order(self, trace):
+    s = self._solver
+    e = s.num(0)
+
+  def edit_distance_fitness_fixed_order(self, trace):
+    print("fitness stuff")
+    s = self._solver
+    drop_cost = lambda i: s.num(trace._events[i]._indet._value) \
+      if trace._events[i].is_indeterminate() else s.num(1000)
+    
+    def lcost(j):
+      labels = trace._events[j]._activity._activities
+      vs_act = self._vs_act
+      if len(labels) == 1:
+        return s.num(1)
+      else:
+        e = s.num(0)
+        for (k, (l,p)) in enumerate(labels):
+          e = ite(s.eq(vs_act[j], s.num(k)), s.real(1-p), e)
+        return e
+    
+    def mcost(i):
+      e = s.num(0)
+      for t in self._dpn.reachable(i):
+        s.ite(s.eq(self._vs_trans[i], s.num(t["id"])), s.num(t["id"]), s.num(len(t["write"]) + 1))
+      return e
+    
+    def syncost(i,j):
+      e = s.num(0)
+      for (is_t, penalty) in self.sync_costs(trace, i, j):
+        s.ite(is_t, penalty, e)
+      return e
+  
+    self._penalties = (lcost, mcost, syncost, drop_cost)
+    return self.edit_distance_parametric(trace, lcost, mcost, syncost, drop_cost)
+  
+
+  def edit_distance_fitness(self, trace):
+    if not trace.has_uncertain_time():
+      return self.edit_distance_fitness_fixed_order(trace)
+    else:
+      return self.edit_distance_fitness_var_order(trace)
+
+
   def decode_ordering(self, trace, model):
     if trace.has_uncertain_time():
       ord_trace = []
@@ -193,12 +271,14 @@ class UncertaintyEncoding(Encoding):
     j = len(ord_trace) # m
     (lcost, mcost, syncost, pcost) = self._penalties
     alignment = [] # array mapping instant to one of {"log", "model","parallel", "skip"}
+    drops = [ model.eval_bool(v) for v in self._vs_drop ]
+    print("drops", drops)
     while i > 0 or j > 0:
       if j == 0:
         if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
           alignment.append("model")
         i -= 1
-      elif i == 0:
+      elif i == 0 and not drops[j-1]:
         alignment.append("log")
         j -= 1
       else:
@@ -208,8 +288,8 @@ class UncertaintyEncoding(Encoding):
         dmodelsilent = model.eval_int(vs_dist[i-1][j])
         dmodel = dmodelsilent + model.eval_int(mcost(i-1))
         dsyn = model.eval_int(vs_dist[i-1][j-1]) + model.eval_int(syncost(i-1,j-1))
-        if dist == dskip:
-          alignment.append("skip")
+        if dist == dskip and drops[j-1]:
+          alignment.append("drop")
           ord_trace.drop(j-1) # modify ordtrace to skip this guy
           j -= 1
         elif dist == dlog:
@@ -220,8 +300,8 @@ class UncertaintyEncoding(Encoding):
           alignment.append("model")
           i -= 1
         elif dist == dmodelsilent and model.eval_bool(self._silents[i-1]):
-          if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
-            alignment.append("model")
+          #if not (dist == dmodelsilent self._dpn.is_silent_final_transition(transitions[i-1][0]):
+          #  alignment.append("model")
           i -= 1
         else:
           assert(dist == dsyn)

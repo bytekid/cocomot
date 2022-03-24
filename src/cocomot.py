@@ -86,6 +86,8 @@ def print_trace_distance_verbose(dpn, trace, decoding):
   idx = 0
   for i in range(0, len(decoding["alignment"])):
     if decoding["alignment"][i] != "log":
+      if idx >= len(run["transitions"]):
+        break
       (tid, tlab) = run["transitions"][idx]
       if tlab != "tau":
         val = run["valuations"][idx + 1]
@@ -214,8 +216,10 @@ def create_encoding(solver, trace_length, dpn, uncertain=False, all_sol=False):
   step_bound = trace_length + dpn.shortest_accepted() + 2
   dpn.compute_reachable(step_bound)
 
-  encoding = UncertaintyEncoding(dpn, solver, step_bound) if uncertain else \
-    Encoding(dpn, solver, step_bound, all_solutions =all_sol)
+  if not uncertain:
+    encoding = Encoding(dpn, solver, step_bound, all_solutions = all_sol)
+  else:
+    encoding = UncertaintyEncoding(dpn, solver, step_bound, uncertain)
 
   # encoding parts
   t_start = time.perf_counter()
@@ -299,13 +303,17 @@ def read_log(logfile):
     return (xes_importer.apply(logfile), False)
 
 ### main
-def cocomot_uncertain(dpn, log, verbose=1):
+def cocomot_uncertain(dpn, log, ukind, verbose=1):
   solver = YicesSolver()
   results = []
   for trace in log:
-    (encoding, _) = create_encoding(solver, len(trace), dpn, uncertain=True)
-    (dist, dconstr) = encoding.edit_distance_min(trace)
-    encoding.solver().require([dconstr])
+    (encoding, _) = create_encoding(solver, len(trace), dpn, uncertain=ukind)
+    solver.require([encoding.trace_constraints(trace)])
+    if ukind == "min":
+      (dist, dconstr) = encoding.edit_distance_min(trace)
+    else:
+      (dist, dconstr) = encoding.edit_distance_fitness(trace)
+    solver.require([dconstr])
     model = encoding.solver().minimize(dist, encoding.step_bound()+10)
     distance = None if model == None else model.eval_int(dist)
     result = encoding.decode_alignment(trace, model)
@@ -415,9 +423,10 @@ def process_args(argv):
   multi = None
   anti = None
   numprocs = 1
+  uncertainty = None
   verbose = 1
   try:
-    opts, args = getopt.getopt(argv,"huv:m:l:n:x:a:")
+    opts, args = getopt.getopt(argv,"hmu:v:d:l:n:x:a:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(2)
@@ -425,13 +434,15 @@ def process_args(argv):
     if opt == '-h':
       print(usage)
       sys.exit()
-    elif opt == "-m":
+    elif opt == "-d":
       model_file = arg
     elif opt == "-l":
       log_file = arg
     elif opt == "-x":
       many = int(arg)
     elif opt == "-u":
+      uncertainty = arg
+    elif opt == "-m":
       multi = True
     elif opt == "-a":
       anti = int(arg)
@@ -446,6 +457,7 @@ def process_args(argv):
     "model": model_file, 
     "multi": multi,
     "numprocs":numprocs,
+    "uncertainty": uncertainty,
     "verbose": verbose
   }
 
@@ -458,7 +470,8 @@ if __name__ == "__main__":
   elif ps["anti"]:
     conformance_check_anti(log, dpn, ps["verbose"], ps["anti"])
   elif has_uncertainty:
-    cocomot_uncertain(dpn, log, ps["verbose"])
+    ps["uncertainty"] = "min" if not ps["uncertainty"] else ps["uncertainty"] 
+    cocomot_uncertain(dpn, log, ps["uncertainty"], ps["verbose"])
   else:
     cocomot(dpn, log, ps["numprocs"], ps["verbose"], ps["many"])
   

@@ -97,6 +97,10 @@ class YicesSolver(Solver):
   def plus(self, a, b):
     return Terms.add(a, b)
 
+  # multiplication
+  def mult(self, a, b):
+    return Terms.mul(a, b)
+
   # if-then-else
   def ite(self, cond, a, b):
     return Terms.ite(cond, a, b)
