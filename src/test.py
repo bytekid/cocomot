@@ -31,7 +31,8 @@ if __name__ == "__main__":
       slv = YicesSolver()
       start = time.time()
       if is_uncertain:
-        res = cocomot.cocomot_uncertain(dpn, [trace], verbose=0)
+        ukind = "min" if "min" in xes else "fit"
+        res = cocomot.cocomot_uncertain(dpn, [trace], ukind, verbose=0)
       else:
         res = cocomot.conformance_check_single_trace(slv, (0,trace,1),dpn,verbose=0)
       duration = time.time() - start

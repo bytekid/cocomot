@@ -296,12 +296,12 @@ class UncertaintyEncoding(Encoding):
           alignment.append("log")
           ord_trace[j-1].fix_determinacy()
           j -= 1
-        elif dist == dmodel:
-          alignment.append("model")
-          i -= 1
         elif dist == dmodelsilent and model.eval_bool(self._silents[i-1]):
           #if not (dist == dmodelsilent self._dpn.is_silent_final_transition(transitions[i-1][0]):
           #  alignment.append("model")
+          i -= 1
+        elif dist == dmodel:
+          alignment.append("models")
           i -= 1
         else:
           assert(dist == dsyn)

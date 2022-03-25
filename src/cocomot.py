@@ -84,25 +84,25 @@ def print_trace_distance_verbose(dpn, trace, decoding):
   # shift model and log sequences to account for >> in alignment
   modelseq = []
   idx = 0
-  for i in range(0, len(decoding["alignment"])):
-    if decoding["alignment"][i] != "log":
-      if idx >= len(run["transitions"]):
-        break
+  alignment = decoding["alignment"]
+  for i in range(0, len(alignment)):
+    if alignment[i] in ["model", "parallel"]:
       (tid, tlab) = run["transitions"][idx]
-      if tlab != "tau":
+      if tlab != "tau": # FIXME needed?
         val = run["valuations"][idx + 1]
         step = { "id": tid, "label": tlab, "valuation": val }
         modelseq.append(step)
       idx += 1
     else:
-      modelseq.append(None)
+      if alignment[i] == "log":
+        modelseq.append(None)
   traceseq = []
   idx = 0
-  for i in range(0, len(decoding["alignment"])):
-    if decoding["alignment"][i] not in ["model", "skip"]:
+  for i in range(0, len(alignment)):
+    if alignment[i] in ["log", "parallel"]:
       traceseq.append(trace[idx])
       idx += 1
-    elif decoding["alignment"][i] != "skip":
+    elif alignment[i] == "model":
       traceseq.append(None)
 
   print("LOG SEQUENCE:")
@@ -318,6 +318,7 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1):
     result = encoding.decode_alignment(trace, model)
     print("distance", distance)
     if verbose > 0:
+      print(result)
       print_trace_distance_verbose(encoding._dpn, result["trace"], result)
     results.append(distance)
     model.destroy()
