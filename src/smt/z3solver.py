@@ -9,6 +9,9 @@ class Z3Solver(Solver):
   def __init__(self):
     self.ctx = Optimize()
 
+  def to_string(self, e):
+    return str(e)
+
   def are_equal_expr(self, a, b):
     return hash(a) == hash(b)
   
@@ -157,5 +160,8 @@ class Z3Model(Model):
   def eval_real(self, v):
     if isinstance(v, float) or isinstance(v, int):
       return float(v)
-    return float(self.model.eval(v).as_fraction())
+    val = self.model.eval(v)
+    if isinstance(val, IntNumRef):
+      return float(val.as_long())
+    return float(val.as_fraction())
   

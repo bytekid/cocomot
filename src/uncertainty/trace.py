@@ -98,6 +98,9 @@ class UncertainEvent:
   def upper_time(self):
     return self._time._upper
   
+  def indeterminacy(self):
+    return self._indet._value
+  
   def lower_time(self):
     return self._time._lower
   

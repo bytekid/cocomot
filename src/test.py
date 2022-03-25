@@ -25,7 +25,7 @@ if __name__ == "__main__":
     dpn = DPN(cocomot.read_pnml_input(os.path.join(path, pnmls[0])))
     for xes in xess:
       # desired distance result is given by the test name, e.g. 0 for test_1_0
-      real_distance = int(xes[xes.rfind("_")+1:xes.rfind(".")])
+      real_distance = float(xes[xes.rfind("_")+1:xes.rfind(".")])
       log, is_uncertain = cocomot.read_log(os.path.join(path, xes))
       trace = log[0] if is_uncertain else cocomot.preprocess_log(log, dpn)[0]
       slv = YicesSolver()

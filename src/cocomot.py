@@ -303,7 +303,7 @@ def read_log(logfile):
 
 ### main
 def cocomot_uncertain(dpn, log, ukind, verbose=1):
-  solver = YicesSolver()
+  solver = Z3Solver()
   results = []
   for trace in log:
     (encoding, _) = create_encoding(solver, len(trace), dpn, uncertain=ukind)
@@ -314,7 +314,7 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1):
       (dist, dconstr) = encoding.edit_distance_fitness(trace)
     solver.require([dconstr])
     model = encoding.solver().minimize(dist, encoding.step_bound()+10)
-    distance = None if model == None else model.eval_int(dist)
+    distance = None if model == None else model.eval_real(dist)
     result = encoding.decode_alignment(trace, model)
     print("distance", distance)
     if verbose > 0:

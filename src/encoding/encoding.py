@@ -498,12 +498,14 @@ class Encoding:
     else:
       return model.eval_int(self._run_length)
 
-  def print_distance_matrix(self, model):
+  def print_distance_matrix(self, model, real = False):
+    delta = self._vs_dist
     print("\nDISTANCES:")
-    for j in range(0, len(self._vs_dist[0])):
+    for j in range(0, len(delta[0])):
       d = ""
-      for i in range(0, len(self._vs_dist)):
-        d = d + " " + str(model.eval_int(self._vs_dist[i][j]))
+      for i in range(0, len(delta)):
+        x = model.eval_real(delta[i][j]) if real else model.eval_int(delta[i][j])
+        d = d + " " + str(x)
       print(d)
 
   def decode_alignment(self, trace, model):
