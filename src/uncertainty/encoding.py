@@ -59,8 +59,11 @@ class UncertaintyEncoding(Encoding):
     vs_act = self._vs_act
     cs = []
     for j in range(0, len(trace)):
-      labels = trace._events[j]._activity._activities
+      event = trace._events[j]
+      labels = event._activity._activities
       cs += [s.le(s.num(0), vs_act[j]), s.lt(vs_act[j], s.num(len(labels)))]
+      if not event.is_uncertain():
+        cs.append(s.neg(self._vs_drop[j]))
     return s.land(cs)
 
 
@@ -129,7 +132,7 @@ class UncertaintyEncoding(Encoding):
   def edit_distance_min_fixed_order(self, trace):
     s = self._solver
     cost1 = lambda _ : s.num(1)
-    pcost = lambda i: s.num(0 if trace._events[i].is_indeterminate() else 1000)
+    pcost = lambda i: s.num(0 if trace._events[i].is_uncertain() else 1000)
     
     def syncost(i,j):
       is_poss_label = [s.eq(self._vs_trans[i], s.num(t["id"])) \
@@ -148,7 +151,7 @@ class UncertaintyEncoding(Encoding):
     vs_trace, order_constr = self.order_constraints(trace)
 
     cost1 = lambda _ : one
-    indet_events = [ e._id for e in trace._events if e.is_indeterminate()]
+    indet_events = [ e._id for e in trace._events if e.is_uncertain()]
     def pcost(i):
       is_indet_id = s.lor([s.eq(vs_trace[i], s.num(id)) for id in indet_events]) 
       return s.ite(is_indet_id, s.num(0),s.num(1000))
@@ -205,7 +208,7 @@ class UncertaintyEncoding(Encoding):
     print("fitness stuff")
     s = self._solver
     drop_cost = lambda i: s.num(trace._events[i]._indet._value) \
-      if trace._events[i].is_indeterminate() else s.num(1000)
+      if trace._events[i].is_uncertain() else s.num(1000)
     
     def lcost(j):
       labels = trace._events[j]._activity._activities
@@ -219,13 +222,13 @@ class UncertaintyEncoding(Encoding):
         return e
     
     def mcost(i):
-      e = s.num(0)
+      e = s.num(1000)
       for t in self._dpn.reachable(i):
-        s.ite(s.eq(self._vs_trans[i], s.num(t["id"])), s.num(t["id"]), s.num(len(t["write"]) + 1))
+        e = s.ite(s.eq(self._vs_trans[i], s.num(t["id"])), s.num(len(t["write"]) + 1), e)
       return e
     
     def syncost(i,j):
-      e = s.num(0)
+      e = s.num(1000)
       for (is_t, penalty) in self.sync_costs(trace, i, j):
         s.ite(is_t, penalty, e)
       return e
@@ -260,12 +263,11 @@ class UncertaintyEncoding(Encoding):
     vs_dist = self._vs_dist
     run_length = self.decode_run_length(model)
     distance = model.eval_int(vs_dist[run_length][len(trace)])
-    #print("distance", distance)
     run = self.decode_process_run(model, run_length)
     (markings, transitions, valuations) = run
 
     ord_trace = self.decode_ordering(trace, model)
-    #self.print_distance_matrix(model)
+    self.print_distance_matrix(model)
 
     i = run_length # n
     j = len(ord_trace) # m
@@ -275,7 +277,8 @@ class UncertaintyEncoding(Encoding):
     print("drops", drops)
     while i > 0 or j > 0:
       if j == 0:
-        if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
+        if i < len(transitions) + 1 and \
+          not self._dpn.is_silent_final_transition(transitions[i-1][0]):
           alignment.append("model")
         i -= 1
       elif i == 0 and not drops[j-1]:
@@ -297,8 +300,8 @@ class UncertaintyEncoding(Encoding):
           ord_trace[j-1].fix_determinacy()
           j -= 1
         elif dist == dmodelsilent and model.eval_bool(self._silents[i-1]):
-          #if not (dist == dmodelsilent self._dpn.is_silent_final_transition(transitions[i-1][0]):
-          #  alignment.append("model")
+          if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
+            alignment.append("model")
           i -= 1
         elif dist == dmodel:
           alignment.append("models")

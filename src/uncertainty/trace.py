@@ -21,6 +21,7 @@ class UncertainActivity:
     return self._activities.keys()
 
   def fix(self, a):
+    print(a, self._activities.keys())
     assert(a in self._activities.keys())
     self._activities = {a:1}
 
@@ -89,7 +90,7 @@ class UncertainEvent:
     return "<" + str(self._indet) + ", " + str(self._activity) + ", " + \
       str(self._time) + ", " + d + "] >"
   
-  def is_indeterminate(self):
+  def is_uncertain(self):
     return self._indet._value < 1
   
   def has_uncertain_time(self):
