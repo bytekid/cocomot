@@ -205,7 +205,6 @@ class UncertaintyEncoding(Encoding):
     e = s.num(0)
 
   def edit_distance_fitness_fixed_order(self, trace):
-    print("fitness stuff")
     s = self._solver
     drop_cost = lambda i: s.num(trace._events[i]._indet._value) \
       if trace._events[i].is_uncertain() else s.num(1000)
@@ -267,14 +266,14 @@ class UncertaintyEncoding(Encoding):
     (markings, transitions, valuations) = run
 
     ord_trace = self.decode_ordering(trace, model)
-    self.print_distance_matrix(model)
+    #self.print_distance_matrix(model)
 
     i = run_length # n
     j = len(ord_trace) # m
     (lcost, mcost, syncost, pcost) = self._penalties
     alignment = [] # array mapping instant to one of {"log", "model","parallel", "skip"}
     drops = [ model.eval_bool(v) for v in self._vs_drop ]
-    print("drops", drops)
+    #print("drops", drops)
     while i > 0 or j > 0:
       if j == 0:
         if i < len(transitions) + 1 and \
@@ -291,6 +290,7 @@ class UncertaintyEncoding(Encoding):
         dmodelsilent = model.eval_int(vs_dist[i-1][j])
         dmodel = dmodelsilent + model.eval_int(mcost(i-1))
         dsyn = model.eval_int(vs_dist[i-1][j-1]) + model.eval_int(syncost(i-1,j-1))
+        #print("(i,j) = (%d, %d) dist %d = %d / %d / %d / %d / %d" % (i,j,dist, dlog, dskip, dmodelsilent, dmodel, dsyn))
         if dist == dskip and drops[j-1]:
           alignment.append("drop")
           ord_trace.drop(j-1) # modify ordtrace to skip this guy
@@ -300,11 +300,10 @@ class UncertaintyEncoding(Encoding):
           ord_trace[j-1].fix_determinacy()
           j -= 1
         elif dist == dmodelsilent and model.eval_bool(self._silents[i-1]):
-          if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
-            alignment.append("model")
+        # silent finals are eliminated from transitions, but still in matrix
           i -= 1
         elif dist == dmodel:
-          alignment.append("models")
+          alignment.append("model")
           i -= 1
         else:
           assert(dist == dsyn)

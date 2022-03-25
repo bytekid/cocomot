@@ -21,7 +21,6 @@ class UncertainActivity:
     return self._activities.keys()
 
   def fix(self, a):
-    print(a, self._activities.keys())
     assert(a in self._activities.keys())
     self._activities = {a:1}
 
