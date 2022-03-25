@@ -90,6 +90,10 @@ class Z3Solver(Solver):
   def plus(self, a, b):
     return a + b
 
+  # multiplication
+  def mult(self, a, b):
+    return a * b
+
   # if-then-else
   def ite(self, cond, a, b):
     return If(cond, a, b)

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<log>
+  <trace>
+    <event>
+      <string key="concept:name" value="b"/>
+      <date key="time:timestamp" value="2021-04-26T18:46:40.050+00:00"/>
+      <date key="uncertainty:time:timestamp_max" value="2021-04-26T18:46:40.050+00:00"/>
+    </event>
+  </trace>
+</log>

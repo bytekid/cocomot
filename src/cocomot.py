@@ -15,27 +15,21 @@ from encoding.encoding import Encoding
 from dpn.expr import Expr
 import uncertainty.read
 from uncertainty.encoding import UncertaintyEncoding
+from utils import pad_to, spaces
 
 ### printing
-def spaces(n):
-  return "" if n <= 0 else " " + spaces(n-1) 
-
-
-def fill_to(s, n):
-  return s + spaces(n - len(s)) if len(s) < n else s[:n]
-
 
 def print_sequence(dpn, seq, tab = 12):
   transs = dict([ (t["id"], t) for t in dpn.transitions() ])
   a = spaces(tab+1)
   # print transition label sequence (or >> for skip step)
   for i in range(0, len(seq)):
-    a += fill_to(seq[i]["label"], tab) + " " if seq[i] else "  >>"+spaces(tab-3)
+    a += pad_to(seq[i]["label"], tab) + " " if seq[i] else "  >>"+spaces(tab-3)
   print(a)
   # print valuation sequence for each variable
   for v in dpn.variables():
     name = v["name"]
-    a = fill_to(name, tab) + " "
+    a = pad_to(name, tab) + " "
     for i in range(0, len(seq)):
       if seq[i] == None: # is a skip step >>
         a += spaces(tab+1)
@@ -58,7 +52,7 @@ def print_sequence(dpn, seq, tab = 12):
           value = Expr.strval(val[name]) if name in val else ""
         else:
           value = val[name] if name in val else 0
-        a += fill_to(str(value), tab) + " "
+        a += pad_to(str(value), tab) + " "
       else:
         a += spaces(tab+1)
     print(a)

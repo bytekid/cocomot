@@ -11,7 +11,9 @@ class UncertainActivity:
     if isinstance(arg, str):
       self._activities = {arg:1}
     else:
-      self._activities = arg # map activity name to probability
+      self._activities = {} # map activity name to probability
+      for (a,p) in arg.items():
+        self._activities[a] = float(p)
       assert(len(arg) > 0)
 
   def is_uncertain(self):
@@ -78,7 +80,7 @@ class UncertainEvent:
     assert(isinstance(activity, UncertainActivity))
     self._time = time
     assert(isinstance(time, UncertainTimestamp))
-    self._data = data # UncertainDataValue list
+    self._data = dict(data) # UncertainDataValue list
     self._id = UncertainEvent.id_counter
     UncertainEvent.id_counter += 1
 
@@ -106,6 +108,9 @@ class UncertainEvent:
   
   def labels(self):
     return self._activity.labels()
+  
+  def values(self, name):
+    return self._data[name]
 
   def fix_determinacy(self):
     self._indet._value = 1
