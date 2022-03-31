@@ -5,7 +5,7 @@ from dpn.expr import Expr
 
 class Encoding:
 
-  def __init__(self, dpn, solver, step_bound, all_solutions = False):
+  def __init__(self, dpn, solver, step_bound):
     self._dpn = dpn
     self._solver = solver
     self._step_bound = step_bound
@@ -13,7 +13,6 @@ class Encoding:
     self._vs_mark = self.marking_vars()
     self._vs_trans = self.trans_vars()
     self._run_length = self._solver.intvar("run_length")
-    self._all_solutions = all_solutions
 
   def step_bound(self):
     return self._step_bound
@@ -78,7 +77,7 @@ class Encoding:
   # return pair of edit distance expression and side constraints
   def prepare_edit_distance(self, len_trace):
     self._vs_dist = self.edit_distance_vars(len_trace)
-    self._vs_syn_move = self.move_vars(len_trace, "s")
+    #self._vs_syn_move = self.move_vars(len_trace, "s")
     self._vs_log_move = self.move_vars(len_trace, "l")
     self._vs_mod_move = self.move_vars(len_trace, "m")
     
@@ -274,6 +273,7 @@ class Encoding:
     trans_dict = dict(etrans)
     vars = dpn.variables()
 
+
     # write cost of a transition (to determine model step penalty)
     # optimization: more efficient to use variables instead of just constants
     def wcostint(t):
@@ -357,12 +357,10 @@ class Encoding:
           side_constr.append(vs_log[i+1][j+1])
 
     # symmetry breaking: enforce log steps before model steps
-    # not done if all solutions will be computed, to not compromise completeness
-    if not self._all_solutions:
-      for i in range(2,n):
-        for j in range(3,m):
-          c = s.implies(vs_mod[i][j-1], s.neg(vs_log[i][j]))
-          side_constr.append(c)
+    for i in range(2,n):
+      for j in range(3,m):
+        c = s.implies(vs_mod[i][j-1], s.neg(vs_log[i][j]))
+        side_constr.append(c)
     
     # 6. if the ith step in the model is silent, delta[i+1][j] = delta[i][j],
     #    that is, silent transitions do not increase the distance
@@ -382,90 +380,6 @@ class Encoding:
     constraints = non_neg + base_model + base_log + sync_step + side_constr + \
       silent + ss + ws + bm + rl
     return (min_expr, s.land(constraints))
-
-
-  def edit_distance_parametric(self, trace, lcost, mcost, syncost):
-    delta = self._vs_dist
-    #FIXME use self._vs_log_move, self._vs_mod_move
-    n = self._step_bound
-    m = len(trace)
-    s = self._solver
-    dpn = self._dpn
-    etrans = [(t["id"], t) for t in dpn.transitions()]
-
-    def is_silent(i): # transition i is silent
-      return s.lor([ s.eq(self._vs_trans[i], s.num(id)) \
-        for (id, t) in etrans if t in dpn.reachable(i) and t["invisible"] ])
-    
-    is_silents = [ is_silent(i) for i in range(0,n) ]
-    self._silents = [s.boolvar("silent"+str(i)) for i in range(0,n) ]
-    silent = [ s.iff(v,e) for (v,e) in zip(self._silents, is_silents)]
-    mcostmod = lambda i: s.ite(self._silents[i], s.num(0), mcost(i))
-    # 1. all intermediate distances delta[i][j] are non-negative
-    non_neg = [s.ge(delta[i][j], s.num(0))\
-      for i in range(0,n+1) for j in range(0,m+1)]
-    # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + P_M
-    model0 = [ s.ge(delta[i+1][0], s.plus(mcostmod(i), delta[i][0])) \
-        for i in range(0,n) ]
-    # 3. delta[0][j+1] = delta[0][j] + P_L
-    log0 = [ s.eq(delta[0][j+1], s.plus(delta[0][j], lcost(j))) \
-      for j in range(0,m) ]
-    # 4. one of
-    #  delta[i+1][j+1] >= delta[i][j] + sync move penalty
-    #  delta[i+1][j+1] >= delta[i+1][j] + log move penalty
-    #  delta[i+1][j+1] >= delta[i+1][j] + model move penalty
-    steps = [ s.lor([s.ge(delta[i+1][j+1], s.plus(syncost(i, j), delta[i][j])),\
-                     s.ge(delta[i+1][j+1], s.plus(lcost(j), delta[i+1][j])), \
-                     s.ge(delta[i+1][j+1], s.plus(mcostmod(i),delta[i][j+1]))])\
-      for i in range(0,n) for j in range(0,m) ]
-
-    #FIXME symmetry breaking: enforce log steps before model steps
-    
-    # run length, only relevant for multiple tokens
-    length = [s.ge(self._run_length, s.num(0)),s.ge(s.num(n), self._run_length)]
-    
-    if self._dpn.has_final_places():
-      min_expr = delta[n][m]
-    else:
-      min_expr = delta[0][m]
-      for i in range(1,n+1):
-        min_expr = s.ite(s.eq(self._run_length, s.num(i)), delta[i][m],min_expr)
-
-    constraints = non_neg + model0 + log0 + steps + length + silent
-    return (min_expr, s.land(constraints))
-
-
-  def negate(self, alignment):
-    # FIXME no data for now
-    transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
-    s = self._solver
-    length = len(alignment["run"]["transitions"])
-
-    def is_silent_final(i):
-      return s.lor([s.eq(self._vs_trans[i], s.num(id)) for id in self._dpn._silent_final_transitions])
-    
-    if length == 0:
-      reqs = [s.eq(s.num(0), s.num(self._run_length))]
-      therun = reqs
-    else:
-      therun = []
-      reqs = []
-      # negate border transitions
-      run = alignment["run"]["transitions"]
-      reqs.append(s.eq(self._vs_trans[0], s.num(run[0][0])))
-      # last transition
-      last_id = s.num(run[length - 1][0])
-      is_last = []
-      for i in range(1, self._step_bound+1):
-        is_last.append(s.land([s.eq(self._vs_trans[i-1], s.num(last_id)), s.eq(s.num(i), s.num(self._run_length))]))
-      reqs.append(s.lor(is_last))
-      for (i,(tid, tlabel)) in enumerate(alignment["run"]["transitions"]):
-        therun.append(s.eq(self._vs_trans[i], s.num(tid)))
-      if len(self._dpn._silent_final_transitions) > 0 and length < self._step_bound:
-        therun.append(is_silent_final(length))
-    res = s.land([s.neg(s.land(reqs)), s.neg(s.land(therun))])
-    #print("negate", str(res))
-    return res
 
 
   def decode_process_run(self, model, run_length):
@@ -515,12 +429,13 @@ class Encoding:
     run = self.decode_process_run(model, run_length_dec)
     (markings, transitions, valuations) = run
     run_length = len(transitions)
-    #self.print_distance_matrix(model)
+    self.print_distance_matrix(model)
 
     i = run_length # self._step_bound # n
     j = len(trace) # m
     alignment = [] # array mapping instant to one of {"log", "model","parallel"}
     while i > 0 or j > 0:
+      dist = model.eval_int(vs_dist[i][j])
       if j == 0 or (i > 0 and model.eval_bool(self._silents[i-1])):
         if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
           alignment.append("model")
@@ -533,7 +448,6 @@ class Encoding:
         i -= 1
         j -= 1
       else:
-        dist = model.eval_int(vs_dist[i][j])
         dist_log = model.eval_int(vs_dist[i][j-1]) + 1
         tmodel = transs[transitions[i-1][0]]
         dist_model = model.eval_int(vs_dist[i-1][j]) + len(tmodel["write"]) + 1
@@ -552,6 +466,6 @@ class Encoding:
         "valuations":  valuations
       },
       "alignment":   alignment,
-      "cost":    distance
+      "cost":        distance
     }
   

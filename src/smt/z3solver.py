@@ -98,6 +98,10 @@ class Z3Solver(Solver):
   def ite(self, cond, a, b):
     return If(cond, a, b)
 
+  # absolute value
+  def abs(self, x):
+    return If(x > 0, x, - x)
+
   def distinct(self, xs):
     return Distinct(xs)
   
@@ -167,5 +171,7 @@ class Z3Model(Model):
     val = self.model.eval(v)
     if isinstance(val, IntNumRef):
       return float(val.as_long())
+    if val == v:
+      return -42
     return float(val.as_fraction())
   

@@ -12,6 +12,7 @@ from dpn.read import read_json_input, read_pnml_input
 from cluster.partitioning import NaivePartitioning, IntervalPartitioning
 from dpn.dpn import DPN
 from encoding.encoding import Encoding
+from encoding.encoding_exhaustive import ExhaustiveEncoding
 from dpn.expr import Expr
 import uncertainty.read
 from uncertainty.encoding import UncertaintyEncoding
@@ -144,7 +145,7 @@ def preprocess_log(log, dpn):
     log_processed.append(preprocess_trace(trace, dpn))
   return log_processed
 
-def conformance_check_trace_many(encoding, trace_data, number):
+def conformance_check_trace_many(encoding, trace_data, cost_bound):
   (index, trace, cnt) = trace_data
   t_start = time.perf_counter()
   (dist, dconstr) = encoding.edit_distance(trace)
@@ -153,19 +154,16 @@ def conformance_check_trace_many(encoding, trace_data, number):
   alignments = []
   print("\n##### CONFORMANCE CHECK TRACE %d (%d instances, length %d)" % \
     (index, cnt, len(trace)))
-  for i in range(0, number):
-    model = encoding.solver().minimize(dist, encoding.step_bound())
-    t_solve = encoding.solver().t_solve
-    if model == None: # timeout
-      print("(no further alignments found)")
-      return (None, alignments, t_encode2, t_solve)
-  
+  model = encoding.solver().minimize(dist, cost_bound)
+  while model != None and model.eval_int(dist) <= cost_bound:
     alignment_decoded = encoding.decode_alignment(trace, model)
     print("\nDISTANCE:", alignment_decoded["cost"])
     print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
     alignments.append(alignment_decoded)
-    encoding.solver().require([encoding.negate(alignment_decoded)])
+    encoding.solver().require([encoding.negate(trace, alignment_decoded, model)])
     model.destroy()
+    model = encoding.solver().minimize(dist, cost_bound)
+  t_solve = encoding.solver().t_solve
   return (-1, alignments, t_encode2, t_solve)
 
 
@@ -209,10 +207,12 @@ def create_encoding(solver, trace_length, dpn, uncertain=False, all_sol=False):
   step_bound = trace_length + dpn.shortest_accepted() + 2
   dpn.compute_reachable(step_bound)
 
-  if not uncertain:
-    encoding = Encoding(dpn, solver, step_bound, all_solutions = all_sol)
-  else:
+  if uncertain:
     encoding = UncertaintyEncoding(dpn, solver, step_bound, uncertain)
+  elif all_sol:
+    encoding = ExhaustiveEncoding(dpn, solver, step_bound)
+  else:
+    encoding = Encoding(dpn, solver, step_bound)
 
   # encoding parts
   t_start = time.perf_counter()
@@ -349,7 +349,7 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
   i = 0
   parts = interval_part.partitions
   if numprocs == 1:
-    solver = YicesSolver() # CVC5Solver()  # Z3Solver() # 
+    solver = Z3Solver() # YicesSolver() # CVC5Solver()  # 
     i = 0
     while i < len(parts):
       (trace, cnt) = parts[i]
