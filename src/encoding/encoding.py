@@ -105,7 +105,7 @@ class Encoding:
       if len(reach) > 0:
         return s.lor([s.eq(v, s.num(t["id"])) for t in reach])
       else:
-        return s.true()
+        return s.le(self._run_length, s.num(i))
     rng_constr = [rng(i, v) for (i, v) in enumerate(tvs)]
     # optimization: the following serves only for symmetry breaking:
     # if transition is tau (i.e., final filler transition) then so is the next

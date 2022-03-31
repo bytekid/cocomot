@@ -154,7 +154,7 @@ class DPN:
               continue # this transition is not enabled, skip
             m = list(marking.difference(pre_t)) + post_t
             markingx = marking.difference(pre_t).union(post_t)
-            if len(m) > len(markingx):
+            if len(marking) != len(markingx):
               is_one_bounded = False
             statesx.append((markingx, steps + [tid]))
             if not transs[tid] in self._reachable[i] and fdists[tid] < rem:

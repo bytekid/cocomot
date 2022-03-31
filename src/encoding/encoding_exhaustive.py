@@ -52,11 +52,11 @@ class ExhaustiveEncoding(Encoding):
     # 3. border moves are log moves
     log0 = [ lmove(0, j+1) for j in range(0,m) ]
     # 4. define move types
-    modelmoves = [s.iff(mmove(i+1,j), s.eq(delta[i+1][j], s.plus(mcostmod(i), delta[i][j])))\
-      for i in range(0,n) for j in range(0,m+1)]
-    logmoves = [s.iff(lmove(i,j+1), s.eq(delta[i][j+1], s.plus(s.num(1), delta[i][j])))\
+    modelmoves = [s.implies(mmove(i+1,j), s.eq(delta[i+1][j], s.plus(s.num(1), delta[i][j])))\
+      for i in range(0,n) for j in range(0,m+1)] # replaced mcostmod(i) by 1
+    logmoves = [s.implies(lmove(i,j+1), s.eq(delta[i][j+1], s.plus(s.num(1), delta[i][j])))\
       for i in range(0,n+1) for j in range(0,m)]
-    syncmoves = [s.iff(smove(i+1,j+1), s.eq(delta[i+1][j+1], s.plus(syncost(i, j), delta[i][j])))\
+    syncmoves = [s.implies(smove(i+1,j+1), s.eq(delta[i+1][j+1], s.plus(syncost(i, j), delta[i][j])))\
       for i in range(0,n) for j in range(0,m)]
     
     # run length, only relevant for multiple tokens
@@ -69,10 +69,8 @@ class ExhaustiveEncoding(Encoding):
       for i in range(1,n+1):
         min_expr = s.ite(s.eq(self._run_length, s.num(i)), delta[i][m],min_expr)
 
-    test = [ lmove(0,1), mmove(1,1)]
-
     constraints = moves + non_neg + model0 + log0 + modelmoves + logmoves + \
-      syncmoves + length + silent + test
+      syncmoves + length + silent
     return (min_expr, s.land(constraints))
   
   def write_diff_fixed(self, i, j, t):
@@ -120,12 +118,12 @@ class ExhaustiveEncoding(Encoding):
 
 
   def negate(self, trace, alignment, model):
-    print("\nMOVES:")
-    for j in range(0, len(self._vs_moves[0])):
-      d = ""
-      for i in range(0, len(self._vs_moves)):
-        d = d + " " + str(model.eval_int(self._vs_moves[i][j]))
-      print(d)
+    #print("\nMOVES:")
+    #for j in range(0, len(self._vs_moves[0])):
+    #  d = ""
+    #  for i in range(0, len(self._vs_moves)):
+    #    d = d + " " + str(model.eval_int(self._vs_moves[i][j]))
+    #  print(d)
 
     transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
     s = self._solver
@@ -143,7 +141,6 @@ class ExhaustiveEncoding(Encoding):
 
     for (i,(tid, tlabel)) in enumerate(alignment["run"]["transitions"]):
       sol.append(s.eq(self._vs_trans[i], s.num(tid)))
-    print([str(s) for s in sol])
     return s.neg(s.land(sol))
 
 
@@ -156,7 +153,7 @@ class ExhaustiveEncoding(Encoding):
     run = self.decode_process_run(model, run_length_dec)
     (markings, transitions, valuations) = run
     run_length = len(transitions)
-    self.print_distance_matrix(model)
+    #self.print_distance_matrix(model)
 
     i = run_length # self._step_bound # n
     j = len(trace) # m
@@ -178,7 +175,7 @@ class ExhaustiveEncoding(Encoding):
         j -= 1
     
     alignment.reverse()
-    print(moves[::-1])
+    # print(moves[::-1])
     return {
       "run": {
         "transitions": transitions,

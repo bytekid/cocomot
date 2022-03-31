@@ -107,6 +107,7 @@ def print_trace_distance_verbose(dpn, trace, decoding):
   sys.stdout.flush()
 
 def print_alignments_json(alignments):
+  alldata = []
   for (trace, dist, alignment) in alignments:
     for a in (alignment if isinstance(alignment, list) else [alignment]):
       if not a:
@@ -123,7 +124,8 @@ def print_alignments_json(alignments):
         all_mlists.append(mlist)
       run["markings"] = all_mlists
     data = {"trace" : trace[1], "alignments": alignment}
-    print(json.dumps(data, indent=2))
+    alldata.append(data)
+  print(json.dumps(alldata, indent=2))
 
 def preprocess_trace(trace, dpn):
   simple_trace = []
@@ -145,25 +147,30 @@ def preprocess_log(log, dpn):
     log_processed.append(preprocess_trace(trace, dpn))
   return log_processed
 
-def conformance_check_trace_many(encoding, trace_data, cost_bound):
+def conformance_check_trace_many(encoding, trace_data, opts):
+  cost_bound = opts["many"]
+  verbose = opts["verbose"]
   (index, trace, cnt) = trace_data
   t_start = time.perf_counter()
   (dist, dconstr) = encoding.edit_distance(trace)
   t_encode2 = time.perf_counter() - t_start
-  encoding.solver().require([dconstr])
+  solver = encoding.solver()
+  solver.require([dconstr])
   alignments = []
-  print("\n##### CONFORMANCE CHECK TRACE %d (%d instances, length %d)" % \
-    (index, cnt, len(trace)))
-  model = encoding.solver().minimize(dist, cost_bound)
+  if verbose > 0:
+    print("\n##### CONFORMANCE CHECK TRACE %d (%d instances, length %d)" % \
+      (index, cnt, len(trace)))
+  model = solver.minimize(dist, cost_bound)
   while model != None and model.eval_int(dist) <= cost_bound:
     alignment_decoded = encoding.decode_alignment(trace, model)
-    print("\nDISTANCE:", alignment_decoded["cost"])
-    print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
+    if verbose > 0:
+      print("\nDISTANCE:", alignment_decoded["cost"])
+      print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
     alignments.append(alignment_decoded)
-    encoding.solver().require([encoding.negate(trace, alignment_decoded, model)])
+    solver.require([encoding.negate(trace, alignment_decoded, model)])
     model.destroy()
-    model = encoding.solver().minimize(dist, cost_bound)
-  t_solve = encoding.solver().t_solve
+    model = solver.minimize(dist, cost_bound) if solver.is_sat() else None
+  t_solve = solver.t_solve
   return (-1, alignments, t_encode2, t_solve)
 
 
@@ -232,19 +239,20 @@ def conformance_check_single_trace(solver, trace_record, dpn, verbose=0, many=No
   return conformance_check_trace(encoding, trace_record, verbose)
 
 # conformance check multiple traces of same length
-def conformance_check_traces(solver, traces, dpn, verbose=0, many=None):
+def conformance_check_traces(solver, traces, dpn, opts):
+  (verbose, many) = (opts["verbose"], opts["many"])
   (enc, t_enc1) = create_encoding(solver, len(traces[0][1]), dpn, all_sol=many)
 
   results = []
   if len(traces) == 1:
     res = conformance_check_trace(enc, traces[0], verbose) if not many \
-      else conformance_check_trace_many(enc, traces[0], many)
+      else conformance_check_trace_many(enc, traces[0], opts)
     results.append((traces[0], res))
   else:
     for trace in traces:
       solver.push()
       res = conformance_check_trace(enc, trace,verbose) if not many \
-        else conformance_check_trace_many(enc, trace, many)
+        else conformance_check_trace_many(enc, trace, opts)
       results.append((trace, res))
       solver.pop()
   return results, t_enc1
@@ -320,16 +328,17 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1):
 
 def work(job):
   solver = YicesSolver()
-  (i, (trace, cnt), dpn) = job
-  res, t_enc = conformance_check_traces(solver, [(i, trace, cnt)], dpn)
+  (i, (trace, cnt), dpn, opts) = job
+  res, t_enc = conformance_check_traces(solver, [(i, trace, cnt)], dpn, opts)
   (distance, _, t_enc, t_solv) = res[0][1]
   solver.destroy()
   return (i, trace, cnt, distance, t_enc, t_solv)
 
-def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
+def cocomot(dpn, log, opts):
   # preprocessing
+  (numprocs, verbose, many) = (opts["numprocs"], opts["verbose"], opts["many"])
   log = preprocess_log(log, dpn)
-  if len(log) > 1:
+  if len(log) > 1 and verbose > 0:
     print("number of traces: %d" % len(log))
 
   ts_encode = []
@@ -343,13 +352,13 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
   naive_part = NaivePartitioning(log)
   interval_part = IntervalPartitioning(dpn, naive_part.representatives())
   t_cluster =  time.perf_counter() - t_start
-  if len(log) > 1:
+  if len(log) > 1 and verbose > 0:
     print("equivalence classes naive: %d, intervals: %d (clustering time %.2f)" % \
       (naive_part.partition_count(), interval_part.partition_count(), t_cluster))
   i = 0
   parts = interval_part.partitions
   if numprocs == 1:
-    solver = Z3Solver() # YicesSolver() # CVC5Solver()  # 
+    solver = YicesSolver() # CVC5Solver()  # Z3Solver() # 
     i = 0
     while i < len(parts):
       (trace, cnt) = parts[i]
@@ -360,7 +369,7 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
         (trace, cnt) = parts[i]
         same_len_traces.append((i, trace, cnt))
       #print("%d traces of length %d" % (len(same_len_traces), length))
-      res,tenc = conformance_check_traces(solver,same_len_traces,dpn, verbose=verbose, many = many)
+      res,tenc = conformance_check_traces(solver, same_len_traces, dpn, opts)
       for (trace, (d, a, t_enc, t_solv)) in res:
         if d == None:
           timeouts += 1
@@ -374,7 +383,7 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
     solver.destroy()
   else:
     print("Parallel checking with %d processes ..." % numprocs)
-    jobs = [ (i, t, dpn) for (i,t) in enumerate(parts) ]
+    jobs = [ (i, t, dpn, opts) for (i,t) in enumerate(parts) ]
     #for j in jobs:
     #  work(j)
 
@@ -405,7 +414,7 @@ def cocomot(dpn, log, numprocs=1, verbose=1, many=None):
       for (d, cnt) in distances.items():
         print("distance %d: %d" % (d, cnt))
       print("timeouts: %d" % timeouts)
-  elif verbose > 1:
+  if opts["json"]:
     print_alignments_json(alignments)
   YicesSolver.shutdown()
 
@@ -418,9 +427,10 @@ def process_args(argv):
   anti = None
   numprocs = 1
   uncertainty = None
+  json = False
   verbose = 1
   try:
-    opts, args = getopt.getopt(argv,"hmu:v:d:l:n:x:a:")
+    opts, args = getopt.getopt(argv,"hjmu:v:d:l:n:x:a:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(2)
@@ -438,6 +448,9 @@ def process_args(argv):
       uncertainty = arg
     elif opt == "-m":
       multi = True
+    elif opt == "-j":
+      json = True
+      verbose = 0
     elif opt == "-a":
       anti = int(arg)
     elif opt == "-v":
@@ -446,6 +459,7 @@ def process_args(argv):
       numprocs = int(arg)
   return {
     "anti": anti,
+    "json": json,
     "log": log_file,
     "many": many,
     "model": model_file, 
@@ -467,5 +481,5 @@ if __name__ == "__main__":
     ps["uncertainty"] = "min" if not ps["uncertainty"] else ps["uncertainty"] 
     cocomot_uncertain(dpn, log, ps["uncertainty"], ps["verbose"])
   else:
-    cocomot(dpn, log, ps["numprocs"], ps["verbose"], ps["many"])
+    cocomot(dpn, log, ps)
   
