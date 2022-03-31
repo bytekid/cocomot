@@ -429,7 +429,7 @@ class Encoding:
     run = self.decode_process_run(model, run_length_dec)
     (markings, transitions, valuations) = run
     run_length = len(transitions)
-    self.print_distance_matrix(model)
+    # self.print_distance_matrix(model)
 
     i = run_length # self._step_bound # n
     j = len(trace) # m
