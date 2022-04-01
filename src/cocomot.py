@@ -167,7 +167,7 @@ def conformance_check_trace_many(encoding, trace_data, opts):
       print("\nDISTANCE:", alignment_decoded["cost"])
       print_trace_distance_verbose(encoding._dpn, trace, alignment_decoded)
     alignments.append(alignment_decoded)
-    solver.require([encoding.negate(trace, alignment_decoded, model)])
+    solver.require([encoding.negate(trace, alignment_decoded, model,all=False)])
     model.destroy()
     model = solver.minimize(dist, cost_bound) if solver.is_sat() else None
   t_solve = solver.t_solve

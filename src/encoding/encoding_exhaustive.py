@@ -117,30 +117,28 @@ class ExhaustiveEncoding(Encoding):
     return self.edit_distance_parametric(trace, mcost, syncost)
 
 
-  def negate(self, trace, alignment, model):
-    #print("\nMOVES:")
-    #for j in range(0, len(self._vs_moves[0])):
-    #  d = ""
-    #  for i in range(0, len(self._vs_moves)):
-    #    d = d + " " + str(model.eval_int(self._vs_moves[i][j]))
-    #  print(d)
-
+  # if all is true, the entire alignment is negated; otherwise only the 
+  # transition sequence and the border moves
+  def negate(self, trace, alignment, model, all):
     transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
     s = self._solver
     length = len(alignment["run"]["transitions"])
     # length should coincide with decoded run_length
     vs_moves = self._vs_moves
     sol = [s.eq(s.num(length), self._run_length)]
+    sol2 = sol
     j = len(trace)
     i = length
     while i > 0 or j > 0:
       move = model.eval_int(vs_moves[i][j])
-      sol.append(s.eq(vs_moves[i][j], s.num(move)))
+      if all or i <= 1 or j <= 1 or i == length or j == len(trace):
+        sol.append(s.eq(vs_moves[i][j], s.num(move)))
       i -= 0 if move == 1 else 1
       j -= 0 if move == 2 else 1
 
     for (i,(tid, tlabel)) in enumerate(alignment["run"]["transitions"]):
-      sol.append(s.eq(self._vs_trans[i], s.num(tid)))
+      if all or i == 0 or i == length - 1:
+        sol.append(s.eq(self._vs_trans[i], s.num(tid)))
     return s.neg(s.land(sol))
 
 
@@ -175,7 +173,7 @@ class ExhaustiveEncoding(Encoding):
         j -= 1
     
     alignment.reverse()
-    # print(moves[::-1])
+    #print("MOVES", moves[::-1])
     return {
       "run": {
         "transitions": transitions,
