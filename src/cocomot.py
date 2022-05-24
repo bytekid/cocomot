@@ -344,12 +344,13 @@ def cocomot(dpn, log, opts):
   ts_encode = []
   ts_solve = []
   distances = {}
+  alldistances = {}
   timeouts = 0
   alignments = []
 
   # get unique traces by data
   t_start = time.perf_counter()
-  naive_part = NaivePartitioning(log)
+  naive_part = NaivePartitioning([ (t,1) for t in log ])
   interval_part = IntervalPartitioning(dpn, naive_part.representatives())
   t_cluster =  time.perf_counter() - t_start
   if len(log) > 1 and verbose > 0:
@@ -370,11 +371,13 @@ def cocomot(dpn, log, opts):
         same_len_traces.append((i, trace, cnt))
       #print("%d traces of length %d" % (len(same_len_traces), length))
       res,tenc = conformance_check_traces(solver, same_len_traces, dpn, opts)
-      for (trace, (d, a, t_enc, t_solv)) in res:
+      for (j, (trace, (d, a, t_enc, t_solv))) in enumerate(res):
         if d == None:
           timeouts += 1
         else:
           distances[d] = distances[d] + 1 if d in distances else 1
+          cnt = parts[i - len(same_len_traces) + 1 + j][1]
+          alldistances[d] = alldistances[d] + cnt if d in alldistances else cnt
         ts_encode.append(t_enc)
         ts_solve.append(t_solv)
         alignments.append((trace, d, a))
@@ -396,6 +399,7 @@ def cocomot(dpn, log, opts):
       if d != None:
         print_trace_distance(i, trace, t_enc, t_solv, cnt, d)
         distances[d] = distances[d] + 1 if d in distances else 1
+        alldistances[d] = alldistances[d] + cnt if d in alldistances else cnt
       else:
         timeouts += 1
       ts_encode.append(t_enc)
@@ -412,7 +416,7 @@ def cocomot(dpn, log, opts):
       (sum(ts_solve ), sum(ts_solve)/len(ts_solve), ts_solve[mid]))
     if not many:
       for (d, cnt) in distances.items():
-        print("distance %d: %d" % (d, cnt))
+        print("distance %d: %d (%d overall)" % (d, cnt, alldistances[d]))
       print("timeouts: %d" % timeouts)
   if opts["json"]:
     print_alignments_json(alignments)

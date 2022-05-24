@@ -14,20 +14,21 @@ class NaivePartitioning:
     return d + [event_data(e) for e in t]
 
   def __init__(self, logs):
-    logsp = [ (t, NaivePartitioning.trace_data(t)) for t in logs ]
+    logsp = [ (t, NaivePartitioning.trace_data(t), cnt) for (t, cnt) in logs ]
     logsp = sorted(logsp, key=lambda t: t[1])
     i = 0
     self.partitions = []
     while i < len(logsp):
-      (trace, tdata) = logsp[i]
+      (trace, tdata, cnt) = logsp[i]
       j = i + 1
       while j < len(logsp) and logsp[j][1] == tdata:
+        cnt += logsp[j][2]
         j += 1
-      self.partitions.append((trace, j - i))
+      self.partitions.append((trace, cnt))
       i = j
 
   def representatives(self):
-    return [ t for (t,_) in self.partitions ]
+    return self.partitions
 
   def partition_count(self):
     return len(self.partitions)
@@ -56,22 +57,17 @@ class IntervalPartitioning:
 
   def __init__(self, dpn, logs):
     cmps = comparison_intervals(dpn)
-    logsp = [ (t, self.trace_profile(t, dpn, cmps)) for t in logs ]
+    logsp = [ (t, self.trace_profile(t, dpn, cmps), cnt) for (t, cnt) in logs ]
     logsp = sorted(logsp, key=lambda t: t[1])
     i = 0
     self.partitions = []
     while i < len(logsp):
-      (trace, profile) = logsp[i]
+      (trace, profile, cnt) = logsp[i]
       j = i + 1
-      #if j < len(logsp) and logsp[j][1] == profile and len(trace) == len(logsp[j][0]) and len(trace) == 3:
-        #print("EQUIVALENT %d" % len(self.partitions))
-        #print(trace)
-        #print(profile)
-        #print(logsp[j][0])
-        #print(logsp[j][1])
       while j < len(logsp) and logsp[j][1] == profile:
+        cnt += logsp[j][2]
         j += 1
-      self.partitions.append((trace, j - i))
+      self.partitions.append((trace, cnt))
       i = j
       self._cmps = cmps
       self._dpn = dpn
@@ -82,7 +78,7 @@ class IntervalPartitioning:
     return self.trace_profile(t1, dpn, cmps) == self.trace_profile(t2, dpn, cmps)
 
   def representatives(self):
-    return [ t for (t,_) in self.partitions ]
+    return self.partitions
 
   def partition_count(self):
     return len(self.partitions)
