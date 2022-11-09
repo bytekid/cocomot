@@ -102,6 +102,22 @@ class Z3Solver(Solver):
   def abs(self, x):
     return If(x > 0, x, - x)
 
+  def get_bool_sort(self):
+    return BoolSort()
+
+  def get_int_sort(self):
+    return IntSort()
+
+  def get_real_sort(self):
+    return RealSort()
+
+  def mk_fun(self, name, isorts, osort):
+    sorts = isorts + [osort]
+    return Function(name, *sorts)
+
+  def apply_fun(self, f, args):
+    return f(*args)
+
   def distinct(self, xs):
     return Distinct(xs)
   

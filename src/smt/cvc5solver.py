@@ -270,8 +270,7 @@ class CVC5Solver(Solver):
 
   # add list of assertions
   def require(self, formulas):
-    for f in formulas:
-      self._solver.assertFormula(f)
+    self._solver.assertFormula(formulas)
 
   # check satisfiability
   def check_sat(self, e, eval = None):
@@ -289,30 +288,6 @@ class CVC5Solver(Solver):
     self._checks += 1
     self._check_time += time.time() - start
     return m
-
-  def minimize(self, expr, max_val, start = 0):
-    self.push()
-    val = start
-    self.require([self.eq(expr, self.num(val))])
-    t_start = time.perf_counter()
-    status = self._solver.checkSat()
-    if not status.isSat():
-      print(status)
-    m = CVC5Model(self, eval) if status.isSat() else None
-    if eval == None or m == None:
-      self.pop()
-    self.t_solve = time.perf_counter() - t_start
-    while not status.isSat() and val <= max_val:
-      self.push()
-      val += 1
-      self.require([self.eq(expr, self.num(val))])
-      t_start = time.perf_counter()
-      status = self._solver.checkSat()
-      m = CVC5Model(self, eval) if status.isSat() else None
-      if eval == None or m == None:
-        self.pop() # otherwise pop later when destroying model
-      self.t_solve += time.perf_counter() - t_start
-    return None if val > max_val else m
 
   # reset context
   def reset(self):

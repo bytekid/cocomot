@@ -68,6 +68,9 @@ class DPN:
   def is_silent_final_transition(self, id):
     return id in self._silent_final_transitions
   
+  def post(self, p):
+    return set([ l["target"] for l in self._arcs if l["source"]  == p])
+
   def is_acyclic(self, pid):
     ps = [pid]
     visited = set(ps)
