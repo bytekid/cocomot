@@ -3,8 +3,9 @@ from random import random, sample, randint
 from uncertainty.trace import *
 
 def all(traces):
-  add_indeterminacy(traces, prob=0.1)
-  add_uncertain_activities(traces, prob=0.1, num=1)
+  #add_indeterminacy(traces, prob=0.1)
+  #add_uncertain_activities(traces, prob=0.1, num=1)
+  make_timestamps_equal(traces)
   log = UncertainLog(traces)
   xml = log.to_xes()
   print("<?xml version='1.0' encoding='UTF-8'?>")
@@ -42,3 +43,12 @@ def add_uncertain_activities(traces, prob=0.2, num=1, p_lower=0.1, p_upper=0.9):
         acts = [(lab, p)] + [ (a, (1-p) / num_for_trace) for a in add ]
         uact = UncertainActivity(dict(acts))
         e.set_uncertain_activity(uact)
+
+# for every trace t, set all events in t to the same uncertain timestamp
+# (lower and upper bound are equal)
+def make_timestamps_equal(traces):
+  for t in traces:
+    thetime = t[0].lower_time()
+    utime = UncertainTimestamp(thetime, upper=thetime)
+    for e in t:
+      e.set_uncertain_time(utime)

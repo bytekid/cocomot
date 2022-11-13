@@ -47,8 +47,11 @@ class UncertaintyEncoding(Encoding):
     cs = []
     for (e, v, _) in vs_time:
       low = s.real(e.lower_time())
-      upp = s.real(e.upper_time())
-      cs += [s.ge(upp, v), s.ge(v, low)]
+      if e._time.is_uncertain():
+        upp = s.real(e.upper_time())
+        cs += [s.ge(upp, v), s.ge(v, low)]
+      else:
+        cs.append(s.eq(v, low))
 
     # values taken by vs_trace are ids of events
     for j in range(0,m):
@@ -196,7 +199,8 @@ class UncertaintyEncoding(Encoding):
       return self.edit_distance_min_var_order(trace)
 
 
-  def write_diff_var(self, j, t):
+  def write_diff_var(self, trace, t, i, j):
+    s = self._solver
     subst_prime = dict([ (x, v) for (x, v) in self._vs_data[i+1].items() ])
     vs_trace = self._vs_trace
     diff = s.num(0)
@@ -205,8 +209,9 @@ class UncertaintyEncoding(Encoding):
       for e in trace._events:
         is_event = s.eq(vs_trace[j], s.num(e._id))
         # FIXME for intervals
-        vs = [s.eq(subst_prime[x],s.real(Expr.numval(v))) for v in e.values(x)]
-        is_ok.append(s.land([is_event, s.lor(vs)]))
+        if e.has_values(x): # otherwise written does not match, so increase diff
+          vs = [s.eq(subst_prime[x],s.real(Expr.numval(v))) for v in e.values(x)]
+          is_ok.append(s.land([is_event, s.lor(vs)]))
       diff = s.ite(s.lor(is_ok), diff, s.inc(diff))
     return diff
 
@@ -223,16 +228,18 @@ class UncertaintyEncoding(Encoding):
     for (t,e) in trans_events:
       is_t = s.eq(self._vs_trans[i], s.num(t["id"]))
       is_event = s.eq(vs_trace[j], s.num(e._id))
-      wdiff = self.write_diff_var(j, t)
       conf = e.indeterminacy()
       activities = e._activity._activities.items()
-      for (k, (l, p)) in enumerate(activities):
-        if "label" in t and t["label"] == l:
+      wdiff = None
+      for (k, (lab, p)) in enumerate(activities):
+        if "label" in t and t["label"] == lab:
           # FIXME is the following needed?
           is_act = [s.land([s.eq(self._vs_act[y], s.num(k)), s.eq(self._vs_pos[y], s.num(j)) ]) for y in range(0, len(trace))]
           theta = s.real(2 - p - conf)
+          if wdiff == None:
+            wdiff = self.write_diff_var(trace, t, i, j)
           penalty = s.ite(s.eq(wdiff, zero), theta, s.mult(wdiff, theta))
-          ps.append((s.land([is_event, is_act, is_t]), penalty))
+          ps.append((s.land([is_event, s.lor(is_act), is_t]), penalty))
     return ps
 
 

@@ -102,10 +102,10 @@ class UncertainActivity:
 class UncertainTimestamp:
   def __init__(self, lower, upper=None):
     self._lower = lower
-    self._upper = upper if upper != None else lower
+    self._upper = upper 
 
   def is_uncertain(self):
-    return self._lower != self._upper
+    return self._upper != None
 
   def __str__(self):
     if self.is_uncertain():
@@ -132,7 +132,7 @@ class UncertainTimestamp:
       xtimeu = doc.createElement("date")
       xtimeu.setAttribute("key", "uncertainty:time:timestamp_max")
       xtimeu.setAttribute("value", self._upper.strftime(timeformat))
-      xs.append[xtimeu]
+      xs.append(xtimeu)
     return xs
 
 
@@ -218,8 +218,11 @@ class UncertainEvent:
   def data(self):
     return self._data
   
+  def has_values(self, name):
+    return name in self._data
+  
   def values(self, name):
-    return self._data[name]
+    return self._data[name]._values
 
   def set_indeterminacy(self, indet):
     self._indet = indet
@@ -243,7 +246,7 @@ class UncertainEvent:
     # return standard event as dictionary
     # by the time of the call, all relevant uncertainties should be removed,
     # so take arbitrary admissible value
-    valuation = dict([ (d._name, d._values[0]) for d in self._data ])
+    valuation = dict([ (d._name, d._values[0]) for d in self._data.values() ])
     return {
       "label": list(self._activity._activities.keys())[0],
       "time": self._time._lower,
