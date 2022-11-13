@@ -322,7 +322,7 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1):
       (dist, dconstr) = encoding.edit_distance_fitness(trace)
     solver.require([dconstr])
     model = encoding.solver().minimize(dist, encoding.step_bound()+10)
-    distance = None if model == None else model.eval_real(dist)
+    distance = None if model == None else round(model.eval_real(dist),2)
     result = encoding.decode_alignment(trace, model)
     print("distance", distance)
     if verbose > 0:

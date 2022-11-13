@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<log>
+<trace>
+		<event>
+			<string key="concept:name" value="Create Fine"/>
+			<date key="time:timestamp" value="2006-08-02T00:00:00+0200"/>
+			<container>
+				<bool key="uncertainty:indeterminacy" value="true"/>
+				<float key="uncertainty:probability" value="0.35"/>
+			</container>
+		</event>
+		<event>
+			<string key="concept:name" value="Send Fine"/>
+			<date key="time:timestamp" value="2006-12-12T00:00:00+0100"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Insert Fine Notification"/>
+			<date key="time:timestamp" value="2007-01-15T00:00:00+0100"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Add penalty"/>
+			<date key="time:timestamp" value="2007-03-16T00:00:00+0100"/>
+		</event>
+		<event>
+			<list key="uncertainty:discrete_weak">
+				<values>
+					<container key="uncertainty:entry">
+						<string key="concept:name" value="Send for Credit Collection"/>
+						<float key="uncertainty:probability" value="0.46"/>
+					</container>
+					<container key="uncertainty:entry">
+						<string key="concept:name" value="Add penalty"/>
+						<float key="uncertainty:probability" value="0.54"/>
+					</container>
+				</values>
+			</list>
+			<date key="time:timestamp" value="2009-03-30T00:00:00+0200"/>
+		</event>
+	</trace>
+</log>
+
