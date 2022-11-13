@@ -12,7 +12,7 @@ def all(traces):
 
 
 def rand_range(low, high):
-  probv = random() * (high - low) + low
+  probv = (float(randint(0, 100)) / 100) * (high - low) + low
   return float(int(probv*100))/100 # precision 2 places after comma
 
 

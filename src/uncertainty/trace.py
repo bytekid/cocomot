@@ -193,6 +193,9 @@ class UncertainEvent:
   def labels(self):
     return self._activity.labels()
   
+  def data(self):
+    return self._data
+  
   def values(self, name):
     return self._data[name]
 

@@ -278,15 +278,19 @@ class UncertaintyEncoding(Encoding):
     return (min_expr, s.land([order_constr, cs]))
 
 
-  def write_diff_fixed(self, i, j, t): # FIXME uncertain data
+  def write_diff_fixed(self, trace, i, j, t): # FIXME uncertain data
     s = self._solver
     diff = s.num(0)
     for x in t["write"]:
-      if x not in trace[j]["valuation"]:
+      if x not in trace[j].data():
         diff = s.inc(diff) 
       else:
-        val = Expr.numval(trace[j]["valuation"][x])
-        diff = s.ite(s.eq(subst_prime[x], s.real(val)), diff, s.inc(diff))
+        vals = trace[j].values([x])
+        if len(vals) == 1:
+          val = Expr.numval(vals[0])
+          diff = s.ite(s.eq(subst_prime[x], s.real(val)), diff, s.inc(diff))
+        else: # FIXME
+          pass
     return diff
 
 
@@ -299,7 +303,7 @@ class UncertaintyEncoding(Encoding):
     ps = []
     zero = s.real(0)
     for t in self._dpn.reachable(i):
-      wdiff = self.write_diff_fixed(i, j, t)
+      wdiff = self.write_diff_fixed(trace, i, j, t)
       is_t = s.eq(self._vs_trans[i], s.num(t["id"]))
       for (k, (l, p)) in enumerate(activities):
         if "label" in t and t["label"] == l:
@@ -311,7 +315,9 @@ class UncertaintyEncoding(Encoding):
 
 
   def edit_distance_fitness_fixed_order(self, trace):
+    assert(isinstance(trace, UncertainTrace))
     s = self._solver
+    #print(trace)
     def drop_cost(i):
       e = s.real(trace._events[i].indeterminacy()) \
         if trace._events[i].is_uncertain() else s.real(MAX)
