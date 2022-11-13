@@ -1,6 +1,7 @@
 from xml.dom.minidom import getDOMImplementation
 import xml.dom.minidom
 
+
 class Indeterminacy:
   def __init__(self, value):
     self._value = value
@@ -136,7 +137,8 @@ class UncertainTimestamp:
 
 
 class UncertainDataValue:
-  def __init__(self, name, values):
+  def __init__(self, kind, name, values):
+    self._kind = kind
     self._name = name
     self._values = values # map value  to probability
     assert(len(values) > 0)
@@ -148,9 +150,29 @@ class UncertainDataValue:
     return s[:-2] + "]"
 
   def to_xes(self, doc):
-    xelem = doc.createElement("self._name")
-    #FIXME
-    return xelem
+		#	<list key="uncertainty:discrete_strong">
+		#		<values>
+		#			<string key="amount" value="10.0"/>
+		#			<string key="amount" value="10.0"/>
+		#		</values>
+		#	</list>
+    if len(self._values) > 1: # so event is really uncertain
+      xlist = doc.createElement("list")
+      xlist.setAttribute("key", "uncertainty:discrete_strong")
+      xvals = doc.createElement("values")
+      xlist.appendChild(xvals)
+      for v in self._values:
+        xval = doc.createElement(self._kind)
+        xval.setAttribute("key", self._name)
+        xval.setAttribute("value", str(v))
+        xvals.appendChild(xval)
+      return xlist
+    else:
+      xval = doc.createElement(self._kind)
+      xval.setAttribute("key", self._name)
+      xval.setAttribute("value", str(self._values[0]))
+      return xval
+
 
 
 class UncertainEvent:
@@ -164,13 +186,13 @@ class UncertainEvent:
     assert(isinstance(activity, UncertainActivity))
     self._time = time
     assert(isinstance(time, UncertainTimestamp))
-    self._data = dict(data) # UncertainDataValue list
+    self._data = dict([ (d._name, d) for d in data]) # data is UncertainDataValue list
     self._id = UncertainEvent.id_counter
     UncertainEvent.id_counter += 1
 
   def __str__(self):
     d = "["
-    for v in self._data:
+    for v in self._data.values():
       d += str(v) + ", "
     return "<" + str(self._indet) + ", " + str(self._activity) + ", " + \
       str(self._time) + ", " + d + "] >"
@@ -233,7 +255,7 @@ class UncertainEvent:
     xevent.appendChild(self._activity.to_xes(doc))
     for xtime in self._time.to_xes(doc):
       xevent.appendChild(xtime)
-    for (d, dvar) in self._data:
+    for dvar in self._data.values():
       xevent.appendChild(dvar.to_xes(doc))
     if self._indet.is_uncertain():
       xevent.appendChild(self._indet.to_xes(doc))

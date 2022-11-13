@@ -1,4 +1,4 @@
-from random import random, sample
+from random import random, sample, randint
 
 from uncertainty.trace import *
 

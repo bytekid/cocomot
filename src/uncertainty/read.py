@@ -63,13 +63,21 @@ def xes(logfile):
             else: # data
               data_name = ekey
               data_values.append(e.getAttribute('value'))
+              kind = e.tagName
           if len(acts) > 0:
             activity = UncertainActivity(acts)
           if len(data_values) > 0:
-            data.append(UncertainDataValue(data_name, data_values))
+            data.append(UncertainDataValue(kind, data_name, data_values))
+        else: # data without uncertainty
+          name = child.getAttribute('key')
+          val = child.getAttribute('value')
+          kind = child.tagName
+          data.append(UncertainDataValue(kind, key, [ val ] ))
+
             
       time = UncertainTimestamp(time_lower, time_upper)
       event = UncertainEvent(indet, activity, time, data)
       trace.append(event)
-    log.append(UncertainTrace(trace))
+      utrace = UncertainTrace(trace)
+    log.append(utrace)
   return log
