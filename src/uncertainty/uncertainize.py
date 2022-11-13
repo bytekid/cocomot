@@ -4,7 +4,7 @@ from uncertainty.trace import *
 
 def all(traces):
   add_indeterminacy(traces, prob=0.1)
-  add_uncertain_activities(traces, prob=0.1)
+  add_uncertain_activities(traces, prob=0.1, num=1)
   log = UncertainLog(traces)
   xml = log.to_xes()
   print("<?xml version='1.0' encoding='UTF-8'?>")
@@ -36,8 +36,9 @@ def add_uncertain_activities(traces, prob=0.2, num=1, p_lower=0.1, p_upper=0.9):
       if random() <= prob:
         lab = list(e.labels())[0]
         labels = labels.difference(set([lab])) # other labels
-        add = sample(labels, num)
+        num_for_trace = min(num, len(labels))
+        add = sample(labels, num_for_trace)
         p = rand_range(p_lower, p_upper)
-        acts = [(lab, p)] + [ (a, (1-p) / num) for a in add ]
+        acts = [(lab, p)] + [ (a, (1-p) / num_for_trace) for a in add ]
         uact = UncertainActivity(dict(acts))
         e.set_uncertain_activity(uact)
