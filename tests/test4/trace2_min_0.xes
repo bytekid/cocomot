@@ -14,12 +14,12 @@
     <event>
       <string key="concept:name" value="b"/>
       <date key="time:timestamp" value="2021-04-26T19:46:40.050+00:00"/>
-      <date key="uncertainty:time:timestamp_max" value="2021-04-26T25:46:40.050+00:00"/>
+      <date key="uncertainty:time:timestamp_max" value="2021-04-27T05:46:40.050+00:00"/>
     </event>
     <event>
       <string key="concept:name" value="b"/>
       <date key="time:timestamp" value="2021-04-26T19:46:40.050+00:00"/>
-      <date key="uncertainty:time:timestamp_max" value="2021-04-26T25:46:40.050+00:00"/>
+      <date key="uncertainty:time:timestamp_max" value="2021-04-27T05:46:40.050+00:00"/>
       <container key="uncertainty:entry">
         <bool key="uncertainty:indeterminacy" value="true" />
         <float key="uncertainty:probability" value=".6" />
@@ -28,7 +28,7 @@
     <event>
       <string key="concept:name" value="d"/>
       <date key="time:timestamp" value="2021-04-26T19:46:40.050+00:00"/>
-      <date key="uncertainty:time:timestamp_max" value="2021-04-26T25:46:40.050+00:00"/>
+      <date key="uncertainty:time:timestamp_max" value="2021-04-27T05:46:40.050+00:00"/>
       <container key="uncertainty:entry">
         <bool key="uncertainty:indeterminacy" value="true" />
         <float key="uncertainty:probability" value=".5" />

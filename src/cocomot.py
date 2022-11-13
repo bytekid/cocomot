@@ -16,6 +16,8 @@ from encoding.encoding_exhaustive import ExhaustiveEncoding
 from dpn.expr import Expr
 import uncertainty.read
 from uncertainty.encoding import UncertaintyEncoding
+from uncertainty.trace import UncertainTrace
+from uncertainty.uncertainize import all as uncertainize_all
 from utils import pad_to, spaces
 
 ### printing
@@ -303,12 +305,16 @@ def read_log(logfile):
   else:
     return (xes_importer.apply(logfile), False)
 
+
 ### main
 def cocomot_uncertain(dpn, log, ukind, verbose=1):
   solver = Z3Solver()
   results = []
   for trace in log:
+    assert(isinstance(trace, UncertainTrace))
+    trace.normalize_time() # replace timestamps by floats
     (encoding, _) = create_encoding(solver, len(trace), dpn, uncertain=ukind)
+    solver.push()
     solver.require([encoding.trace_constraints(trace)])
     if ukind == "min":
       (dist, dconstr) = encoding.edit_distance_min(trace)
@@ -320,11 +326,13 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1):
     result = encoding.decode_alignment(trace, model)
     print("distance", distance)
     if verbose > 0:
-      print(result)
+      #print(result)
       print_trace_distance_verbose(encoding._dpn, result["trace"], result)
     results.append(distance)
     model.destroy()
+    solver.pop()
   return results
+
 
 def work(job):
   solver = YicesSolver()
@@ -430,14 +438,15 @@ def process_args(argv):
   multi = None
   anti = None
   numprocs = 1
+  obfuscate = False
   uncertainty = None
   json = False
   verbose = 1
   try:
-    opts, args = getopt.getopt(argv,"hjmu:v:d:l:n:x:a:")
+    opts, args = getopt.getopt(argv,"hjmou:v:d:l:n:x:a:")
   except getopt.GetoptError:
     print(usage)
-    sys.exit(2)
+    sys.exit(1)
   for (opt, arg) in opts:
     if opt == '-h':
       print(usage)
@@ -449,6 +458,9 @@ def process_args(argv):
     elif opt == "-x":
       many = int(arg)
     elif opt == "-u":
+      if arg not in ["fit", "min"]:
+        print(usage)
+        sys.exit(1)
       uncertainty = arg
     elif opt == "-m":
       multi = True
@@ -457,6 +469,8 @@ def process_args(argv):
       verbose = 0
     elif opt == "-a":
       anti = int(arg)
+    elif opt == "-o":
+      obfuscate = True
     elif opt == "-v":
       verbose = int(arg)
     elif opt == "-n":
@@ -468,22 +482,27 @@ def process_args(argv):
     "many": many,
     "model": model_file, 
     "multi": multi,
-    "numprocs":numprocs,
+    "numprocs": numprocs,
+    "obfuscate": obfuscate,
     "uncertainty": uncertainty,
     "verbose": verbose
   }
 
 if __name__ == "__main__":
   ps = process_args(sys.argv[1:])
-  dpn = DPN(read_pnml_input(ps["model"]))
   (log, has_uncertainty) = read_log(ps["log"])
-  if ps["multi"]:
-    conformance_check_multi(log, dpn, ps["verbose"])
-  elif ps["anti"]:
-    conformance_check_anti(log, dpn, ps["verbose"], ps["anti"])
-  elif has_uncertainty:
-    ps["uncertainty"] = "min" if not ps["uncertainty"] else ps["uncertainty"] 
-    cocomot_uncertain(dpn, log, ps["uncertainty"], ps["verbose"])
+  if ps["obfuscate"]:
+    log = uncertainty.read.xes(ps["log"])
+    uncertainize_all(log)
   else:
-    cocomot(dpn, log, ps)
+    dpn = DPN(read_pnml_input(ps["model"]))
+    if ps["multi"]:
+      conformance_check_multi(log, dpn, ps["verbose"])
+    elif ps["anti"]:
+      conformance_check_anti(log, dpn, ps["verbose"], ps["anti"])
+    elif has_uncertainty:
+      ps["uncertainty"] = "min" if not ps["uncertainty"] else ps["uncertainty"] 
+      cocomot_uncertain(dpn, log, ps["uncertainty"], ps["verbose"])
+    else:
+      cocomot(dpn, log, ps)
   

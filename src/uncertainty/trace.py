@@ -1,9 +1,32 @@
+from xml.dom.minidom import getDOMImplementation
+import xml.dom.minidom
+
 class Indeterminacy:
   def __init__(self, value):
     self._value = value
 
+  def is_uncertain(self):
+    return self._value < 1
+
   def __str__(self):
-    return ("?" + str(self._value)) if self._value < 1 else "!"
+    return ("?" + str(self._value)) if self.is_uncertain() else "!"
+
+  def to_xes(self, doc):
+    #  <container key="uncertainty:entry">
+    #    <bool key="uncertainty:indeterminacy" value="true" />
+    #    <float key="uncertainty:probability" value=".8" />
+    #  </container>
+    # only supposed to be called if self.is_uncertain()
+    xcont = doc.createElement("container")
+    xbool = doc.createElement("bool")
+    xbool.setAttribute("key", "uncertainty:indeterminacy");
+    xbool.setAttribute("value", "true");
+    xcont.appendChild(xbool)
+    xbool = doc.createElement("float")
+    xbool.setAttribute("key", "uncertainty:probability");
+    xbool.setAttribute("value", str('{:04.2f}'.format(self._value)));
+    xcont.appendChild(xbool)
+    return xcont
 
 
 class UncertainActivity:
@@ -34,6 +57,45 @@ class UncertainActivity:
       for (a,p) in self._activities.items():
         s += a + ":" + str(p) + ", "
       return s[:-2] + "]"
+  
+  def to_xes(self, doc):
+    #
+    #  <list key="uncertainty:discrete_weak">
+    #    <values>
+    #      <container key="uncertainty:entry">
+    #        <string key="concept:name" value="a"/>
+    #        <float key="uncertainty:probability" value="0.25" />
+    #      </container>
+    #      <container key="uncertainty:entry">
+    #        <string key="concept:name" value="b"/>
+    #        <float key="uncertainty:probability" value="0.75" />
+    #      </container>
+    #    </values>
+    #  </list>
+    if self.is_uncertain():
+      xact = doc.createElement("list")
+      xact.setAttribute("key", "uncertainty:discrete_weak");
+      xvals = doc.createElement("values")
+      for (a,p) in self._activities.items():
+        xcont = doc.createElement("container")
+        xcont.setAttribute("key", "uncertainty:entry");
+        xstr = doc.createElement("string")
+        xstr.setAttribute("key", "concept:name");
+        xstr.setAttribute("value", a);
+        xcont.appendChild(xstr)
+        xprob = doc.createElement("float")
+        xprob.setAttribute("key", "uncertainty:probability");
+        xprob.setAttribute("value", str('{:04.2f}'.format(p)));
+        xcont.appendChild(xprob)
+        xvals.appendChild(xcont)
+      xact.appendChild(xvals)
+      return xact
+    else:
+      xstr = doc.createElement("string")
+      xstr.setAttribute("key", "concept:name");
+      xstr.setAttribute("value", list(self._activities.keys())[0]);
+      return xstr
+
 
 
 class UncertainTimestamp:
@@ -54,6 +116,23 @@ class UncertainTimestamp:
     assert(self._lower <= t and t <= self._upper)
     self._lower = t
     self._upper = t
+  
+
+  def to_xes(self, doc):
+    xs = []
+    #<date key="time:timestamp" value="2021-04-26T18:46:40.050+00:00"/>
+    #<date key="uncertainty:time:timestamp_max" value="2021-04-26T22:46:40.050+00:00"/>
+    xtime = doc.createElement("date")
+    xtime.setAttribute("key", "time:timestamp")
+    timeformat = "%Y-%m-%dT%H:%M:%S%z"
+    xtime.setAttribute("value", self._lower.strftime(timeformat) )
+    xs.append(xtime)
+    if self.is_uncertain():
+      xtimeu = doc.createElement("date")
+      xtimeu.setAttribute("key", "uncertainty:time:timestamp_max")
+      xtimeu.setAttribute("value", self._upper.strftime(timeformat))
+      xs.append[xtimeu]
+    return xs
 
 
 class UncertainDataValue:
@@ -67,6 +146,11 @@ class UncertainDataValue:
     for v in self._values:
       s += str(v) + ", "
     return s[:-2] + "]"
+
+  def to_xes(self, doc):
+    xelem = doc.createElement("self._name")
+    #FIXME
+    return xelem
 
 
 class UncertainEvent:
@@ -112,6 +196,15 @@ class UncertainEvent:
   def values(self, name):
     return self._data[name]
 
+  def set_indeterminacy(self, indet):
+    self._indet = indet
+
+  def set_uncertain_time(self, t):
+    self._time = t
+
+  def set_uncertain_activity(self, a):
+    self._activity = a
+
   def fix_determinacy(self):
     self._indet._value = 1
 
@@ -132,10 +225,22 @@ class UncertainEvent:
       "valuation": valuation
     }
 
+  def to_xes(self, doc):
+    xevent = doc.createElement('event')
+    xevent.appendChild(self._activity.to_xes(doc))
+    for xtime in self._time.to_xes(doc):
+      xevent.appendChild(xtime)
+    for (d, dvar) in self._data:
+      xevent.appendChild(dvar.to_xes(doc))
+    if self._indet.is_uncertain():
+      xevent.appendChild(self._indet.to_xes(doc))
+    return xevent
+
+
 class UncertainTrace:
   def __init__(self, events):
     self._events = events
-    self.normalize_time()
+    #self.normalize_time()
 
   def normalize_time(self):
     # replace all times by float values for simpler treatment in encoding
@@ -163,3 +268,24 @@ class UncertainTrace:
 
   def __getitem__(self, key):
     return self._events[key]
+
+  def to_xes(self, doc):
+    xtrace = doc.createElement('trace')
+    for event in self._events:
+      xevent = event.to_xes(doc)
+      xtrace.appendChild(xevent)
+    return xtrace
+
+
+class UncertainLog:
+
+  def __init__(self, traces):
+    self._traces = traces
+
+  def to_xes(self):
+    doc = xml.dom.minidom.parseString("<log/>")
+    root = doc.documentElement
+    for trace in self._traces:
+      xtrace = trace.to_xes(doc)
+      root.appendChild(xtrace)
+    return root

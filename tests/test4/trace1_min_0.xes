@@ -14,7 +14,7 @@
     <event>
       <string key="concept:name" value="b"/>
       <date key="time:timestamp" value="2021-04-26T19:46:40.050+00:00"/>
-      <date key="uncertainty:time:timestamp_max" value="2021-04-26T25:46:40.050+00:00"/>
+      <date key="uncertainty:time:timestamp_max" value="2021-04-27T02:46:40.050+00:00"/>
     </event>
   </trace>
 </log>

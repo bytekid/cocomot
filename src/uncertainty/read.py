@@ -1,10 +1,20 @@
 from xml.dom import minidom
 from html import unescape
+from datetime import datetime
 
 from uncertainty.trace import *
 
 ACTIVITY_KEY = "concept:name"
 TIMESTAMP_KEY = "time:timestamp"
+
+def parse_time(timestr):
+  try:
+    dateformat="%Y-%m-%dT%H:%M:%S%z" # 2000-05-06T00:00:00+02:00
+    return datetime.strptime(timestr, dateformat)
+  except:
+    dateformat="%Y-%m-%dT%H:%M:%S.%z" # 2021-04-26T18:46:40.050+00:00
+    return datetime.fromisoformat(timestr)
+
 
 def xes(logfile):
   children = \
@@ -25,9 +35,9 @@ def xes(logfile):
         if key == ACTIVITY_KEY:
           activity = UncertainActivity(child.getAttribute('value'))
         elif key == "time:timestamp":
-          time_lower = child.getAttribute('value')
+          time_lower = parse_time(child.getAttribute('value'))
         elif key == "uncertainty:time:timestamp_max":
-          time_upper = child.getAttribute('value')
+          time_upper = parse_time(child.getAttribute('value'))
         elif key == "uncertainty:entry":
           indet_data = children(child)
           for d in indet_data:
