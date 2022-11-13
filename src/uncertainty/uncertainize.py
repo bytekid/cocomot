@@ -5,7 +5,8 @@ from uncertainty.trace import *
 def all(traces):
   #add_indeterminacy(traces, prob=0.1)
   #add_uncertain_activities(traces, prob=0.1, num=1)
-  make_timestamps_equal(traces)
+  #make_timestamps_equal(traces)
+  add_uncertain_timestamps(traces, prob=0.3)
   log = UncertainLog(traces)
   xml = log.to_xes()
   print("<?xml version='1.0' encoding='UTF-8'?>")
@@ -52,3 +53,19 @@ def make_timestamps_equal(traces):
     utime = UncertainTimestamp(thetime, upper=thetime)
     for e in t:
       e.set_uncertain_time(utime)
+
+# add with probability prob to trace events uncertain timestamps, in the following
+# sense: the timestamp t is replaced by aduration interval with mid point t; the
+#  width of the interval is given by interval_ration*trace_duration, where
+# trace_duration is the time difference between the first and the last event
+# in the trace.
+def add_uncertain_timestamps(traces, prob=0.2, interval_ratio=0.3):
+  for t in traces:
+    start_time = t[0].lower_time()
+    end_time = t[-1].lower_time()
+    trace_duration = end_time - start_time
+    for e in t:
+      if random() <= prob:
+        tlow = e.lower_time() - trace_duration / 2
+        tupp = e.lower_time() + trace_duration / 2
+        e.set_uncertain_time(UncertainTimestamp(tlow, upper=tupp))

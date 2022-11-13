@@ -308,7 +308,7 @@ def read_log(logfile):
 
 ### main
 def cocomot_uncertain(dpn, log, ukind, verbose=1):
-  solver = Z3Solver()
+  solver = YicesSolver() if ukind == "min" else Z3Solver()
   results = []
   for trace in log:
     assert(isinstance(trace, UncertainTrace))

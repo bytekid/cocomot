@@ -114,7 +114,7 @@ class UncertainTimestamp:
       return str(self._lower)
 
   def fix(self, t):
-    assert(self._lower <= t and t <= self._upper)
+    assert(self._lower <= t and (self._upper == None or t <= self._upper))
     self._lower = t
     self._upper = t
   
@@ -273,11 +273,12 @@ class UncertainTrace:
   def normalize_time(self):
     # replace all times by float values for simpler treatment in encoding
     events = self._events
-    times = [e.lower_time() for e in events] + [e.upper_time() for e in events]
+    times = [e.lower_time() for e in events] + \
+      [e.upper_time() for e in events if e.upper_time() != None]
     times = dict([ (t,i) for (i, t) in enumerate(sorted(times)) ])
     for e in events:
       e._time._lower = float(times[e._time._lower])
-      e._time._upper = float(times[e._time._upper])
+      e._time._upper = float(times[e._time._upper]) if e._time._upper else None
 
   def has_uncertain_time(self):
     return any( e.has_uncertain_time() for e in self._events )

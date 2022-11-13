@@ -286,13 +286,14 @@ class UncertaintyEncoding(Encoding):
 
 
   def write_diff_fixed(self, trace, i, j, t): # FIXME uncertain data
+    subst_prime = dict([ (x, v) for (x, v) in self._vs_data[i+1].items() ])
     s = self._solver
     diff = s.num(0)
     for x in t["write"]:
       if x not in trace[j].data():
         diff = s.inc(diff) 
       else:
-        vals = trace[j].values([x])
+        vals = trace[j].values(x)
         if len(vals) == 1:
           val = Expr.numval(vals[0])
           diff = s.ite(s.eq(subst_prime[x], s.real(val)), diff, s.inc(diff))
