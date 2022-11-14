@@ -137,20 +137,34 @@ class UncertainTimestamp:
 
 
 class UncertainDataValue:
+  # use either parameter values for discrete list of values, or upper and lower
+  # for interval
   def __init__(self, kind, name, values=None, lower=None, upper=None):
-    assert(values!=None or (lower != None and upper != None and lower < upper))
+    assert(values!=None or (lower != None and upper != None))
     assert(values==None or (lower == None and upper == None))
+    assert(values == None or len(values) > 0)
     self._kind = kind
     self._name = name
-    if values != None:
-      self._values = values # map value  to probability
-      assert(len(values) > 0)
-    else:
-      self._lower = lower
-      self._upper = upper
+    self._values = values # map value  to probability
+    self._lower = lower
+    self._upper = upper
+
+  def is_discrete(self):
+    return self._values != None
+
+  def values(self):
+    assert(self.is_discrete())
+    return self._values
+
+  def bounds(self):
+    assert(not self.is_discrete())
+    return (self._lower, self._upper)
+
+  def admissible(self):
+    return self._values[0] if self.is_discrete() else self._lower
 
   def __str__(self):
-    if self._values != None:
+    if self.is_discrete():
       s = self._name + " {"
       for v in self._values:
         s += str(v) + ", "
@@ -160,7 +174,7 @@ class UncertainDataValue:
 
 
   def to_xes(self, doc):
-    if self._values != None:
+    if self.is_discrete():
       if len(self._values) > 1: # so event is really uncertain
         #	<list key="uncertainty:discrete_strong">
         #		<values>
@@ -205,8 +219,6 @@ class UncertainDataValue:
         xlist.appendChild(xbound)
 
 
-
-
 class UncertainEvent:
   
   id_counter = 0
@@ -228,7 +240,7 @@ class UncertainEvent:
       d += str(v) + ", "
     return "<" + str(self._indet) + ", " + str(self._activity) + ", " + \
       str(self._time) + ", " + d + "] >"
-  
+
   def is_uncertain(self):
     return self._indet._value < 1
   
@@ -250,11 +262,12 @@ class UncertainEvent:
   def data(self):
     return self._data
   
-  def has_values(self, name):
-    return name in self._data
+  # whether this event has variable set
+  def has_data_variable(self, variable):
+    return variable in self._data
   
-  def values(self, name):
-    return self._data[name]._values
+  def data_variable(self, name):
+    return self._data[name]
 
   def set_indeterminacy(self, indet):
     self._indet = indet
@@ -278,7 +291,7 @@ class UncertainEvent:
     # return standard event as dictionary
     # by the time of the call, all relevant uncertainties should be removed,
     # so take arbitrary admissible value
-    valuation = dict([ (d._name, d._values[0]) for d in self._data.values() ])
+    valuation = dict([ (n, d.admissible()) for (n, d) in self.data().items() ])
     return {
       "label": list(self._activity._activities.keys())[0],
       "time": self._time._lower,
@@ -300,8 +313,8 @@ class UncertainEvent:
 class UncertainTrace:
   def __init__(self, events):
     self._events = events
-    #self.normalize_time()
 
+  # called before encoding
   def normalize_time(self):
     # replace all times by float values for simpler treatment in encoding
     events = self._events

@@ -208,10 +208,16 @@ class UncertaintyEncoding(Encoding):
       is_ok = []
       for e in trace._events:
         is_event = s.eq(vs_trace[j], s.num(e._id))
-        # FIXME for intervals
-        if e.has_values(x): # otherwise written does not match, so increase diff
-          vs = [s.eq(subst_prime[x],s.real(Expr.numval(v))) for v in e.values(x)]
-          is_ok.append(s.land([is_event, s.lor(vs)]))
+        if e.has_data_variable(x): #otherwise written mismatch, so increase diff
+          data = e.data_entry(x)
+          if data.is_discrete():
+            vs = [s.eq(subst_prime[x],s.real(Expr.numval(v))) for v in data.values()]
+            is_ok.append(s.land([is_event, s.lor(vs)]))
+          else:
+            low, upp = data.bounds()
+            in_bounds = [ s.le(s.real(Expr.numval(low)), subst_prime[x]), \
+              s.le(s.real(subst_prime[x], Expr.numval(upp))) ]
+            is_ok.append(s.land([is_event, s.land(in_bounds)]))
       diff = s.ite(s.lor(is_ok), diff, s.inc(diff))
     return diff
 
@@ -290,22 +296,32 @@ class UncertaintyEncoding(Encoding):
     s = self._solver
     diff = s.num(0)
     for x in t["write"]:
-      if x not in trace[j].data():
+      if not trace[j].has_data_variable(x): # x not in trace[j].data():
         diff = s.inc(diff) 
       else:
-        vals = trace[j].values(x)
-        if len(vals) == 1:
-          val = Expr.numval(vals[0])
-          diff = s.ite(s.eq(subst_prime[x], s.real(val)), diff, s.inc(diff))
-        else: # FIXME
-          pass
+        xvals = trace[j].data_variable(x)
+        if xvals.is_discrete(): 
+          vals = xvals.values()
+          if len(vals) == 1:
+            val = Expr.numval(vals[0])
+            matches = s.eq(subst_prime[x], s.real(val))
+          else:
+            matches = s.lor([s.eq(subst_prime[x], s.real(Expr.numval(v))) \
+              for v in vals]) 
+        else:
+          low, upp = xvals.bounds()
+          in_bounds = [ s.le(s.real(Expr.numval(low)), subst_prime[x]), \
+            s.le(s.real(subst_prime[x], Expr.numval(upp))) ]
+          matches = s.land([is_event, s.land(in_bounds)])
+        diff = s.ite(matches, diff, s.inc(diff))
     return diff
 
 
-  def sync_costs_fixed(self, trace, i, j):
-    subst_prime = dict([ (x, v) for (x, v) in self._vs_data[i+1].items() ])
+  def sync_costs_fixed_order(self, trace, i, j):
     s = self._solver
+    # possible activities for jth trace element
     activities = trace._events[j]._activity._activities.items()
+    # confidence of jth trace element
     conf = trace._events[j].indeterminacy()
 
     ps = []
@@ -314,7 +330,7 @@ class UncertaintyEncoding(Encoding):
       wdiff = self.write_diff_fixed(trace, i, j, t)
       is_t = s.eq(self._vs_trans[i], s.num(t["id"]))
       for (k, (l, p)) in enumerate(activities):
-        if "label" in t and t["label"] == l:
+        if "label" in t and t["label"] == l: # transition t matches kth activity
           is_act = s.eq(self._vs_act[j], s.num(k))
           theta = s.real(2 - p - conf)
           penalty = s.ite(s.eq(wdiff, zero), theta, s.mult(wdiff, theta))
@@ -325,7 +341,7 @@ class UncertaintyEncoding(Encoding):
   def edit_distance_fitness_fixed_order(self, trace):
     assert(isinstance(trace, UncertainTrace))
     s = self._solver
-    #print(trace)
+
     def drop_cost(i):
       e = s.real(trace._events[i].indeterminacy()) \
         if trace._events[i].is_uncertain() else s.real(MAX)
@@ -348,12 +364,13 @@ class UncertaintyEncoding(Encoding):
     def mcost(i):
       e = s.real(MAX)
       for t in self._dpn.reachable(i):
-        e = s.ite(s.eq(self._vs_trans[i], s.num(t["id"])), s.num(len(t["write"]) + 1), e)
+        is_t = s.eq(self._vs_trans[i], s.num(t["id"]))
+        e = s.ite(is_t, s.num(len(t["write"]) + 1), e)
       return e
     
     def syncost(i,j):
       e = s.real(MAX)
-      for (is_t, penalty) in self.sync_costs_fixed(trace, i, j):
+      for (is_t, penalty) in self.sync_costs_fixed_order(trace, i, j):
         e = s.ite(is_t, penalty, e)
       return e
   
@@ -367,6 +384,7 @@ class UncertaintyEncoding(Encoding):
     else:
       return self.edit_distance_fitness_var_order(trace)
 
+
   def print_distance_matrix(self, model):
     print("\nDISTANCES:")
     for j in range(0, len(self._vs_dist[0])):
@@ -378,6 +396,7 @@ class UncertaintyEncoding(Encoding):
           fval = str(int(float(fval)))
         d = d + pad_to(fval, 5) + " "
       print(d)
+
 
   def decode_ordering(self, trace, model):
     if trace.has_uncertain_time():
@@ -392,6 +411,7 @@ class UncertaintyEncoding(Encoding):
     else:
       ord_trace = trace
     return ord_trace
+
 
   def decode_alignment(self, trace, model):
     m = len(trace)

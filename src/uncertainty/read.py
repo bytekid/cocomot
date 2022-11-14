@@ -69,8 +69,7 @@ def xes(logfile):
             values.append(e.getAttribute('value'))
           data.append(UncertainDataValue(data_type, data_name, values=values))
         elif key == "uncertainty:continuous_strong": # uncertain data, interval
-          xvaluelist = children(child)[0]
-          for e in children(xvaluelist):
+          for e in children(child):
             xbound = children(e)[0]
             if e.getAttribute('key') == "uncertainty:lower:bound":
               l = xbound.getAttribute("value")
