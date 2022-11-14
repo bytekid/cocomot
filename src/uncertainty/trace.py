@@ -137,41 +137,73 @@ class UncertainTimestamp:
 
 
 class UncertainDataValue:
-  def __init__(self, kind, name, values):
+  def __init__(self, kind, name, values=None, lower=None, upper=None):
+    assert(values!=None or (lower != None and upper != None and lower < upper))
+    assert(values==None or (lower == None and upper == None))
     self._kind = kind
     self._name = name
-    self._values = values # map value  to probability
-    assert(len(values) > 0)
+    if values != None:
+      self._values = values # map value  to probability
+      assert(len(values) > 0)
+    else:
+      self._lower = lower
+      self._upper = upper
 
   def __str__(self):
-    s = self._name + " ["
-    for v in self._values:
-      s += str(v) + ", "
-    return s[:-2] + "]"
+    if self._values != None:
+      s = self._name + " {"
+      for v in self._values:
+        s += str(v) + ", "
+      return s[:-2] + "}"
+    else:
+      return "[" + self._lower + ", " + self._upper + "]"
+
 
   def to_xes(self, doc):
-		#	<list key="uncertainty:discrete_strong">
-		#		<values>
-		#			<string key="amount" value="10.0"/>
-		#			<string key="amount" value="10.0"/>
-		#		</values>
-		#	</list>
-    if len(self._values) > 1: # so event is really uncertain
+    if self._values != None:
+      if len(self._values) > 1: # so event is really uncertain
+        #	<list key="uncertainty:discrete_strong">
+        #		<values>
+        #			<string key="amount" value="10.0"/>
+        #			<string key="amount" value="15.0"/>
+        #		</values>
+        #	</list>
+        xlist = doc.createElement("list")
+        xlist.setAttribute("key", "uncertainty:discrete_strong")
+        xvals = doc.createElement("values")
+        xlist.appendChild(xvals)
+        for v in self._values:
+          xval = doc.createElement(self._kind)
+          xval.setAttribute("key", self._name)
+          xval.setAttribute("value", str(v))
+          xvals.appendChild(xval)
+        return xlist
+      else:
+        xval = doc.createElement(self._kind)
+        xval.setAttribute("key", self._name)
+        xval.setAttribute("value", str(self._values[0]))
+        return xval
+    else:
+      #	<list key="uncertainty:continuous_strong">
+      #		<uncertainty:lower:bound>
+      #			<string key="amount" value="5.0"/>
+      #		</uncertainty:lower:bound>
+      #		<uncertainty:upper:bound>
+      #			<string key="amount" value="10.0"/>
+      #		</uncertainty:upper:bound>
+      #	</list>
       xlist = doc.createElement("list")
-      xlist.setAttribute("key", "uncertainty:discrete_strong")
-      xvals = doc.createElement("values")
-      xlist.appendChild(xvals)
-      for v in self._values:
+      xlist.setAttribute("key", "uncertainty:continuous_strong")
+      lname, uname = "uncertainty:lower:bound", "uncertainty:upper:bound"
+      for (name, v) in [(lname, self._lower), (uname, self._upper)]:
+        xbound = doc.createElement("value")
+        xbound.setAttribute("key", name)
         xval = doc.createElement(self._kind)
         xval.setAttribute("key", self._name)
         xval.setAttribute("value", str(v))
-        xvals.appendChild(xval)
-      return xlist
-    else:
-      xval = doc.createElement(self._kind)
-      xval.setAttribute("key", self._name)
-      xval.setAttribute("value", str(self._values[0]))
-      return xval
+        xbound.appendChild(xval)
+        xlist.appendChild(xbound)
+
 
 
 
@@ -314,6 +346,9 @@ class UncertainLog:
   def to_xes(self):
     doc = xml.dom.minidom.parseString("<log/>")
     root = doc.documentElement
+    root.setAttribute("xes.version", "1849-2016")
+    root.setAttribute("xes.features", "nested-attributes")
+    root.setAttribute("xmlns", "http://www.xes-standard.org/")
     for trace in self._traces:
       xtrace = trace.to_xes(doc)
       root.appendChild(xtrace)

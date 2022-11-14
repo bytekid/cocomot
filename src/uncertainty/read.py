@@ -43,36 +43,49 @@ def xes(logfile):
           for d in indet_data:
             if d.getAttribute('key') == "uncertainty:probability":
               indet = Indeterminacy(float(d.getAttribute('value')))
-        elif key == "uncertainty:discrete_weak":
+        elif key == "uncertainty:discrete_weak": # uncertain activities
           values = children(child)[0]
-          # data or concept:name
           acts = {}
-          data_values = []
-          data_name = None
           for e in children(values):
             ekey = e.getAttribute('key')
-            if ekey == "uncertainty:entry": # activities
-              activity = None
-              probability = None
-              for ee in children(e):
-                if ee.getAttribute('key') == "concept:name":
-                  activity = ee.getAttribute('value')
-                if ee.getAttribute('key') == "uncertainty:probability":
-                  probability = ee.getAttribute('value')
-              acts[activity] = probability
-            else: # data
-              data_name = ekey
-              data_values.append(e.getAttribute('value'))
-              kind = e.tagName
-          if len(acts) > 0:
-            activity = UncertainActivity(acts)
-          if len(data_values) > 0:
-            data.append(UncertainDataValue(kind, data_name, data_values))
+            assert(ekey == "uncertainty:entry")
+            for ee in children(e):
+              if ee.getAttribute('key') == "concept:name":
+                activity = ee.getAttribute('value')
+              if ee.getAttribute('key') == "uncertainty:probability":
+                probability = ee.getAttribute('value')
+            acts[activity] = probability
+          activity = UncertainActivity(acts)
+        elif key == "uncertainty:discrete_strong": # uncertain data, value set
+          xvaluelist = children(child)[0]
+          values = []
+          data_name = None
+          data_type = None
+          for e in children(xvaluelist):
+            assert(not data_name or data_name == e.getAttribute('key'))
+            assert(not data_type or data_type == e.tagName)
+            data_type = e.tagName
+            data_name = e.getAttribute('key')
+            values.append(e.getAttribute('value'))
+          data.append(UncertainDataValue(data_type, data_name, values=values))
+        elif key == "uncertainty:continuous_strong": # uncertain data, interval
+          xvaluelist = children(child)[0]
+          for e in children(xvaluelist):
+            xbound = children(e)[0]
+            if e.getAttribute('key') == "uncertainty:lower:bound":
+              l = xbound.getAttribute("value")
+            else:
+              assert(e.getAttribute('key') == "uncertainty:upper:bound")
+              u = xbound.getAttribute("value")
+            data_type = xbound.tagName
+            data_name = xbound.getAttribute('key')
+          assert(l != None and u != None and data_type and data_name)
+          data.append(UncertainDataValue(data_type, data_name,lower=l,upper=u))
         else: # data without uncertainty
           name = child.getAttribute('key')
           val = child.getAttribute('value')
           kind = child.tagName
-          data.append(UncertainDataValue(kind, key, [ val ] ))
+          data.append(UncertainDataValue(kind, key, values = [val] ))
 
             
       time = UncertainTimestamp(time_lower, time_upper)
