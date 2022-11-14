@@ -4,6 +4,15 @@ from math import floor, ceil
 from uncertainty.trace import *
 
 def all(traces):
+  print("%d traces" % len(traces))
+  useless = ["org:resource", "matricola", "article", "vehicleClass", "vehicleType"]
+  for t in traces:
+    for e in t:
+      for u in useless:
+        if u in e.data():
+          del e._data[u]
+  traces = [ t for n, t in enumerate(traces) if t not in traces[:n]]
+  print("now %d traces" % len(traces))
   #add_indeterminacy(traces, prob=0.1)
   #add_uncertain_activities(traces, prob=0.1, num=1)
   #make_timestamps_equal(traces)
@@ -74,13 +83,28 @@ def add_uncertain_timestamps(traces, prob=0.2, interval_ratio=0.3):
         tupp = e.lower_time() + trace_duration / 2
         e.set_uncertain_time(UncertainTimestamp(tlow, upper=tupp))
 
+def valuation_bounds(traces):
+  vars = set([ x for t in traces for e in t for x in e.data()])
+  bounds = {}
+  for x in vars:
+    vals = [ e.data_variable(x).admissible() \
+      for t in traces for e in t if x in e.data()]
+    bounds[x] = (min(vals), max(vals))
+  return bounds
+
+def variable_bounds(x, xval, ratio, bounds):
+  # ensure to remain within data range:  take max/min with bounds
+  xlow = max(xval - xval*ratio/2, float(bounds[x][0]))
+  xupp = min(xval + xval*ratio/2, float(bounds[x][1])) if xval != 0 else 1
+  return (xlow, xupp)
+
 
 # add with probability prob to trace events uncertainty to data. To that end,
 # an already present data variable is chosen randomly, and num data values are
 # added; if the present value is v, the added values are in the interval 
 # [ v-ratio*v/2, v+ratio*v/2]
-# FIXME: restrict generated values to value range that appears in log?
 def add_uncertain_discrete_data(traces, prob=0.2, num=1, ratio=0.3):
+  bounds = valuation_bounds(traces) # lower/upper bound of variable in log
   assert(num > 0)
   for t in traces:
     for e in t:
@@ -88,9 +112,8 @@ def add_uncertain_discrete_data(traces, prob=0.2, num=1, ratio=0.3):
       if random() <= prob and len(vars) > 0:
         x = vars[randint(0, len(vars)-1)]
         xelem = e.data_variable(x)
-        xval = float(xelem.admissible()) # assumed to be fixed value
-        xlow = xval - xval*ratio/2
-        xupp = xval + xval*ratio/2 if xval != 0 else 1
+        xval = float(xelem.admissible()) # this is assumed to be fixed value
+        xlow, xupp = variable_bounds(x, xval, ratio, bounds)
         is_int = xelem.kind() == "int"
         if is_int:
           xlow, xupp = floor(xlow), ceil(xupp)
@@ -99,7 +122,6 @@ def add_uncertain_discrete_data(traces, prob=0.2, num=1, ratio=0.3):
         while(len(values) < num + 1):
           v = randint(xlow, xupp) if is_int else rand_range(xlow, xupp)
           if not v in values:
-            print("add value", v)
             values.append(v)
         uval = UncertainDataValue(xelem.kind(), x, values=values)
         e.set_data(x, uval)
@@ -108,6 +130,7 @@ def add_uncertain_discrete_data(traces, prob=0.2, num=1, ratio=0.3):
 # a present data variable is chosen randomly. if the present value is v, the 
 # added value interval is [ v-ratio*v/2, v+ratio*v/2]
 def add_uncertain_continuous_data(traces, prob=0.2, ratio=0.3):
+  bounds = valuation_bounds(traces) # lower/upper bound of variable in log
   for t in traces:
     for e in t:
       vars = [ x for x in e.data() if e.data_variable(x).kind() != "string" ]
@@ -115,7 +138,7 @@ def add_uncertain_continuous_data(traces, prob=0.2, ratio=0.3):
         x = vars[randint(0, len(vars)-1)]
         xelem = e.data_variable(x)
         xval = float(xelem.admissible()) # assumed to be fixed value
-        xlow, xupp = xval - xval*ratio/2, xval + xval*ratio/2
+        xlow, xupp = variable_bounds(x, xval, ratio, bounds)
         is_int = xelem.kind() == "int"
         if is_int:
           xlow, xupp = floor(xlow), ceil(xupp)

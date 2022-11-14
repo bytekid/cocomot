@@ -1,6 +1,7 @@
 import sys
 import time
 import multiprocessing
+import pm4py
 from pm4py.objects.log.importer.xes import importer as xes_importer
 import json
 import getopt
@@ -16,7 +17,7 @@ from encoding.encoding_exhaustive import ExhaustiveEncoding
 from dpn.expr import Expr
 import uncertainty.read
 from uncertainty.encoding import UncertaintyEncoding
-from uncertainty.trace import UncertainTrace
+from uncertainty.trace import UncertainTrace, UncertainLog
 from uncertainty.uncertainize import all as uncertainize_all
 from utils import pad_to, spaces
 
@@ -360,6 +361,7 @@ def cocomot(dpn, log, opts):
   t_start = time.perf_counter()
   naive_part = NaivePartitioning([ (t,1) for t in log ])
   interval_part = IntervalPartitioning(dpn, naive_part.representatives())
+
   t_cluster =  time.perf_counter() - t_start
   if len(log) > 1 and verbose > 0:
     print("equivalence classes naive: %d, intervals: %d (clustering time %.2f)" % \

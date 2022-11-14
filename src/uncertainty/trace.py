@@ -1,5 +1,6 @@
 from xml.dom.minidom import getDOMImplementation
 import xml.dom.minidom
+from datetime import datetime, timedelta
 
 
 class Indeterminacy:
@@ -238,6 +239,22 @@ class UncertainEvent:
     self._id = UncertainEvent.id_counter
     UncertainEvent.id_counter += 1
 
+  @staticmethod
+  def from_certain_event(e, time):
+    indet = Indeterminacy(1)
+    activity = UncertainActivity(e["label"])
+    data = []
+    for (var,val) in e["valuation"].items():
+      dtype = "int" if not ("." in str(val)) else "float"
+      data.append(UncertainDataValue(dtype, var, values=[val]))
+    utime = UncertainTimestamp(time)
+    return UncertainEvent(indet, activity, utime, data)
+    
+
+
+  def __eq__(self, other):
+    return str(self) == str(other) # not efficient but sufficient for now
+
   def __str__(self):
     d = "["
     for v in self._data.values():
@@ -321,6 +338,16 @@ class UncertainEvent:
 class UncertainTrace:
   def __init__(self, events):
     self._events = events
+
+  @staticmethod
+  def from_certain_trace(events):
+    time = datetime.fromisoformat("2021-01-01T00:00:00+00:00")
+    ues = []
+    for e in events:
+      ue = UncertainEvent.from_certain_event(e, time)
+      time = time + timedelta(days=3)
+      ues.append(ue)
+    return UncertainTrace(ues)
 
   # called before encoding
   def normalize_time(self):
