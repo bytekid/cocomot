@@ -8,8 +8,8 @@ def all(traces):
   #add_uncertain_activities(traces, prob=0.1, num=1)
   #make_timestamps_equal(traces)
   #add_uncertain_timestamps(traces, prob=0.3)
-  #add_uncertain_discrete_data(traces, prob=0.1, num=1)
-  add_uncertain_continuous_data(traces, prob=0.2)
+  add_uncertain_discrete_data(traces, prob=0.1, num=2)
+  #add_uncertain_continuous_data(traces, prob=0.2)
   log = UncertainLog(traces)
   xml = log.to_xes()
   print("<?xml version='1.0' encoding='UTF-8'?>")
@@ -94,11 +94,12 @@ def add_uncertain_discrete_data(traces, prob=0.2, num=1, ratio=0.3):
         is_int = xelem.kind() == "int"
         if is_int:
           xlow, xupp = floor(xlow), ceil(xupp)
-          num = min(num, xupp-xlow+1)
-        values = [xval]
+          num = min(num, xupp-xlow) # one less because xval is already there
+        values = [int(xval) if is_int else xval]
         while(len(values) < num + 1):
           v = randint(xlow, xupp) if is_int else rand_range(xlow, xupp)
           if not v in values:
+            print("add value", v)
             values.append(v)
         uval = UncertainDataValue(xelem.kind(), x, values=values)
         e.set_data(x, uval)
