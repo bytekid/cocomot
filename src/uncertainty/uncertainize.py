@@ -1,4 +1,5 @@
 from random import random, sample, randint
+from math import floor, ceil
 
 from uncertainty.trace import *
 
@@ -6,7 +7,9 @@ def all(traces):
   #add_indeterminacy(traces, prob=0.1)
   #add_uncertain_activities(traces, prob=0.1, num=1)
   #make_timestamps_equal(traces)
-  add_uncertain_timestamps(traces, prob=0.3)
+  #add_uncertain_timestamps(traces, prob=0.3)
+  #add_uncertain_discrete_data(traces, prob=0.1, num=1)
+  add_uncertain_continuous_data(traces, prob=0.2)
   log = UncertainLog(traces)
   xml = log.to_xes()
   print("<?xml version='1.0' encoding='UTF-8'?>")
@@ -45,6 +48,7 @@ def add_uncertain_activities(traces, prob=0.2, num=1, p_lower=0.1, p_upper=0.9):
         uact = UncertainActivity(dict(acts))
         e.set_uncertain_activity(uact)
 
+
 # for every trace t, set all events in t to the same uncertain timestamp
 # (lower and upper bound are equal)
 def make_timestamps_equal(traces):
@@ -69,3 +73,51 @@ def add_uncertain_timestamps(traces, prob=0.2, interval_ratio=0.3):
         tlow = e.lower_time() - trace_duration / 2
         tupp = e.lower_time() + trace_duration / 2
         e.set_uncertain_time(UncertainTimestamp(tlow, upper=tupp))
+
+
+# add with probability prob to trace events uncertainty to data. To that end,
+# an already present data variable is chosen randomly, and num data values are
+# added; if the present value is v, the added values are in the interval 
+# [ v-ratio*v/2, v+ratio*v/2]
+# FIXME: restrict generated values to value range that appears in log?
+def add_uncertain_discrete_data(traces, prob=0.2, num=1, ratio=0.3):
+  assert(num > 0)
+  for t in traces:
+    for e in t:
+      vars = [ x for x in e.data() if e.data_variable(x).kind() != "string" ]
+      if random() <= prob and len(vars) > 0:
+        x = vars[randint(0, len(vars)-1)]
+        xelem = e.data_variable(x)
+        xval = float(xelem.admissible()) # assumed to be fixed value
+        xlow = xval - xval*ratio/2
+        xupp = xval + xval*ratio/2 if xval != 0 else 1
+        is_int = xelem.kind() == "int"
+        if is_int:
+          xlow, xupp = floor(xlow), ceil(xupp)
+          num = min(num, xupp-xlow+1)
+        values = [xval]
+        while(len(values) < num + 1):
+          v = randint(xlow, xupp) if is_int else rand_range(xlow, xupp)
+          if not v in values:
+            values.append(v)
+        uval = UncertainDataValue(xelem.kind(), x, values=values)
+        e.set_data(x, uval)
+
+# add with probability prob to trace events uncertainty to data. To that end,
+# a present data variable is chosen randomly. if the present value is v, the 
+# added value interval is [ v-ratio*v/2, v+ratio*v/2]
+def add_uncertain_continuous_data(traces, prob=0.2, ratio=0.3):
+  for t in traces:
+    for e in t:
+      vars = [ x for x in e.data() if e.data_variable(x).kind() != "string" ]
+      if random() <= prob and len(vars) > 0:
+        x = vars[randint(0, len(vars)-1)]
+        xelem = e.data_variable(x)
+        xval = float(xelem.admissible()) # assumed to be fixed value
+        xlow, xupp = xval - xval*ratio/2, xval + xval*ratio/2
+        is_int = xelem.kind() == "int"
+        if is_int:
+          xlow, xupp = floor(xlow), ceil(xupp)
+        uval = UncertainDataValue(xelem.kind(), x, lower=xlow, upper=xupp)
+        e.set_data(x, uval)
+

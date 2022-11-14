@@ -149,6 +149,9 @@ class UncertainDataValue:
     self._lower = lower
     self._upper = upper
 
+  def kind(self):
+    return self._kind
+
   def is_discrete(self):
     return self._values != None
 
@@ -170,7 +173,7 @@ class UncertainDataValue:
         s += str(v) + ", "
       return s[:-2] + "}"
     else:
-      return "[" + self._lower + ", " + self._upper + "]"
+      return "[" + str(self._lower) + ", " + str(self._upper) + "]"
 
 
   def to_xes(self, doc):
@@ -217,6 +220,7 @@ class UncertainDataValue:
         xval.setAttribute("value", str(v))
         xbound.appendChild(xval)
         xlist.appendChild(xbound)
+      return xlist
 
 
 class UncertainEvent:
@@ -278,6 +282,10 @@ class UncertainEvent:
   def set_uncertain_activity(self, a):
     self._activity = a
 
+  def set_data(self, name, ud):
+    self._data[name] = ud
+
+
   def fix_determinacy(self):
     self._indet._value = 1
 
@@ -303,7 +311,7 @@ class UncertainEvent:
     xevent.appendChild(self._activity.to_xes(doc))
     for xtime in self._time.to_xes(doc):
       xevent.appendChild(xtime)
-    for dvar in self._data.values():
+    for dvar in self.data().values():
       xevent.appendChild(dvar.to_xes(doc))
     if self._indet.is_uncertain():
       xevent.appendChild(self._indet.to_xes(doc))

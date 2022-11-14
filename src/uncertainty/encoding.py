@@ -310,9 +310,8 @@ class UncertaintyEncoding(Encoding):
               for v in vals]) 
         else:
           low, upp = xvals.bounds()
-          in_bounds = [ s.le(s.real(Expr.numval(low)), subst_prime[x]), \
-            s.le(s.real(subst_prime[x], Expr.numval(upp))) ]
-          matches = s.land([is_event, s.land(in_bounds)])
+          matches = s.land([ s.le(s.real(Expr.numval(low)), subst_prime[x]), \
+            s.le(s.real(subst_prime[x]), Expr.numval(upp)) ])
         diff = s.ite(matches, diff, s.inc(diff))
     return diff
 
