@@ -4,20 +4,11 @@ from math import floor, ceil
 from uncertainty.trace import *
 
 def all(traces):
-  print("%d traces" % len(traces))
-  useless = ["org:resource", "matricola", "article", "vehicleClass", "vehicleType"]
-  for t in traces:
-    for e in t:
-      for u in useless:
-        if u in e.data():
-          del e._data[u]
-  traces = [ t for n, t in enumerate(traces) if t not in traces[:n]]
-  print("now %d traces" % len(traces))
-  #add_indeterminacy(traces, prob=0.1)
-  #add_uncertain_activities(traces, prob=0.1, num=1)
+  add_indeterminacy(traces, prob=0.9)
+  #add_uncertain_activities(traces, prob=0.9, num=1)
   #make_timestamps_equal(traces)
   #add_uncertain_timestamps(traces, prob=0.3)
-  add_uncertain_discrete_data(traces, prob=0.1, num=2)
+  #add_uncertain_discrete_data(traces, prob=0.1, num=2)
   #add_uncertain_continuous_data(traces, prob=0.2)
   log = UncertainLog(traces)
   xml = log.to_xes()
