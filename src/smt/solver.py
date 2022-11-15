@@ -80,6 +80,11 @@ class Solver:
   def ge(self, a, b):
     pass
 
+  # less-than-or-equal on arithmetic terms
+  @abstractmethod
+  def le(self, a, b):
+    pass
+
   # increment of arithmetic term by 1
   @abstractmethod
   def inc(self, a):
@@ -93,6 +98,11 @@ class Solver:
   # addition
   @abstractmethod
   def plus(self, a, b):
+    pass
+
+  # multiplication
+  @abstractmethod
+  def mult(self, a, b):
     pass
 
   # if-then-else
@@ -123,7 +133,7 @@ class Solver:
 
   # minimize given expression
   @abstractmethod
-  def minimize(self, e):
+  def minimize(self, e, bound):
     pass
 
   # reset context

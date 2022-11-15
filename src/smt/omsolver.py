@@ -1,3 +1,4 @@
+import sys
 from optimathsat import *
 import _optimathsat as om
 
@@ -9,7 +10,8 @@ class OptiMathsatSolver:
 
   def __init__(self):
     self.cfg = om.msat_create_config()
-    om.msat_set_option(self.cfg, "opt.maxsmt_engine", "maxres")
+    om.msat_set_option(self.cfg, "opt.priority", "box")
+    #om.msat_set_option(self.cfg, "opt.verbose", "true")
     om.msat_set_option(self.cfg, "model_generation", "true")
     self.env = om._msat_create_opt_env(self.cfg)
     assert not om.MSAT_ERROR_CONFIG(self.cfg)
@@ -25,10 +27,10 @@ class OptiMathsatSolver:
     return
 
   def are_equal_expr(self, a, b):
-    a == b # FIXME correct?
+    return a == b # FIXME correct?
   
   def true(self):
-    om.msat_make_true(self.env)
+    return om.msat_make_true(self.env)
   
   # integer constants
   def num(self, n):
@@ -96,6 +98,10 @@ class OptiMathsatSolver:
   def ge(self, a, b):
     return om.msat_make_leq(self.env, b, a)
 
+  # less-than-or-equal on arithmetic terms
+  def le(self, a, b):
+    return om.msat_make_leq(self.env, a, b)
+
   # increment of arithmetic term by 1
   def inc(self, a):
     one = om.msat_make_number(self.env, "1")
@@ -110,10 +116,18 @@ class OptiMathsatSolver:
   # addition
   def plus(self, a, b):
     return om.msat_make_plus(self.env, a, b)
+  
+  # multiplication
+  def mult(self, a, b):
+    return om.msat_make_times(self.env, a, b)
 
   # if-then-else
   def ite(self, cond, a, b):
     return om.msat_make_term_ite(self.env, cond, a, b)
+
+  def distinct(self, args):
+    return self.land([ self.neg(self.eq(args[i], args[j])) \
+      for i in range(0, len(args)) for j in range(0, i)])
 
   def push(self):
     om.msat_push_backtrack_point(self.env)
@@ -125,21 +139,36 @@ class OptiMathsatSolver:
   def require(self, fs):
     res = self.land(fs) if isinstance(fs, list) else fs
     ret = om.msat_assert_formula(self.env, res)
+    #print("assert ", str(res))
     if ret != 0:
       raise Exception("Unable to assert constraint.")
 
   # minimize given expression
-  def minimize(self, e):
+  def minimize(self, e, bound):
     assert not om.MSAT_ERROR_ENV(self.env)
     obj = om._msat_make_minimize(self.env, e)
+    ret = om.msat_solve(self.env)
+    #self.dump_model(om.msat_get_model(self.env))
     assert not om.MSAT_ERROR_OBJECTIVE(obj)
     ret = om._msat_assert_objective(self.env, obj)
     if ret != 0:
       raise Exception("Unable to assert objective.")
     # ret=0: unsat, ret > 0: sat, ret < 0: unknown
     ret = om.msat_solve(self.env)
-    print(ret)
-    return Model(om.msat_get_model(self.env)) if ret > 0 else None
+    sys.stdout.flush()
+    model = om.msat_get_model(self.env)
+    #self.dump_model(model)
+    return Model(self.env, model) if ret > 0 else None
+
+  def dump_model(self, model):
+    miter = om.msat_model_create_iterator(model)
+    assert not om.MSAT_ERROR_MODEL_ITERATOR(miter)
+    while om.msat_model_iterator_has_next(miter):
+        (term, value) = msat_model_iterator_next(miter)
+        if str(term)[0] == ".":
+            continue
+        else:
+            print("\t{} : {}".format(str(term), str(value)))
 
   # reset context
   def reset(self):
@@ -152,17 +181,22 @@ class OptiMathsatSolver:
 
 class Model:
 
-  def __init__(self, mdl):
+  def __init__(self, env, mdl):
+    self.env = env
     self.mdl = mdl
   
   def eval_bool(self, v):
-    return om.msat_model_eval(self.mdl, v)
+    res = om.msat_model_eval(self.mdl, v)
+    return om.msat_term_is_true(self.env, res)
   
   def eval_int(self, v):
-    return om.msat_model_eval(self.mdl, v)
+    try:
+      return int(str(om.msat_model_eval(self.mdl, v)))
+    except ValueError:
+      return 0 # model completion: eval yields term if irrelevant
   
   def eval_real(self, v):
-    return om.msat_model_eval(self.mdl, v)
+    return float(Fraction(str(om.msat_model_eval(self.mdl, v))))
 
   def destroy(self):
     om.msat_destroy_model(self.mdl)

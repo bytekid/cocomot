@@ -1,5 +1,6 @@
 from functools import reduce
 from itertools import groupby
+import sys
 
 from dpn.expr import Expr
 from encoding.encoding import *
@@ -38,7 +39,7 @@ class UncertaintyEncoding(Encoding):
 
     vs_time = [ (e, s.realvar("time" + str(j)), s.intvar("pos" + str(j))) \
       for (j, e) in enumerate(events) ] #T_ei and P_ei
-    vs_trace = [ s.intvar("time" + str(j)) for j in range(0, m)]  # L_i
+    vs_trace = [ s.intvar("tracetime" + str(j)) for j in range(0, m)]  # L_i
     self._vs_trace = vs_trace
     self._vs_time = dict([ (e._id, v) for (e,v,_) in vs_time])
     self._vs_pos = dict([ (e._id, v) for (e,_,v) in vs_time])
@@ -311,7 +312,7 @@ class UncertaintyEncoding(Encoding):
         else:
           low, upp = xvals.bounds()
           matches = s.land([ s.le(s.real(Expr.numval(low)), subst_prime[x]), \
-            s.le(s.real(subst_prime[x]), Expr.numval(upp)) ])
+            s.le(subst_prime[x], s.real(Expr.numval(upp))) ])
         diff = s.ite(matches, diff, s.inc(diff))
     return diff
 
