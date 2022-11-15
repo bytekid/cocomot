@@ -118,7 +118,7 @@ class Solver:
 
   # add list of assertions
   @abstractmethod
-  def require(self):
+  def require(self, formulas):
     pass
 
   # minimize given expression
