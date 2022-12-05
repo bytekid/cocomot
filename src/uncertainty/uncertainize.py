@@ -5,7 +5,7 @@ from uncertainty.trace import *
 
 def all(traces):
   add_indeterminacy(traces, prob=0.9)
-  #add_uncertain_activities(traces, prob=0.9, num=1)
+  add_uncertain_activities(traces, prob=0.2, num=1)
   #make_timestamps_equal(traces)
   #add_uncertain_timestamps(traces, prob=0.3)
   #add_uncertain_discrete_data(traces, prob=0.1, num=2)

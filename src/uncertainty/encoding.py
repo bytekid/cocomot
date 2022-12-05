@@ -292,10 +292,11 @@ class UncertaintyEncoding(Encoding):
     return (min_expr, s.land([order_constr, cs]))
 
 
-  def write_diff_fixed(self, trace, i, j, t): # FIXME uncertain data
+  def write_diff_fixed(self, trace, i, j, t):
     subst_prime = dict([ (x, v) for (x, v) in self._vs_data[i+1].items() ])
     s = self._solver
     diff = s.num(0)
+    vcount = 0
     for x in t["write"]:
       if not trace[j].has_data_variable(x): # x not in trace[j].data():
         diff = s.inc(diff) 
@@ -313,6 +314,9 @@ class UncertaintyEncoding(Encoding):
           low, upp = xvals.bounds()
           matches = s.land([ s.le(s.real(Expr.numval(low)), subst_prime[x]), \
             s.le(subst_prime[x], s.real(Expr.numval(upp))) ])
+        #mvar = s.boolvar("match"+str(i)+"_"+str(j)+"_"+str(vcount))
+        vcount += 1
+        #s.require(s.iff(mvar, matches))
         diff = s.ite(matches, diff, s.inc(diff))
     return diff
 
