@@ -1,6 +1,6 @@
 from xml.dom import minidom
 from html import unescape
-from datetime import datetime
+from datetime import datetime, date
 
 from uncertainty.trace import *
 
@@ -9,13 +9,20 @@ TIMESTAMP_KEY = "time:timestamp"
 
 def parse_time(timestr):
   try:
-    dateformat="%Y-%m-%dT%H:%M:%S%z" # 2000-05-06T00:00:00+02:00
+    dateformat="%Y-%m-%dT%H:%M:%S%z" # 2000-05-06T00:00:00+0200
     return datetime.strptime(timestr, dateformat)
   except:
-    timestr=timestr[0:timestr.find(".")]
-    dateformat="%Y-%m-%dT%H:%M:%S" # 2021-04-26T18:46:40.050+00:00
-    #return datetime.fromisoformat(timestr)
-    return datetime.strptime(timestr, dateformat)  
+    if timestr.find(".") > 0:
+      timestr=timestr[0:timestr.find(".")]
+      dateformat="%Y-%m-%dT%H:%M:%S"
+      return datetime.strptime(timestr, dateformat)
+    elif timestr[-3] == ":":
+      timestr=timestr[0:timestr.rfind(":")] + "00"
+      dateformat="%Y-%m-%dT%H:%M:%S%z" # 2000-05-06T00:00:00+0200
+      return datetime.strptime(timestr, dateformat)
+    else:
+      return date.today()
+
 
 
 def xes(logfile):
