@@ -341,7 +341,7 @@ class UncertainTrace:
 
   @staticmethod
   def from_certain_trace(events):
-    time = datetime.fromisoformat("2021-01-01T00:00:00+00:00")
+    time = datetime.strptime("2021-01-01T00:00:00+00:00", "%Y-%m-%dT%H:%M:%S%z")
     ues = []
     for e in events:
       ue = UncertainEvent.from_certain_event(e, time)
