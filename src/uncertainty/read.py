@@ -12,7 +12,8 @@ def parse_time(timestr):
     dateformat="%Y-%m-%dT%H:%M:%S%z" # 2000-05-06T00:00:00+02:00
     return datetime.strptime(timestr, dateformat)
   except:
-    dateformat="%Y-%m-%dT%H:%M:%S.%f%z" # 2021-04-26T18:46:40.050+00:00
+    timestr=timestr[0:timestr.find(".")]
+    dateformat="%Y-%m-%dT%H:%M:%S" # 2021-04-26T18:46:40.050+00:00
     #return datetime.fromisoformat(timestr)
     return datetime.strptime(timestr, dateformat)  
 
