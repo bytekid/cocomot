@@ -155,7 +155,7 @@ class UncertaintyEncoding(Encoding):
     non_neg = [s.ge(delta[i][j], s.num(0))\
       for i in range(0,n+1) for j in range(0,m+1)]
     # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + P_M
-    model0 = [ s.eq(delta[i+1][0], s.plus(mcostmod(i), delta[i][0])) \
+    model0 = [ s.ge(delta[i+1][0], s.plus(mcostmod(i), delta[i][0])) \
         for i in range(0,n) ]
     # 3. delta[0][j+1] = delta[0][j] + ite(drop(j), P_drop, P_L)
     log0 = [ s.land([
@@ -172,7 +172,7 @@ class UncertaintyEncoding(Encoding):
       reachable_labels = set([ t["label"] for k in range(i-1, n) for t in dpn.reachable(k)])
       for j in range(0,m):
         log_step = s.implies(vs_log[i+1][j+1], \
-          s.eq(delta[i+1][j+1],s.plus(lcost(j), delta[i+1][j])))
+          s.ge(delta[i+1][j+1],s.plus(lcost(j), delta[i+1][j])))
         drop_step = s.implies(vs_drop[j], \
           s.eq(delta[i+1][j+1],s.plus(drop_cost(j), delta[i+1][j])))
         
