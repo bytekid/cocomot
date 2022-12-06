@@ -5,8 +5,8 @@ import pm4py
 from pm4py.objects.log.importer.xes import importer as xes_importer
 import json
 import getopt
+from collections import defaultdict
 
-#from smt.cvc5solver import CVC5Solver
 from smt.ysolver import YicesSolver
 from smt.z3solver import Z3Solver
 from smt.omsolver import OptiMathsatSolver
@@ -308,37 +308,75 @@ def read_log(logfile):
     return (xes_importer.apply(logfile), False)
 
 
-### main
-def cocomot_uncertain(dpn, log, ukind, verbose=1):
+def work_uncertain(job):
+  (i, trace, dpn, ukind, verbose) = job
   solver = YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
-  results = []
-  for trace in log:
-    if not isinstance(trace, UncertainTrace):
-      trace = UncertainTrace.from_certain_trace(preprocess_trace(trace, dpn))
-    trace.normalize_time() # replace timestamps by floats
-    (encoding, t_enc) = create_encoding(solver, len(trace), dpn, uncertain=ukind)
-    solver.push()
-    solver.require([encoding.trace_constraints(trace)])
-    t_start = time.perf_counter()
-    if ukind == "min":
-      (dist, dconstr) = encoding.edit_distance_min(trace)
-    else:
-      (dist, dconstr) = encoding.edit_distance_fitness(trace)
-    t_enc =  t_enc + (time.perf_counter() - t_start)
-    solver.require([dconstr])
-    model = encoding.solver().minimize(dist, encoding.step_bound()+10)
-    distance = None if model == None else round(model.eval_real(dist),2)
-    result = encoding.decode_alignment(trace, model)
-    print("distance", distance)
-    if verbose > 0:
-      print("encoding time: %.2f" % t_enc)
-      print("solving time: %.2f" % encoding.solver().t_solve)
-      #print(result)
-      print_trace_distance_verbose(encoding._dpn, result["trace"], result)
-    results.append(distance)
-    model.destroy()
-    solver.pop()
-  return results
+  if not isinstance(trace, UncertainTrace):
+    trace = UncertainTrace.from_certain_trace(preprocess_trace(trace, dpn))
+  trace.normalize_time() # replace timestamps by floats
+  (encoding, t_enc) = create_encoding(solver, len(trace), dpn, uncertain=ukind)
+  solver.push()
+  solver.require([encoding.trace_constraints(trace)])
+  t_start = time.perf_counter()
+  if ukind == "min":
+    (dist, dconstr) = encoding.edit_distance_min(trace)
+  else:
+    (dist, dconstr) = encoding.edit_distance_fitness(trace)
+  t_enc =  t_enc + (time.perf_counter() - t_start)
+  solver.require([dconstr])
+  model = encoding.solver().minimize(dist, encoding.step_bound()+10)
+  distance = None if model == None else round(model.eval_real(dist),2)
+  result = encoding.decode_alignment(trace, model)
+  print("%d. distance" % i, distance)
+  if verbose > 0:
+    print("encoding time: %.2f" % t_enc)
+    print("solving time: %.2f" % encoding.solver().t_solve)
+    #print(result)
+    print_trace_distance_verbose(encoding._dpn, result["trace"], result)
+  model.destroy()
+  solver.pop()
+  return (distance, t_enc, encoding.solver().t_solve)
+
+### main
+def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
+  ts_encode = []
+  ts_solve = []
+  distances = defaultdict(lambda: 0)
+  if numprocs == 1:
+    results = []
+    for (i, trace) in enumerate(log):
+      results.append(work_uncertain((i, trace, dpn, ukind, verbose)))
+    for (d, t_enc, t_solv) in results:
+      ts_encode.append(t_enc)
+      ts_solve.append(t_solv)
+      distances[d] += 1
+  else:
+    print("Parallel checking with %d processes ..." % numprocs)
+    jobs = [ (i, t, dpn, ukind, verbose) for (i,t) in enumerate(log) ]
+    #for j in jobs:
+    #  work(j)
+    pool = multiprocessing.Pool(numprocs)
+    results = pool.map_async(work_uncertain, jobs)
+    pool.close()
+    pool.join()
+    for (d, t_enc, t_solv) in results.get():
+      if d != None:
+        print_trace_distance(i, trace, t_enc, t_solv, cnt, d)
+        distances[d] = distances[d] + 1 if d in distances else 1
+        alldistances[d] = alldistances[d] + cnt if d in alldistances else cnt
+      else:
+        timeouts += 1
+      ts_encode.append(t_enc)
+      ts_solve.append(t_solv)
+      if d in distances:
+        distances[d] += 1
+  mid = int(len(ts_encode)/2)
+  print("encoding time: total %.2f  avg %.2f median %.2f" % \
+    (sum(ts_encode ), sum(ts_encode)/len(ts_encode), ts_encode[mid]))
+  print("solving time:  total %.2f  avg %.2f median %.2f" % \
+    (sum(ts_solve ), sum(ts_solve)/len(ts_solve), ts_solve[mid]))
+  for (d, cnt) in distances.items():
+    print("distance %d: %d" % (d, cnt))
 
 
 def work(job):
