@@ -333,6 +333,7 @@ def work_uncertain(job):
     print("solving time: %.2f" % encoding.solver().t_solve)
     #print(result)
     print_trace_distance_verbose(encoding._dpn, result["trace"], result)
+  sys.stdout.flush()
   model.destroy()
   solver.pop()
   return (distance, t_enc, encoding.solver().t_solve)
@@ -359,11 +360,10 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
     results = pool.map_async(work_uncertain, jobs)
     pool.close()
     pool.join()
+    sys.stdout.flush()
     for (d, t_enc, t_solv) in results.get():
       if d != None:
-        print_trace_distance(i, trace, t_enc, t_solv, cnt, d)
         distances[d] = distances[d] + 1 if d in distances else 1
-        alldistances[d] = alldistances[d] + cnt if d in alldistances else cnt
       else:
         timeouts += 1
       ts_encode.append(t_enc)
@@ -547,7 +547,7 @@ if __name__ == "__main__":
     elif ps["anti"]:
       conformance_check_anti(log, dpn, ps["verbose"], ps["anti"])
     elif ps["uncertainty"]: # has_uncertainty
-      cocomot_uncertain(dpn, log, ps["uncertainty"], ps["verbose"])
+      cocomot_uncertain(dpn, log, ps["uncertainty"], ps["verbose"], numprocs=ps["numprocs"])
     else:
       cocomot(dpn, log, ps)
   
