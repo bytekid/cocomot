@@ -526,47 +526,7 @@ class UncertaintyEncoding(Encoding):
         ord_trace[j-1].fix_determinacy()
         i -= 1
         j -= 1
-      """
-      if j == 0:
-        if i < len(transitions) + 1 and \
-          not self._dpn.is_silent_final_transition(transitions[i-1][0]):
-          alignment.append("model")
-        i -= 1
-      elif i == 0 and not drops[j-1]:
-        alignment.append("log")
-        j -= 1
-      else:
-        dist = model.eval_real(vs_dist[i][j])
-        dlog = model.eval_real(vs_dist[i][j-1]) + model.eval_real(lcost(j-1))
-        ddrop = model.eval_real(vs_dist[i][j-1]) + model.eval_real(pcost(j-1))
-        dmodelsilent = model.eval_real(vs_dist[i-1][j])
-        dmodel = dmodelsilent + model.eval_real(mcost(i-1))
-        dsyn = model.eval_real(vs_dist[i-1][j-1]) + model.eval_real(syncost(i-1,j-1))
-        #print("(i,j) = (%d, %d) dist %.2f = %.2f / %.2f / %.2f / %.2f / %.2f" %\
-        #   (i,j,dist, dlog, ddrop, dmodelsilent, dmodel, dsyn))
-        if dist == dmodelsilent and model.eval_bool(self._silents[i-1]):
-          # silent finals are eliminated from transitions, but still in matrix
-          i -= 1
-          print("silent final")
-        elif drops[j-1]: # dist == ddrop and 
-          alignment.append("drop")
-          ord_trace.drop(j-1) # modify ordtrace to skip this guy
-          j -= 1
-        elif dist == dlog:
-          alignment.append("log")
-          ord_trace[j-1].fix_determinacy()
-          j -= 1
-        elif dist == dmodel:
-          alignment.append("model")
-          i -= 1
-        else:
-          assert(dist == dsyn)
-          alignment.append("parallel")
-          ord_trace[j-1].fix_label(transitions[i-1][1]) # modify ordtrace
-          ord_trace[j-1].fix_determinacy()
-          i -= 1
-          j -= 1
-        """
+     
     alignment.reverse()
     return {
       "run": {
