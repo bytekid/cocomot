@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<log>
+	<trace>
+		<event>
+			<string key="concept:name" value="Create Fine"/>
+			<date key="time:timestamp" value="2007-04-15T00:00:00+0200"/>
+			<date key="uncertainty:time:timestamp_max" value="2007-04-15T00:00:00+0200"/>
+			<string key="org:resource" value="541"/>
+			<string key="matricola" value="541"/>
+			<float key="totalPaymentAmount" value="0.0"/>
+			<string key="dismissal" value="NIL"/>
+			<float key="amount" value="36.0"/>
+			<string key="article" value="157"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="vehicleClass" value="A"/>
+			<string key="vehicleType" value="MATIZ"/>
+			<int key="points" value="0"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Send Fine"/>
+			<date key="time:timestamp" value="2007-04-15T00:00:00+0200"/>
+			<date key="uncertainty:time:timestamp_max" value="2007-04-15T00:00:00+0200"/>
+			<float key="expense" value="13.0"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<int key="delaySend" value="2616"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Insert Fine Notification"/>
+			<date key="time:timestamp" value="2007-04-15T00:00:00+0200"/>
+			<date key="uncertainty:time:timestamp_max" value="2007-04-15T00:00:00+0200"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="notificationType" value="P"/>
+			<string key="lastSent" value="P"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Add penalty"/>
+			<date key="time:timestamp" value="2007-04-15T00:00:00+0200"/>
+			<date key="uncertainty:time:timestamp_max" value="2007-04-15T00:00:00+0200"/>
+			<float key="amount" value="74.0"/>
+			<string key="lifecycle:transition" value="complete"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Insert Date Appeal to Prefecture"/>
+			<date key="time:timestamp" value="2007-04-15T00:00:00+0200"/>
+			<date key="uncertainty:time:timestamp_max" value="2007-04-15T00:00:00+0200"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<int key="delayPrefecture" value="1752"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Send Appeal to Prefecture"/>
+			<date key="time:timestamp" value="2007-04-15T00:00:00+0200"/>
+			<date key="uncertainty:time:timestamp_max" value="2007-04-15T00:00:00+0200"/>
+			<string key="dismissal" value="NIL"/>
+			<string key="lifecycle:transition" value="complete"/>
+		</event>
+	</trace>
+</log>
+
