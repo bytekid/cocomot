@@ -503,8 +503,7 @@ if __name__ == "__main__":
       conformance_check_multi(log, dpn, ps["verbose"])
     elif ps["anti"]:
       conformance_check_anti(log, dpn, ps["verbose"], ps["anti"])
-    elif has_uncertainty:
-      ps["uncertainty"] = "min" if not ps["uncertainty"] else ps["uncertainty"] 
+    elif ps["uncertainty"]: # has_uncertainty
       cocomot_uncertain(dpn, log, ps["uncertainty"], ps["verbose"])
     else:
       cocomot(dpn, log, ps)
