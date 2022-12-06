@@ -313,21 +313,26 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1):
   solver = YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
   results = []
   for trace in log:
-    assert(isinstance(trace, UncertainTrace))
+    if not isinstance(trace, UncertainTrace):
+      trace = UncertainTrace.from_certain_trace(preprocess_trace(trace, dpn))
     trace.normalize_time() # replace timestamps by floats
-    (encoding, _) = create_encoding(solver, len(trace), dpn, uncertain=ukind)
+    (encoding, t_enc) = create_encoding(solver, len(trace), dpn, uncertain=ukind)
     solver.push()
     solver.require([encoding.trace_constraints(trace)])
+    t_start = time.perf_counter()
     if ukind == "min":
       (dist, dconstr) = encoding.edit_distance_min(trace)
     else:
       (dist, dconstr) = encoding.edit_distance_fitness(trace)
+    t_enc =  t_enc + (time.perf_counter() - t_start)
     solver.require([dconstr])
     model = encoding.solver().minimize(dist, encoding.step_bound()+10)
     distance = None if model == None else round(model.eval_real(dist),2)
     result = encoding.decode_alignment(trace, model)
     print("distance", distance)
     if verbose > 0:
+      print("encoding time: %.2f" % t_enc)
+      print("solving time: %.2f" % encoding.solver().t_solve)
       #print(result)
       print_trace_distance_verbose(encoding._dpn, result["trace"], result)
     results.append(distance)
