@@ -117,12 +117,12 @@ class UncertaintyEncoding(Encoding):
     non_neg = [s.ge(delta[i][j], s.num(0))\
       for i in range(0,n+1) for j in range(0,m+1)]
     # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + P_M
-    model0 = [ s.eq(delta[i+1][0], s.plus(mcostmod(i), delta[i][0])) \
+    model0 = [ s.ge(delta[i+1][0], s.plus(mcostmod(i), delta[i][0])) \
         for i in range(0,n) ]
     # 3. delta[0][j+1] = delta[0][j] + P_L
     log0 = [ s.lor([
-      s.eq(delta[0][j+1], s.plus(delta[0][j], lcost(j))),
-      s.land([vs_drop[j], s.eq(delta[0][j+1], s.plus(drop_cost(j), delta[0][j]))]) \
+      s.ge(delta[0][j+1], s.plus(delta[0][j], lcost(j))),
+      s.land([vs_drop[j],s.ge(delta[0][j+1],s.plus(drop_cost(j),delta[0][j]))]) \
       ]) for j in range(0,m) ]
     # 4. encode delta[i+1][j+1] >= min(...) as one of
     #  delta[i+1][j+1] >= delta[i][j] + sync move penalty
@@ -153,7 +153,7 @@ class UncertaintyEncoding(Encoding):
   def edit_distance_min_fixed_order(self, trace):
     s = self._solver
     cost1 = lambda _ : s.num(1)
-    pcost = lambda i: s.num(0 if trace._events[i].is_uncertain() else MAX)
+    dropcost = lambda i: s.num(0 if trace._events[i].is_uncertain() else MAX)
     
     def syncost(i,j):
       is_poss_label = [s.eq(self._vs_trans[i], s.num(t["id"])) \
@@ -161,7 +161,7 @@ class UncertaintyEncoding(Encoding):
         if "label" in t and t["label"] in trace._events[j].labels() ]
       return s.ite(s.lor(is_poss_label), s.num(0), s.num(MAX))
   
-    self._penalties = (cost1, cost1, syncost, pcost)
+    self._penalties = (cost1, cost1, syncost, dropcost)
     return self.edit_distance_parametric(trace, self._penalties)
   
 
