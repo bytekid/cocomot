@@ -195,6 +195,11 @@ class UncertaintyEncoding(Encoding):
     #  for i in range(0,n) for j in range(0,m) ]
 
     #FIXME symmetry breaking: enforce log steps before model steps?
+    # perhaps does not always pay off
+    symm = []
+    for i in range(2,n):
+      for j in range(3,m):
+        symm.append(s.implies(vs_mod[i][j-1], s.neg(vs_log[i][j])))
 
     # run length, only relevant for multiple tokens
     length = [s.ge(self._run_length, s.num(0)),s.ge(s.num(n), self._run_length)]
@@ -206,7 +211,7 @@ class UncertaintyEncoding(Encoding):
       for i in range(1,n+1):
         min_expr = s.ite(s.eq(self._run_length, s.num(i)), delta[i][m],min_expr)
 
-    constraints = non_neg + model0 + log0 + steps + length + silent_def 
+    constraints = non_neg + model0 + log0 + steps + length + silent_def +symm
     return (min_expr, s.land(constraints))
 
 
