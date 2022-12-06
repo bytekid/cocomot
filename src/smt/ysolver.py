@@ -22,6 +22,9 @@ class YicesSolver(Solver):
   def true(self):
     return Terms.true()
   
+  def false(self):
+    return Terms.false()
+  
   # integer constants
   def num(self, n):
     return Terms.integer(n)
@@ -47,6 +50,8 @@ class YicesSolver(Solver):
   
   # logical conjunction
   def land(self, l):
+    if any( self.are_equal_expr(e, self.false()) for e in l):
+      return self.false()
     return Terms.yand(l)
 
   # logical disjunction

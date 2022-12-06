@@ -18,6 +18,9 @@ class Z3Solver(Solver):
   def true(self):
     return And([])
   
+  def false(self):
+    return Or([])
+  
   # integer constants
   def num(self, n):
     return n

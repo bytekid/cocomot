@@ -32,6 +32,9 @@ class OptiMathsatSolver:
   def true(self):
     return om.msat_make_true(self.env)
   
+  def false(self):
+    return om.msat_make_false(self.env)
+  
   # integer constants
   def num(self, n):
     return om.msat_make_number(self.env, str(n))

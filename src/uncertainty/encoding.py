@@ -8,6 +8,10 @@ from uncertainty.trace import UncertainTrace
 from utils import pad_to
 
 MAX = 100
+DROP_MOVE = 0
+LOG_MOVE = 1
+MODEL_MOVE = 2
+SYNC_MOVE = 3
 
 class UncertaintyEncoding(Encoding):
 
@@ -26,11 +30,43 @@ class UncertaintyEncoding(Encoding):
     return [[var(i,j) \
       for j in range(0, trace_len+1)] for i in range(0, self._step_bound+1)]
 
+  def move_type_vars(self, trace_len):
+    s = self._solver
+    var = lambda i, j: s.intvar("movetype" + str(i) + "_" + str(j))
+    xs = [[var(i,j) \
+      for j in range(0, trace_len+1)] for i in range(0, self._step_bound+1)]
+    self._vs_syn_move = [[None for j in range(0, trace_len+1)] \
+      for i in range(0, self._step_bound+1)]
+    drop_move = s.num(DROP_MOVE)
+    log_move = s.num(LOG_MOVE)
+    mod_move = s.num(MODEL_MOVE)
+    sync_move = s.num(SYNC_MOVE)
+    for i in range(0, self._step_bound+1):
+      for j in range(0, trace_len+1):
+        self._vs_log_move[i][j] = s.eq(xs[i][j], log_move)
+        self._vs_mod_move[i][j] = s.eq(xs[i][j], mod_move)
+        self._vs_syn_move[i][j] = s.eq(xs[i][j], sync_move)
+        if i>0 or j > 0:
+          s.require([s.ge(xs[i][j], s.num(0)), s.ge(s.num(3), xs[i][j]) ])
+        if i ==0:
+          # no (silent) model, no sync move
+          s.require([s.neg(s.eq(xs[i][j], sync_move)), \
+            s.neg(s.eq(xs[i][j], mod_move)) ])
+        if j > 0:
+          s.require([s.iff(s.eq(xs[i][j], drop_move), self._vs_drop[j-1])]) 
+        else:
+          # no drop, no syn, no log
+          s.require([s.neg(s.eq(xs[i][j], drop_move)), \
+            s.neg(s.eq(xs[i][j], sync_move)), s.neg(s.eq(xs[i][j], log_move))])
+    return xs
+
   def prepare_edit_distance(self, trace_len):
     super().prepare_edit_distance(trace_len)
     s = self._solver
+    self._silents = [s.boolvar("silent"+str(i)) for i in range(0,self._step_bound) ]
     self._vs_drop = [ s.boolvar("drop" + str(j)) for j in range(0, trace_len)]
     self._vs_act = [ s.intvar("act" + str(j)) for j in range(0, trace_len)]
+    self._vs_move_type = self.move_type_vars(trace_len)
 
   def order_constraints(self, trace):
     m = len(trace)
@@ -91,51 +127,75 @@ class UncertaintyEncoding(Encoding):
     # lcost, mcost, syncost, pcost are costs of log, model, synchronous, and
     # projection/skip moves; they all take only the index/indices as arguments
     delta = self._vs_dist
-    #FIXME use self._vs_log_move, self._vs_mod_move?
     n = self._step_bound
     m = len(trace)
     s = self._solver
     dpn = self._dpn
     etrans = [(t["id"], t) for t in dpn.transitions()]
     vs_drop = self._vs_drop
+    vs_log = self._vs_log_move
+    vs_mod = self._vs_mod_move
+    vs_syn = self._vs_syn_move
 
     def is_silent(i): # transition i is silent
       return s.lor([ s.eq(self._vs_trans[i], s.num(id)) \
         for (id, t) in etrans if t in dpn.reachable(i) and t["invisible"] ])
     
     is_silents = [ is_silent(i) for i in range(0,n) ]
-    self._silents = [s.boolvar("silent"+str(i)) for i in range(0,n) ]
-    silent = [ s.iff(v,e) for (v,e) in zip(self._silents, is_silents)]
+    silent_def = [ s.iff(v,e) for (v,e) in zip(self._silents, is_silents)]
     mcostmod = lambda i: s.ite(self._silents[i], s.num(0), mcost(i))
 
     # delta[i][j] represents the edit distance of transition sequence up to
     # including i, and the log up to including j
     # optimization: constraints of form delta[i+1][j+1] = e are equivalent to
-    # delta[i+1][j+1] >= e due to minimization. replaced some for performance
+    # delta[i+1][j+1] >= e due to minimization. replaced some for performance.
+    # (but not always, sometimes = seems better)
 
     # 1. all intermediate distances delta[i][j] are non-negative
     non_neg = [s.ge(delta[i][j], s.num(0))\
       for i in range(0,n+1) for j in range(0,m+1)]
     # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + P_M
-    model0 = [ s.ge(delta[i+1][0], s.plus(mcostmod(i), delta[i][0])) \
+    model0 = [ s.eq(delta[i+1][0], s.plus(mcostmod(i), delta[i][0])) \
         for i in range(0,n) ]
-    # 3. delta[0][j+1] = delta[0][j] + P_L
-    log0 = [ s.lor([
-      s.ge(delta[0][j+1], s.plus(delta[0][j], lcost(j))),
-      s.land([vs_drop[j],s.ge(delta[0][j+1],s.plus(drop_cost(j),delta[0][j]))]) \
+    # 3. delta[0][j+1] = delta[0][j] + ite(drop(j), P_drop, P_L)
+    log0 = [ s.land([
+      s.implies(vs_log[0][j+1], s.eq(delta[0][j+1], s.plus(delta[0][j], lcost(j)))),
+      s.implies(vs_drop[j], s.ge(delta[0][j+1], s.plus(drop_cost(j), delta[0][j]))) \
       ]) for j in range(0,m) ]
+
     # 4. encode delta[i+1][j+1] >= min(...) as one of
     #  delta[i+1][j+1] >= delta[i][j] + sync move penalty
-    #  delta[i+1][j+1] >= delta[i+1][j] + log move or log skip penalty
+    #  delta[i+1][j+1] >= delta[i+1][j] + log move or drop penalty
     #  delta[i+1][j+1] >= delta[i+1][j] + model move penalty
-    steps = [ s.lor([s.eq(delta[i+1][j+1], s.plus(syncost(i, j), delta[i][j])),\
-                     s.eq(delta[i+1][j+1], s.plus(lcost(j), delta[i+1][j])), \
-                     s.land([vs_drop[j], s.eq(delta[i+1][j+1], s.plus(drop_cost(j), delta[i+1][j]))]), \
-                     s.eq(delta[i+1][j+1], s.plus(mcostmod(i),delta[i][j+1]))])\
-      for i in range(0,n) for j in range(0,m) ]
+    steps = []
+    for i in range(0,n):
+      reachable_labels = set([ t["label"] for k in range(i-1, n) for t in dpn.reachable(k)])
+      for j in range(0,m):
+        log_step = s.implies(vs_log[i+1][j+1], \
+          s.eq(delta[i+1][j+1],s.plus(lcost(j), delta[i+1][j])))
+        drop_step = s.implies(vs_drop[j], \
+          s.eq(delta[i+1][j+1],s.plus(drop_cost(j), delta[i+1][j])))
+        
+        if len(reachable_labels) > 0 or j == 0 or j == m-1:
+          mod_step = s.implies(vs_mod[i+1][j+1], s.eq(delta[i+1][j+1], s.plus(mcostmod(i),delta[i][j+1])))
+        else:
+          mod_step = s.neg(vs_mod[i+1][j+1])
+        inter = set(trace[j]._activity.labels()).intersection(set(reachable_labels))
+        if len(inter) > 0:
+          syn_step = s.implies(vs_syn[i+1][j+1], s.eq(delta[i+1][j+1], \
+            s.plus(syncost(i, j), delta[i][j])))
+        else:
+          syn_step = s.neg(vs_syn[i+1][j+1])
+        steps += [log_step, drop_step, mod_step, syn_step]
+
+    #steps = [ s.lor([s.eq(delta[i+1][j+1], s.plus(syncost(i, j), delta[i][j])),\
+    #                 s.eq(delta[i+1][j+1], s.plus(lcost(j), delta[i+1][j])), \
+    #                 s.land([vs_drop[j], s.eq(delta[i+1][j+1], s.plus(drop_cost(j), delta[i+1][j]))]), \
+    #                 s.eq(delta[i+1][j+1], s.plus(mcostmod(i),delta[i][j+1]))])\
+    #  for i in range(0,n) for j in range(0,m) ]
 
     #FIXME symmetry breaking: enforce log steps before model steps?
-    
+
     # run length, only relevant for multiple tokens
     length = [s.ge(self._run_length, s.num(0)),s.ge(s.num(n), self._run_length)]
     
@@ -146,7 +206,7 @@ class UncertaintyEncoding(Encoding):
       for i in range(1,n+1):
         min_expr = s.ite(s.eq(self._run_length, s.num(i)), delta[i][m],min_expr)
 
-    constraints = non_neg + model0 + log0 + steps + length + silent
+    constraints = non_neg + model0 + log0 + steps + length + silent_def 
     return (min_expr, s.land(constraints))
 
 
@@ -391,14 +451,22 @@ class UncertaintyEncoding(Encoding):
 
   def print_distance_matrix(self, model):
     print("\nDISTANCES:")
-    for j in range(0, len(self._vs_dist[0])):
+    n = len(self._vs_dist)
+    m = len(self._vs_dist[0])
+    for j in range(0, m):
       d = ""
-      for i in range(0, len(self._vs_dist)):
+      for i in range(0, n):
         fval = "%.2f" % model.eval_real(self._vs_dist[i][j])
         is_int = float(fval) - int(float(fval)) == 0
         if is_int:
           fval = str(int(float(fval)))
-        d = d + pad_to(fval, 5) + " "
+        # k = model.eval_int(self._vs_move_type[i][j])
+        sort = "z" if  i < n-1 and model.eval_bool(self._silents[i]) else \
+          "l" if model.eval_bool(self._vs_log_move[i][j]) else \
+          "m" if model.eval_bool(self._vs_mod_move[i][j]) else \
+          "d" if j > 0 and model.eval_bool(self._vs_drop[j-1]) else \
+          "s" if j < m-1 and model.eval_bool(self._vs_syn_move[i][j]) else "?"
+        d = d + pad_to(fval+ sort, 5)  + " "
       print(d)
 
 
@@ -434,8 +502,31 @@ class UncertaintyEncoding(Encoding):
     alignment = [] # array mapping instant to one of {"log", "model","parallel", "skip"}
     drops = [ model.eval_bool(v) for v in self._vs_drop ]
     #print("drops", drops)
+    logmoves = [[ model.eval_bool(self._vs_log_move[i][j]) \
+      for j in range(0, len(trace)+1)] for i in range(0, len(self._vs_log_move))]
+    modmoves = [[ model.eval_bool(self._vs_mod_move[i][j]) \
+      for j in range(0, len(trace)+1)] for i in range(0, len(self._vs_mod_move))]
     #print("silents", [ model.eval_bool(v) for v in self._silents ])
     while i > 0 or j > 0:
+      if model.eval_bool(self._vs_log_move[i][j]):
+        alignment.append("log")
+        j -= 1
+      elif model.eval_bool(self._vs_mod_move[i][j]):
+        if not model.eval_bool(self._silents[i-1]):
+          alignment.append("model")
+        i -= 1
+      elif drops[j-1]:
+        alignment.append("drop")
+        ord_trace.drop(j-1) # modify ordtrace to skip this guy
+        j -= 1
+      else:
+        assert(model.eval_bool(self._vs_syn_move[i][j]))
+        alignment.append("parallel")
+        ord_trace[j-1].fix_label(transitions[i-1][1]) # modify ordtrace
+        ord_trace[j-1].fix_determinacy()
+        i -= 1
+        j -= 1
+      """
       if j == 0:
         if i < len(transitions) + 1 and \
           not self._dpn.is_silent_final_transition(transitions[i-1][0]):
@@ -453,7 +544,11 @@ class UncertaintyEncoding(Encoding):
         dsyn = model.eval_real(vs_dist[i-1][j-1]) + model.eval_real(syncost(i-1,j-1))
         #print("(i,j) = (%d, %d) dist %.2f = %.2f / %.2f / %.2f / %.2f / %.2f" %\
         #   (i,j,dist, dlog, ddrop, dmodelsilent, dmodel, dsyn))
-        if dist == ddrop and drops[j-1]:
+        if dist == dmodelsilent and model.eval_bool(self._silents[i-1]):
+          # silent finals are eliminated from transitions, but still in matrix
+          i -= 1
+          print("silent final")
+        elif drops[j-1]: # dist == ddrop and 
           alignment.append("drop")
           ord_trace.drop(j-1) # modify ordtrace to skip this guy
           j -= 1
@@ -461,9 +556,6 @@ class UncertaintyEncoding(Encoding):
           alignment.append("log")
           ord_trace[j-1].fix_determinacy()
           j -= 1
-        elif dist == dmodelsilent and model.eval_bool(self._silents[i-1]):
-        # silent finals are eliminated from transitions, but still in matrix
-          i -= 1
         elif dist == dmodel:
           alignment.append("model")
           i -= 1
@@ -474,6 +566,7 @@ class UncertaintyEncoding(Encoding):
           ord_trace[j-1].fix_determinacy()
           i -= 1
           j -= 1
+        """
     alignment.reverse()
     return {
       "run": {
