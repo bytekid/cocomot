@@ -182,7 +182,7 @@ class UncertaintyEncoding(Encoding):
           mod_step = s.neg(vs_mod[i+1][j+1])
         inter = set(trace[j]._activity.labels()).intersection(set(reachable_labels))
         if len(inter) > 0:
-          syn_step = s.implies(vs_syn[i+1][j+1], s.eq(delta[i+1][j+1], \
+          syn_step = s.implies(vs_syn[i+1][j+1], s.ge(delta[i+1][j+1], \
             s.plus(syncost(i, j), delta[i][j])))
         else:
           syn_step = s.neg(vs_syn[i+1][j+1])
