@@ -1,4 +1,5 @@
 import sys
+import time
 from optimathsat import *
 import _optimathsat as om
 
@@ -15,12 +16,11 @@ class OptiMathsatSolver:
     om.msat_set_option(self.cfg, "model_generation", "true")
     self.env = om._msat_create_opt_env(self.cfg)
     assert not om.MSAT_ERROR_CONFIG(self.cfg)
-
-  def __del__(self):
-    self.destroy()
+    self.t_solve = 0
 
   def destroy(self):
-    om.msat_destroy_config(self.cfg)
+    if not om.MSAT_ERROR_CONFIG(self.cfg):
+      om.msat_destroy_config(self.cfg)
     om.msat_destroy_env(self.env)
     del self.cfg
     del self.env
@@ -148,6 +148,7 @@ class OptiMathsatSolver:
 
   # minimize given expression
   def minimize(self, e, bound):
+    t_start = time.perf_counter()
     assert not om.MSAT_ERROR_ENV(self.env)
     obj = om._msat_make_minimize(self.env, e)
     ret = om.msat_solve(self.env)
@@ -160,6 +161,7 @@ class OptiMathsatSolver:
     ret = om.msat_solve(self.env)
     sys.stdout.flush()
     model = om.msat_get_model(self.env)
+    self.t_solve = time.perf_counter() - t_start
     #self.dump_model(model)
     return Model(self.env, model) if ret > 0 else None
 
@@ -175,7 +177,8 @@ class OptiMathsatSolver:
 
   # reset context
   def reset(self):
-    om.mset_resetenv(self.env)
+    om.msat_reset_env(self.env)
+    self.t_solve = 0
 
   @staticmethod
   def shutdown():
