@@ -335,8 +335,9 @@ def work_uncertain(job):
     print_trace_distance_verbose(encoding._dpn, result["trace"], result)
   sys.stdout.flush()
   model.destroy()
-  solver.pop()
+  solver.reset()
   solver.destroy()
+  YicesSolver.shutdown()
   return (distance, t_enc, encoding.solver().t_solve)
 
 ### main
