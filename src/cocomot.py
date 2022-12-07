@@ -336,6 +336,7 @@ def work_uncertain(job):
   sys.stdout.flush()
   model.destroy()
   solver.pop()
+  solver.destroy()
   return (distance, t_enc, encoding.solver().t_solve)
 
 ### main
