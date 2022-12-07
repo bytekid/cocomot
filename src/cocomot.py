@@ -337,7 +337,6 @@ def work_uncertain(job):
   model.destroy()
   solver.reset()
   solver.destroy()
-  YicesSolver.shutdown()
   return (distance, t_enc, encoding.solver().t_solve)
 
 ### main
@@ -379,6 +378,7 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
     (sum(ts_solve ), sum(ts_solve)/len(ts_solve), ts_solve[mid]))
   for (d, cnt) in distances.items():
     print("distance %d: %d" % (d, cnt))
+  YicesSolver.shutdown()
 
 
 def work(job):
