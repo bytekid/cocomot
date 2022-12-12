@@ -144,8 +144,11 @@ class UncertaintyEncoding(Encoding):
     is_silents = [ is_silent(i) for i in range(0,n) ]
     silent_def = [ s.iff(v,e) for (v,e) in zip(self._silents, is_silents)]
     mcostmod = lambda i: s.ite(self._silents[i], s.num(0), mcost(i))
+    # caching
     mcostsmod = [ s.realvar("mcost" + str(i)) for i in range(0,n)]
     mcostsmod_def = [ s.eq(mcostsmod[i],mcostmod(i)) for i in range(0,n) ]
+    lcosts = [ s.realvar("lcost" + str(j)) for j in range(0,m)]
+    lcosts_def = [ s.eq(lcosts[j],lcost(j)) for j in range(0,m) ]
 
     # delta[i][j] represents the edit distance of transition sequence up to
     # including i, and the log up to including j
@@ -161,7 +164,7 @@ class UncertaintyEncoding(Encoding):
         for i in range(0,n) ]
     # 3. delta[0][j+1] = delta[0][j] + ite(drop(j), P_drop, P_L)
     log0 = [ s.land([
-      s.implies(vs_log[0][j+1], s.eq(delta[0][j+1], s.plus(delta[0][j], lcost(j)))),
+      s.implies(vs_log[0][j+1], s.eq(delta[0][j+1], s.plus(delta[0][j], lcosts[j]))),
       s.implies(vs_drop[j], s.ge(delta[0][j+1], s.plus(drop_cost(j), delta[0][j]))) \
       ]) for j in range(0,m) ]
 
@@ -175,7 +178,7 @@ class UncertaintyEncoding(Encoding):
       reachable_labels = set([ t["label"] for k in range(i-1, n) for t in dpn.reachable(k)])
       for j in range(0,m):
         log_step = s.implies(vs_log[i+1][j+1], \
-          s.ge(delta[i+1][j+1],s.plus(lcost(j), delta[i+1][j])))
+          s.ge(delta[i+1][j+1],s.plus(lcosts[j], delta[i+1][j])))
         drop_step = s.implies(vs_drop[j], \
           s.eq(delta[i+1][j+1],s.plus(drop_cost(j), delta[i+1][j])))
         
@@ -214,7 +217,8 @@ class UncertaintyEncoding(Encoding):
       for i in range(1,n+1):
         min_expr = s.ite(s.eq(self._run_length, s.num(i)), delta[i][m],min_expr)
 
-    constraints = non_neg + model0 + log0 + steps + length + silent_def + symm + mcostsmod_def
+    constraints = non_neg + model0 + log0 + steps + length + silent_def + symm \
+      + mcostsmod_def + lcosts_def
     return (min_expr, s.land(constraints))
 
 
