@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<log xes.version="1849-2016" xes.features="nested-attributes" xmlns="http://www.xes-standard.org/">
+	<trace>
+		<event>
+			<string key="concept:name" value="Create Fine"/>
+			<date key="time:timestamp" value="2007-03-23T00:00:00+0100"/>
+			<string key="org:resource" value="537"/>
+			<string key="matricola" value="537"/>
+			<float key="totalPaymentAmount" value="0.0"/>
+			<string key="dismissal" value="NIL"/>
+			<float key="amount" value="36.0"/>
+			<string key="article" value="157"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="vehicleClass" value="A"/>
+			<string key="vehicleType" value="MERCEDES"/>
+			<int key="points" value="0"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Send Fine"/>
+			<date key="time:timestamp" value="2007-08-02T00:00:00+0200"/>
+			<float key="expenses" value="13.0"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<int key="delaySend" value="3167"/>
+			<container key="uncertainty:entry">
+				<bool key="uncertainty:indeterminacy" value="true"/>
+				<float key="uncertainty:probability" value="0.63"/>
+			</container>
+		</event>
+		<event>
+			<string key="concept:name" value="Insert Fine Notification"/>
+			<date key="time:timestamp" value="2007-08-20T00:00:00+0200"/>
+			<string key="lifecycle:transition" value="complete"/>
+			<string key="notificationType" value="P"/>
+			<string key="lastSent" value="P"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Add penalty"/>
+			<date key="time:timestamp" value="2007-10-19T00:00:00+0200"/>
+			<float key="amount" value="74.0"/>
+			<string key="lifecycle:transition" value="complete"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Send for Credit Collection"/>
+			<date key="time:timestamp" value="2009-03-30T00:00:00+0200"/>
+			<string key="lifecycle:transition" value="complete"/>
+		</event>
+	</trace>
+</log>

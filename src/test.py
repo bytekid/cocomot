@@ -38,8 +38,9 @@ if __name__ == "__main__":
         slv.destroy()
       duration = time.time() - start
       computed_distance = res[0]
-      oks += 1 if computed_distance == real_distance else 0
-      res = "OK" if computed_distance == real_distance else "FAIL"
+      correct = float(computed_distance) == float(real_distance)
+      oks += 1 if correct else 0
+      res = "OK" if correct else "FAIL"
       print("    %s/%s %s %s    (%.2f)" % (t, xes, res, real_distance,duration))
       tcnt += 1
   print("%d/%d OK %s"% (oks,tcnt, "" if oks==tcnt else str(tcnt-oks) + " FAIL"))
