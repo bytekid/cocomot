@@ -128,39 +128,30 @@ class YicesSolver(Solver):
     self.ctx.assert_formulas(formulas)
 
   # minimize given expression, with guessed initial value
-  def minimize_upordown(self, expr, max_val, start = 0):
-    if start == 0:
-      return self.minimize(expr, max_val)
-
-    self.push()
-    val = start
-    self.ctx.assert_formulas([self.ge(self.num(val), expr)])
-    t_start = time.perf_counter()
-    status = self.ctx.check_context(timeout=self._timeout)
-    if status == Status.UNKNOWN:
-      return None
-
-    m = YicesModel(self.ctx) if status == Status.SAT else None
-    self.pop()
-    self.t_solve = time.perf_counter() - t_start
-    status0 = status
-    (inc, within_bnd) = (-1, lambda v: v > 0) if status == Status.SAT \
-      else (1, lambda v: v < max_val) 
-    while status == status0 and within_bnd(val):
+  def minimize_binsearch(self, expr, max=100):
+    upper = max
+    lower = 0.0
+    topop = 0
+    while (upper-lower >= 0.01):
+      print("max %.2f min %.2f" % (upper, lower))
       self.push()
-      val += inc
-      self.require([self.ge(self.num(val), expr)])
+      mid = lower + (upper-lower)/2
+      self.ctx.assert_formulas([self.ge(self.num(mid), expr)])
       t_start = time.perf_counter()
       status = self.ctx.check_context(timeout=self._timeout)
+      self.t_solve += time.perf_counter() - t_start
+      m = YicesModel(self.ctx) if status == Status.SAT else None
       if status == Status.UNKNOWN:
         return None
-
-      mlast = m
-      m = YicesModel(self.ctx) if status == Status.SAT else None
-      self.pop()
+      elif status == Status.SAT:
+        upper = mid
+        topop += 1
+      else:
+        lower = mid
+        self.pop()
       self.t_solve += time.perf_counter() - t_start
-    if inc == -1 and m == None:
-      m = mlast
+    for i in range(0, topop):
+      self.pop()
     return m
 
   def is_sat(self):
