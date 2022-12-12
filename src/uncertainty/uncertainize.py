@@ -7,7 +7,7 @@ from uncertainty.trace import *
 def all(traces):
   seed(datetime.now())
   #add_indeterminacy(traces, prob=0.5)
-  add_uncertain_activities(traces, prob=0.8, num=1)
+  add_uncertain_activities(traces, prob=0.2, num=1)
   #make_timestamps_equal(traces)
   #add_uncertain_timestamps(traces, prob=0.3)
   #add_uncertain_discrete_data(traces, prob=0.1, num=2)
