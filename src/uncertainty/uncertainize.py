@@ -5,12 +5,12 @@ from datetime import datetime
 from uncertainty.trace import *
 
 def all(traces):
-  p = 0.1
+  p = 0.9
   seed(datetime.now())
   #add_indeterminacy(traces, prob=p)
-  add_uncertain_activities(traces, prob=p, num=1)
+  #add_uncertain_activities(traces, prob=p, num=1)
   #make_timestamps_equal(traces)
-  #add_uncertain_timestamps(traces, prob=p)
+  add_uncertain_timestamps(traces, prob=p)
   #add_uncertain_discrete_data(traces, prob=p, num=1)
   #add_uncertain_continuous_data(traces, prob=0.2)
   log = UncertainLog(traces)
