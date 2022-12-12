@@ -282,7 +282,7 @@ class UncertaintyEncoding(Encoding):
       for e in trace._events:
         is_event = s.eq(vs_trace[j], s.num(e._id))
         if e.has_data_variable(x): #otherwise written mismatch, so increase diff
-          data = e.data_entry(x)
+          data = e.data_variable(x)
           if data.is_discrete():
             vs = [s.eq(subst_prime[x],s.real(Expr.numval(v))) for v in data.values()]
             is_ok.append(s.land([is_event, s.lor(vs)]))

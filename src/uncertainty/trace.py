@@ -20,6 +20,7 @@ class Indeterminacy:
     #  </container>
     # only supposed to be called if self.is_uncertain()
     xcont = doc.createElement("container")
+    xcont.setAttribute("key", "uncertainty:entry");
     xbool = doc.createElement("bool")
     xbool.setAttribute("key", "uncertainty:indeterminacy");
     xbool.setAttribute("value", "true");

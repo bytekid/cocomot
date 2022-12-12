@@ -352,6 +352,7 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
     for (d, t_enc, t_solv) in results:
       ts_encode.append(t_enc)
       ts_solve.append(t_solv)
+      d = str(d)
       distances[d] += 1
   else:
     print("Parallel checking with %d processes ..." % numprocs)
@@ -379,7 +380,7 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
     print("solving time:  total %.2f  avg %.2f median %.2f" % \
       (sum(ts_solve ), sum(ts_solve)/len(ts_solve), ts_solve[mid]))
     for (d, cnt) in distances.items():
-      print("distance %d: %d" % (d, cnt))
+      print("distance %s: %d" % (d, cnt))
   return list(distances.keys())
 
 

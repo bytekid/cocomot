@@ -4,7 +4,7 @@
 		<event>
 			<string key="concept:name" value="Create Fine"/>
 			<date key="time:timestamp" value="2006-08-02T00:00:00+0200"/>
-			<container>
+			<container  key="uncertainty:entry">
 				<bool key="uncertainty:indeterminacy" value="true"/>
 				<float key="uncertainty:probability" value="0.35"/>
 			</container>
