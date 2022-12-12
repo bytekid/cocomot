@@ -28,13 +28,14 @@ if __name__ == "__main__":
       real_distance = float(xes[xes.rfind("_")+1:xes.rfind(".")])
       log, is_uncertain = cocomot.read_log(os.path.join(path, xes))
       trace = log[0] if is_uncertain else cocomot.preprocess_log(log, dpn)[0]
-      slv = YicesSolver()
       start = time.time()
       if is_uncertain:
         ukind = "min" if "min" in xes else "fit"
         res = cocomot.cocomot_uncertain(dpn, [trace], ukind, verbose=0)
       else:
+        slv = YicesSolver()
         res = cocomot.conformance_check_single_trace(slv, (0,trace,1),dpn,verbose=0)
+        slv.destroy()
       duration = time.time() - start
       computed_distance = res[0]
       oks += 1 if computed_distance == real_distance else 0

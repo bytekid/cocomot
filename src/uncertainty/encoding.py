@@ -144,6 +144,8 @@ class UncertaintyEncoding(Encoding):
     is_silents = [ is_silent(i) for i in range(0,n) ]
     silent_def = [ s.iff(v,e) for (v,e) in zip(self._silents, is_silents)]
     mcostmod = lambda i: s.ite(self._silents[i], s.num(0), mcost(i))
+    mcostsmod = [ s.realvar("mcost" + str(i)) for i in range(0,n)]
+    mcostsmod_def = [ s.eq(mcostsmod[i],mcostmod(i)) for i in range(0,n) ]
 
     # delta[i][j] represents the edit distance of transition sequence up to
     # including i, and the log up to including j
@@ -155,7 +157,7 @@ class UncertaintyEncoding(Encoding):
     non_neg = [s.ge(delta[i][j], s.num(0))\
       for i in range(0,n+1) for j in range(0,m+1)]
     # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + P_M
-    model0 = [ s.ge(delta[i+1][0], s.plus(mcostmod(i), delta[i][0])) \
+    model0 = [ s.ge(delta[i+1][0], s.plus(mcostsmod[i], delta[i][0])) \
         for i in range(0,n) ]
     # 3. delta[0][j+1] = delta[0][j] + ite(drop(j), P_drop, P_L)
     log0 = [ s.land([
@@ -167,6 +169,7 @@ class UncertaintyEncoding(Encoding):
     #  delta[i+1][j+1] >= delta[i][j] + sync move penalty
     #  delta[i+1][j+1] >= delta[i+1][j] + log move or drop penalty
     #  delta[i+1][j+1] >= delta[i+1][j] + model move penalty
+
     steps = []
     for i in range(0,n):
       reachable_labels = set([ t["label"] for k in range(i-1, n) for t in dpn.reachable(k)])
@@ -177,7 +180,7 @@ class UncertaintyEncoding(Encoding):
           s.eq(delta[i+1][j+1],s.plus(drop_cost(j), delta[i+1][j])))
         
         if len(reachable_labels) > 0 or j == 0 or j == m-1:
-          mod_step = s.implies(vs_mod[i+1][j+1], s.eq(delta[i+1][j+1], s.plus(mcostmod(i),delta[i][j+1])))
+          mod_step = s.implies(vs_mod[i+1][j+1], s.eq(delta[i+1][j+1], s.plus(mcostsmod[i],delta[i][j+1])))
         else:
           mod_step = s.neg(vs_mod[i+1][j+1])
         inter = set(trace[j]._activity.labels()).intersection(set(reachable_labels))
@@ -211,7 +214,7 @@ class UncertaintyEncoding(Encoding):
       for i in range(1,n+1):
         min_expr = s.ite(s.eq(self._run_length, s.num(i)), delta[i][m],min_expr)
 
-    constraints = non_neg + model0 + log0 + steps + length + silent_def +symm
+    constraints = non_neg + model0 + log0 + steps + length + silent_def + symm + mcostsmod_def
     return (min_expr, s.land(constraints))
 
 

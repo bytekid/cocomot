@@ -327,8 +327,8 @@ def work_uncertain(job):
   model = encoding.solver().minimize(dist, encoding.step_bound()+10)
   distance = None if model == None else round(model.eval_real(dist),2)
   result = encoding.decode_alignment(trace, model)
-  print("%d. distance" % i, distance)
   if verbose > 0:
+    print("%d. distance" % i, distance)
     print("encoding time: %.2f" % t_enc)
     print("solving time: %.2f" % encoding.solver().t_solve)
     #print(result)
@@ -372,13 +372,14 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
       if d in distances:
         distances[d] += 1
   mid = int(len(ts_encode)/2)
-  print("encoding time: total %.2f  avg %.2f median %.2f" % \
-    (sum(ts_encode ), sum(ts_encode)/len(ts_encode), ts_encode[mid]))
-  print("solving time:  total %.2f  avg %.2f median %.2f" % \
-    (sum(ts_solve ), sum(ts_solve)/len(ts_solve), ts_solve[mid]))
-  for (d, cnt) in distances.items():
-    print("distance %d: %d" % (d, cnt))
-  YicesSolver.shutdown()
+  if verbose > 0:
+    print("encoding time: total %.2f  avg %.2f median %.2f" % \
+      (sum(ts_encode ), sum(ts_encode)/len(ts_encode), ts_encode[mid]))
+    print("solving time:  total %.2f  avg %.2f median %.2f" % \
+      (sum(ts_solve ), sum(ts_solve)/len(ts_solve), ts_solve[mid]))
+    for (d, cnt) in distances.items():
+      print("distance %d: %d" % (d, cnt))
+  return list(distances.keys())
 
 
 def work(job):
@@ -552,4 +553,5 @@ if __name__ == "__main__":
       cocomot_uncertain(dpn, log, ps["uncertainty"], ps["verbose"], numprocs=ps["numprocs"])
     else:
       cocomot(dpn, log, ps)
+  YicesSolver.shutdown()
   
