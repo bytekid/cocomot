@@ -21,17 +21,17 @@
 			<string key="vehicleClass" value="A" />
 			<string key="vehicleType" value="ULYSSE" />
 			<int key="points" value="0" />
-			<container>
+			<container key="uncertainty:entry">
 				<bool key="uncertainty:indeterminacy" value="true"/>
 				<float key="uncertainty:probability" value="0.84"/>
 			</container>
 		</event>
 		<event>
-			<float key="expense" value="11.0" />
+			<float key="expenses" value="11.0" />
 			<date key="time:timestamp" value="2006-12-05T00:00:00+01:00" />
 			<string key="lifecycle:transition" value="complete" />
 			<string key="concept:name" value="Send Fine" />
-			<int key="delaySend" value="3217" />
+			<int key="delaySend" value="1217" />
 		</event>
 	</trace>
 </log>

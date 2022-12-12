@@ -148,8 +148,8 @@ class UncertainDataValue:
     self._kind = kind
     self._name = name
     self._values = values # map value  to probability
-    self._lower = lower
-    self._upper = upper
+    self._lower = float(lower) if lower else None
+    self._upper = float(upper) if upper else None 
 
   def kind(self):
     return self._kind
@@ -167,12 +167,12 @@ class UncertainDataValue:
 
   def fix_if_admissible(self, val):
     if self.is_discrete():
-      if val in self._values:
+      if str(val) in self._values:
         self._values = [val]
       else:
         self._values = self._values[0]
     else:
-      if not (self._lower <= val and val <= self.upper):
+      if not (self._lower <= val and val <= self._upper):
         val = self._lower
       self._lower = val
       self._upper = val
@@ -326,8 +326,10 @@ class UncertainEvent:
 
   def fix_data(self, valuation):
     for n in self._data:
-      assert(n in valuation)
-      self._data[n].fix_if_admissible(valuation[n])
+      if not n in valuation: # irrelevant fields?
+        self._data[n].fix_if_admissible(self._data[n].admissible())
+      else:
+        self._data[n].fix_if_admissible(valuation[n])
   
   def project(self):
     # return standard event as dictionary
