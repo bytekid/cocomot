@@ -44,7 +44,7 @@ def print_sequence(dpn, seq, tab = 12):
       j = i - 1 # search last valuation
       while j > 0 and seq[j] == None:
         j -= 1
-      val_pre = seq[j]["valuation"] if j >= 0 else None
+      val_pre = seq[j]["valuation"] if j >= 0 and  seq[j] != None else {}
       if "id" in seq[i]:
         trans = transs[seq[i]["id"]]
         v_written = "write" in trans and name in trans["write"]
