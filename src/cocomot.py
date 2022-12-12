@@ -324,20 +324,21 @@ def work_uncertain(job):
     (dist, dconstr) = encoding.edit_distance_fitness(trace)
   t_enc =  t_enc + (time.perf_counter() - t_start)
   solver.require([dconstr])
-  model = encoding.solver().minimize(dist, encoding.step_bound()+10)
+  model = solver.minimize(dist, encoding.step_bound()+10)
+  t_solve = solver.t_solve
   distance = None if model == None else round(model.eval_real(dist),2)
   result = encoding.decode_alignment(trace, model)
   if verbose > 0:
     print("%d. distance" % i, distance)
     print("encoding time: %.2f" % t_enc)
-    print("solving time: %.2f" % encoding.solver().t_solve)
+    print("solving time: %.2f" % t_solve)
     #print(result)
     print_trace_distance_verbose(encoding._dpn, result["trace"], result)
   sys.stdout.flush()
   model.destroy()
   solver.reset()
   solver.destroy()
-  return (distance, t_enc, encoding.solver().t_solve)
+  return (distance, t_enc, t_solve)
 
 ### main
 def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
