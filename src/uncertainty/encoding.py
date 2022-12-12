@@ -228,6 +228,7 @@ class UncertaintyEncoding(Encoding):
     dropcost = lambda i: s.num(0 if trace._events[i].is_uncertain() else MAX)
     
     def syncost(i,j):
+      # in min, data difference is ignored
       is_poss_label = [s.eq(self._vs_trans[i], s.num(t["id"])) \
         for t in self._dpn.reachable(i) \
         if "label" in t and t["label"] in trace._events[j].labels() ]
@@ -409,7 +410,8 @@ class UncertaintyEncoding(Encoding):
         if "label" in t and t["label"] == l: # transition t matches kth activity
           is_act = s.eq(self._vs_act[j], s.num(k))
           theta = s.real(2 - p - conf)
-          penalty = s.ite(s.eq(wdiff, zero), theta, s.mult(wdiff, theta))
+          theta1 = s.real(3 - p - conf)
+          penalty = s.ite(s.eq(wdiff, zero), theta, s.mult(wdiff, theta1))
           ps.append((s.land([is_act, is_t]), penalty))
     return ps
 
@@ -536,6 +538,7 @@ class UncertaintyEncoding(Encoding):
         alignment.append("parallel")
         ord_trace[j-1].fix_label(transitions[i-1][1]) # modify ordtrace
         ord_trace[j-1].fix_determinacy()
+        ord_trace[j-1].fix_data(valuations[i])
         i -= 1
         j -= 1
      

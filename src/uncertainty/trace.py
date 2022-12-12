@@ -165,6 +165,18 @@ class UncertainDataValue:
     assert(not self.is_discrete())
     return (self._lower, self._upper)
 
+  def fix_if_admissible(self, val):
+    if self.is_discrete():
+      if val in self._values:
+        self._values = [val]
+      else:
+        self._values = self._values[0]
+    else:
+      if not (self._lower <= val and val <= self.upper):
+        val = self._lower
+      self._lower = val
+      self._upper = val
+
   def admissible(self):
     return self._values[0] if self.is_discrete() else self._lower
 
@@ -303,7 +315,6 @@ class UncertainEvent:
   def set_data(self, name, ud):
     self._data[name] = ud
 
-
   def fix_determinacy(self):
     self._indet._value = 1
 
@@ -312,6 +323,11 @@ class UncertainEvent:
 
   def fix_time(self, t):
     self._time.fix(t)
+
+  def fix_data(self, valuation):
+    for n in self._data:
+      assert(n in valuation)
+      self._data[n].fix_if_admissible(valuation[n])
   
   def project(self):
     # return standard event as dictionary
