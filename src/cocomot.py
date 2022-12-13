@@ -422,14 +422,14 @@ def cocomot(dpn, log, opts):
   utraces = []
   for p in parts:
     (trace, cnt) = p
-    if len(trace) > 12:
+    if len(trace) > 8:
       continue
     utrace = UncertainTrace.from_certain_trace(trace)
     utraces.append(utrace)
   print("after loop %d" % len(utraces))
   log = UncertainLog(utraces)
   xml = log.to_xes()
-  f = open("/home/bytekid/tools/cocomot/data/uncertainty/hospital_billing/hospital_billing_upto12.xes", "a")
+  f = open("/home/bytekid/tools/cocomot/data/uncertainty/sepsis/sepsis_upto8.xes", "a")
   f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
   f.close()
   
