@@ -4,7 +4,7 @@ from datetime import datetime
 
 from uncertainty.trace import *
 
-def all(traces):
+def all(traces, p=0.9):
   p = 0.9
   seed(datetime.now())
   #add_indeterminacy(traces, prob=p)
@@ -18,6 +18,15 @@ def all(traces):
   print("<?xml version='1.0' encoding='UTF-8'?>")
   print(xml.toprettyxml())
 
+def indeterminacy_extending(traces):
+  for r in range(1, 10):
+    p = 0.1 * r
+    add_indeterminacy(traces, prob=0.1)
+    log = UncertainLog(traces)
+    xml = log.to_xes()
+    f = open("/tmp/indeterminacyx/indet_0.%da.xes" % r, "a")
+    f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
+    f.close()
 
 def rand_range(low, high):
   probv = (float(randint(0, 100)) / 100) * (high - low) + low
@@ -30,7 +39,8 @@ def add_indeterminacy(traces, prob=0.2, indet_lower=0.1,indet_upper=0.9):
   for t in traces:
     for e in t:
       if random() <= prob:
-        e.set_indeterminacy(Indeterminacy(rand_range(indet_lower,indet_upper)))
+        if not e.is_uncertain():
+          e.set_indeterminacy(Indeterminacy(rand_range(indet_lower,indet_upper)))
 
 
 # add with probability prob to trace events num additional activity labels. The
