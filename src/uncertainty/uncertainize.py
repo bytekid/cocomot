@@ -25,17 +25,17 @@ def extending(traces, unc):
     suffix = ""
     if unc == "indet" or unc == "mixed":
       add_indeterminacy(traces, prob=padd)
-    elif unc == "act" or unc == "mixed":
+    if unc == "act" or unc == "mixed":
       add_uncertain_activities(traces, prob=padd, num=2)
       suffix = "_2"
-    elif unc == "data" or unc == "mixed":
+    if unc == "data" or unc == "mixed":
       add_uncertain_discrete_data(traces, prob=padd, num=2)
       suffix = "_2"
-    elif unc == "time" or unc == "mixed":
+    if unc == "time" or unc == "mixed":
       add_uncertain_timestamps(traces, prob=padd)
     log = UncertainLog(traces)
     xml = log.to_xes()
-    f = open("/home/bytekid/tools/cocomot/data/uncertainty/sepsis/"+unc+"/"+unc+suffix+"_0.%db.xes" % r, "a")
+    f = open("/home/bytekid/tools/cocomot/data/uncertainty/hospital_billing/"+unc+"/"+unc+suffix+"_0.%db.xes" % r, "a")
     f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
     f.close()
 
