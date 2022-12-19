@@ -12,7 +12,7 @@ def parse_time(timestr):
     dateformat="%Y-%m-%dT%H:%M:%S%z" # 2000-05-06T00:00:00+0200
     return datetime.strptime(timestr, dateformat)
   except:
-    if timestr.find(".") > 0:
+    if timestr.find("+") < 0:
       timestr=timestr[0:timestr.find(".")]
       dateformat="%Y-%m-%dT%H:%M:%S"
       return datetime.strptime(timestr, dateformat)

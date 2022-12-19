@@ -24,7 +24,7 @@ def indeterminacy_extending(traces):
     add_indeterminacy(traces, prob=0.1)
     log = UncertainLog(traces)
     xml = log.to_xes()
-    f = open("/home/bytekid/tools/cocomot/data/uncertainty/road_fines/indeterminacyx/indet_0.%db.xes" % r, "a")
+    f = open("/home/bytekid/tools/cocomot/data/uncertainty/sepsis/indeterminacyx/indet_0.%db.xes" % r, "a")
     f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
     f.close()
 

@@ -417,23 +417,6 @@ def cocomot(dpn, log, opts):
       (naive_part.partition_count(), interval_part.partition_count(), t_cluster))
   i = 0
   parts = interval_part.partitions
-  
-  print("before loop")
-  utraces = []
-  for p in parts:
-    (trace, cnt) = p
-    if len(trace) > 8:
-      continue
-    utrace = UncertainTrace.from_certain_trace(trace)
-    utraces.append(utrace)
-  print("after loop %d" % len(utraces))
-  log = UncertainLog(utraces)
-  xml = log.to_xes()
-  f = open("/home/bytekid/tools/cocomot/data/uncertainty/sepsis/sepsis_upto8.xes", "a")
-  f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
-  f.close()
-  
-  exit(1)
 
   if numprocs == 1:
     solver = YicesSolver() # CVC5Solver()  # Z3Solver() # 
