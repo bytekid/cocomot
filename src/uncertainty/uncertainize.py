@@ -18,7 +18,7 @@ def all(traces, p=0.9):
   print("<?xml version='1.0' encoding='UTF-8'?>")
   print(xml.toprettyxml())
 
-def extending(traces, unc = "indet"):
+def extending(traces, unc = "act"):
   for r in range(1, 10):
     p = 0.1 * r # intended uncertainty value
     padd = 0.1/(1-(0.1*(r-1))) # amount of uncertainty to be added
@@ -28,7 +28,7 @@ def extending(traces, unc = "indet"):
       add_uncertain_activities(traces, prob=padd, num=1)
     log = UncertainLog(traces)
     xml = log.to_xes()
-    f = open("/home/bytekid/tools/cocomot/data/uncertainty/sepsis/indeterminacyx/indet_0.%db.xes" % r, "a")
+    f = open("/home/bytekid/tools/cocomot/data/uncertainty/sepsis/activity/act_1_0.%db.xes" % r, "a")
     f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
     f.close()
 
