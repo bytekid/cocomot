@@ -1,6 +1,7 @@
 from xml.dom.minidom import getDOMImplementation
 import xml.dom.minidom
 from datetime import datetime, timedelta
+from copy import deepcopy
 
 
 class Indeterminacy:
@@ -104,10 +105,10 @@ class UncertainActivity:
 class UncertainTimestamp:
   def __init__(self, lower, upper=None):
     self._lower = lower
-    self._upper = upper 
+    self._upper = upper if upper else lower
 
   def is_uncertain(self):
-    return self._upper != None
+    return self._upper != self._lower
 
   def __str__(self):
     if self.is_uncertain():
@@ -116,7 +117,11 @@ class UncertainTimestamp:
       return str(self._lower)
 
   def fix(self, t):
-    assert(self._lower <= t and (self._upper == None or t <= self._upper))
+    assert(self._lower <= t and t <= self._upper)
+    self._lower = t
+    self._upper = t
+
+  def set(self, t):
     self._lower = t
     self._upper = t
   
@@ -343,7 +348,7 @@ class UncertainEvent:
   
   def project(self):
     # return standard event as dictionary
-    # by the time of the call, all relevant uncertainties should be removed,
+    # by the time of the call, all uncertainties should be removed,
     # so take arbitrary admissible value
     valuation = dict([ (n, d.admissible()) for (n, d) in self.data().items() ])
     return {
@@ -351,6 +356,23 @@ class UncertainEvent:
       "time": self._time._lower,
       "valuation": valuation
     }
+
+  # return all realizations wrt activity and data values (assumed discrete)
+  def get_realizations(self):
+    assert(not self.has_uncertain_time() and not self.is_uncertain())
+    assert(all(x.is_discrete() for x in self._data.values()))
+    acts = self._activity._activities.keys()
+    vals = [[]]
+    for x in self._data.keys():
+      vals = [ v + [(x, a)] for v in vals for a in self._data[x]._values]
+    reals = []
+    for a in acts:
+      for val in vals:
+        e = deepcopy(self)
+        e.fix_data(val)
+        e.fix_label(a)
+        reals.append(e)
+    return reals
 
   def to_xes(self, doc):
     xevent = doc.createElement('event')
@@ -387,7 +409,7 @@ class UncertainTrace:
     times = dict([ (t,i) for (i, t) in enumerate(sorted(times)) ])
     for e in events:
       e._time._lower = float(times[e._time._lower])
-      e._time._upper = float(times[e._time._upper]) if e._time._upper else None
+      e._time._upper = float(times[e._time._upper])
 
   def has_uncertain_time(self):
     return any( e.has_uncertain_time() for e in self._events )
@@ -407,6 +429,48 @@ class UncertainTrace:
   def __getitem__(self, key):
     return self._events[key]
 
+  def get_realizations(self):
+    combs = [[]]
+    # fix confidence
+    for e in self._events:
+      if e.is_uncertain():
+        e.fix_determinacy()
+        combs = combs + [ r + [e] for r in combs]
+      else:
+        combs = [ r + [e] for r in combs]
+    # fix timestamps
+    eventseqs = []
+    for comb in combs:
+      seqs = [[]]
+      for enew in comb:
+        seqsx = []
+        print(enew)
+        for seq in seqs:
+          print(seq)
+          # interleave
+          prepost = [ (seq[0:i], seq[i:]) for i in range(0, len(seq)+1)]
+          print(prepost)
+          for (pre, post) in prepost:
+            tpre = pre[-1].upper_time() if len(pre)>0 else enew.lower_time()
+            tpost = post[0].lower_time() if len(post)>0 else enew.upper_time()
+            if tpre <= enew.lower_time() and enew.upper_time() <= tpost:
+              t = (tpost - tpre)/2
+              e2 = deepcopy(enew)
+              e2._time.set(tpre + t)
+              seqsx.append(pre + [e2] + post)
+        seqs = seqsx
+      eventseqs += seqs
+
+    # fix activity and data
+    realizations = []
+    for events in eventseqs:
+      reals = [[]]
+      for e in events:
+        ers = e.get_realizations()
+        reals = [ r + [er] for r in reals for er in ers ]
+      realizations += reals
+    return realizations
+
   def to_xes(self, doc):
     xtrace = doc.createElement('trace')
     for event in self._events:
@@ -419,6 +483,9 @@ class UncertainLog:
 
   def __init__(self, traces):
     self._traces = traces
+
+  def __str__(self):
+    return "[" + ','.join([str(t) for t in self._traces]) + "]"
 
   def to_xes(self):
     doc = xml.dom.minidom.parseString("<log/>")

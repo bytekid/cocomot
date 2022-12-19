@@ -347,13 +347,22 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
   distances = defaultdict(lambda: 0)
   if numprocs == 1:
     results = []
+    reals = []
     for (i, trace) in enumerate(log):
-      results.append(work_uncertain((i, trace, dpn, ukind, verbose)))
+      reals+= trace.get_realizations()
+    """  results.append(work_uncertain((i, trace, dpn, ukind, verbose)))
     for (d, t_enc, t_solv) in results:
       ts_encode.append(t_enc)
       ts_solve.append(t_solv)
       d = str(d)
-      distances[d] += 1
+      distances[d] += 1"""
+    print(len(reals),"realizations")
+    log = UncertainLog([UncertainTrace(r) for r in reals])
+    xml = log.to_xes()
+    f = open("/home/bytekid/tools/cocomot/data/uncertainty/road_fines/realizations/time_02.xes", "a")
+    f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
+    f.close()
+    #print([str(UncertainTrace(r)) for r in reals])
   else:
     print("Parallel checking with %d processes ..." % numprocs)
     jobs = [ (i, t, dpn, ukind, verbose) for (i,t) in enumerate(log) ]
