@@ -490,12 +490,12 @@ def process_args(argv):
   multi = None
   anti = None
   numprocs = 1
-  obfuscate = False
+  obfuscate = None
   uncertainty = None
   json = False
   verbose = 1
   try:
-    opts, args = getopt.getopt(argv,"hjmou:v:d:l:n:x:a:")
+    opts, args = getopt.getopt(argv,"hjmo:u:v:d:l:n:x:a:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(1)
@@ -522,7 +522,11 @@ def process_args(argv):
     elif opt == "-a":
       anti = int(arg)
     elif opt == "-o":
-      obfuscate = True
+      args = ["indet", "act", "time", "data", "mixed"]
+      if not (arg in ["indet", "act", "time", "data", "mixed"]):
+        print ("arguments supported for -o are ", args)
+        sys.exit(1)
+      obfuscate = arg
     elif opt == "-v":
       verbose = int(arg)
     elif opt == "-n":
@@ -545,7 +549,7 @@ if __name__ == "__main__":
   (log, has_uncertainty) = read_log(ps["log"])
   if ps["obfuscate"]:
     log = uncertainty.read.xes(ps["log"])
-    uncertainty_extending(log)
+    uncertainty_extending(log, ps["obfuscate"])
   else:
     dpn = DPN(read_pnml_input(ps["model"]))
     if ps["multi"]:
