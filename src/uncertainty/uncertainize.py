@@ -96,7 +96,7 @@ def add_uncertain_timestamps(traces, prob=0.2, interval_ratio=0.3):
     end_time = t[-1].lower_time()
     trace_duration = end_time - start_time
     for e in t:
-      if random() <= prob:
+      if random() <= prob and not e.has_uncertain_time():
         tlow = e.lower_time() - trace_duration / 2
         tupp = e.lower_time() + trace_duration / 2
         e.set_uncertain_time(UncertainTimestamp(tlow, upper=tupp))
@@ -127,9 +127,10 @@ def add_uncertain_discrete_data(traces, prob=0.2, num=1, ratio=0.3):
   for t in traces:
     for e in t:
       vars = [ x for x in e.data() if e.data_variable(x).kind() != "string" ]
-      if random() <= prob and len(vars) > 0:
-        x = vars[randint(0, len(vars)-1)]
+      for x in vars:
         xelem = e.data_variable(x)
+        if random() > prob or xelem.is_uncertain():
+          continue
         xval = float(xelem.admissible()) # this is assumed to be fixed value
         xlow, xupp = variable_bounds(x, xval, ratio, bounds)
         is_int = xelem.kind() == "int"

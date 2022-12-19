@@ -6,12 +6,13 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-05T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -26,8 +27,7 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
@@ -50,7 +50,8 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
@@ -61,11 +62,13 @@
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
@@ -73,7 +76,8 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
@@ -92,12 +96,13 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Release A"/>
@@ -108,7 +113,8 @@
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-04T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
@@ -116,58 +122,11 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
 			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
@@ -184,271 +143,153 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
 			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-08T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
 			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
+			<string key="concept:name" value="Leucocytes"/>
 			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
 		</event>
 	</trace>
 	<trace>
 		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-03T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-04T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-12T06:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
 			<string key="concept:name" value="ER Registration"/>
 			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-08T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-28T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-07T09:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-18T15:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-02T21:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T03:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-09T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-16T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-04T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-12T06:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Admission NC"/>
 			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Release A"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-28T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-04T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-01T09:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-12T15:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-13T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -463,23 +304,79 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-23T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-08T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
 			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-08T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -494,149 +391,6 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-27T06:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-28T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-02T21:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T03:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-28T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-03T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-04T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-12T06:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-13T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-18T03:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-20T21:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
 			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
@@ -649,25 +403,281 @@
 			<date key="uncertainty:time:timestamp_max" value="2021-01-24T06:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-30T03:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T21:00:00"/>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
 		</event>
 	</trace>
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-13T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T18:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-08T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-26T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-18T06:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2020-12-29T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-21T06:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Admission NC"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Release A"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-08T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Admission NC"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-28T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-04T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-29T09:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-09T15:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
 			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
 			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
@@ -686,12 +696,12 @@
 	<trace>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-17T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-01T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
@@ -703,12 +713,12 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -727,122 +737,21 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-18T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-27T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-28T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-09T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-05T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-25T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Release A"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-23T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-12T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-08T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-23T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-20T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
 			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Leucocytes"/>
+			<string key="concept:name" value="CRP"/>
 			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Admission NC"/>
+			<string key="concept:name" value="ER Triage"/>
 			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Release A"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-28T00:00:00"/>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -852,28 +761,28 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
+			<string key="concept:name" value="Admission NC"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Release A"/>
 			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-28T00:00:00"/>
 		</event>
@@ -891,22 +800,22 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-20T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
 			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-25T00:00:00"/>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -917,40 +826,6 @@
 		<event>
 			<string key="concept:name" value="ER Registration"/>
 			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-20T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-03T06:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
@@ -959,16 +834,154 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-05T12:00:00"/>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Admission NC"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Release A"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-28T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
 			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-25T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-25T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-28T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
@@ -995,12 +1008,12 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
@@ -1020,8 +1033,8 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-17T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
@@ -1029,17 +1042,17 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Release A"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Return ER"/>
@@ -1057,13 +1070,12 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
@@ -1075,40 +1087,6 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Release A"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-28T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-05T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
 			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-28T00:00:00"/>
 		</event>
@@ -1121,133 +1099,30 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-29T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-03T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-26T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-07T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-12T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-10T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-15T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-29T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-03T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-01T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-06T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
 			<date key="time:timestamp" value="2021-01-03T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-07T18:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-09T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-05T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T18:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-17T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-27T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-18T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
 			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -1257,28 +1132,163 @@
 			<date key="uncertainty:time:timestamp_max" value="2021-01-05T12:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-30T12:00:00"/>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="LacticAcid"/>
+			<string key="concept:name" value="ER Sepsis Triage"/>
 			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-09T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-22T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-28T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-23T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
 			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-25T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-23T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
 			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-25T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-23T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-08T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -1307,229 +1317,40 @@
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-28T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-29T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-09T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-20T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-07T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-18T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-13T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-24T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-05T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-06T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
 			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-03T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-03T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-19T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-19T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-22T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-22T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-25T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-25T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2020-12-15T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Release A"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-14T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2020-12-20T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-22T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
 			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
-		</event>
-		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-04T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-15T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-10T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-21T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
 			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-16T18:00:00"/>
-		</event>
 	</trace>
 	<trace>
 		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-20T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
 			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
 		</event>
@@ -1539,11 +1360,164 @@
 			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
+		</event>
+		<event>
 			<string key="concept:name" value="Admission NC"/>
 			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Release B"/>
+			<string key="concept:name" value="Release A"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-19T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-19T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2020-12-31T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-31T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
 			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
 		</event>
 	</trace>
@@ -1558,27 +1532,62 @@
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-22T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-01T18:00:00"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-07T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-18T06:00:00"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-10T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-21T06:00:00"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Admission NC"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Release B"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-04T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-15T06:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-13T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-24T06:00:00"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -1589,8 +1598,7 @@
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
@@ -1619,18 +1627,19 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Return ER"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
 		</event>
 	</trace>
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-26T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-06T06:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
@@ -1638,16 +1647,18 @@
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-21T06:00:00"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
@@ -1655,8 +1666,7 @@
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -1683,16 +1693,91 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-31T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-31T18:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-29T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-19T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-03T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-03T18:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Release D"/>
 			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Admission NC"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Release B"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -1708,130 +1793,12 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2020-12-31T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-31T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2020-12-13T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-22T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-22T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-09T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-30T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Release B"/>
-			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-06T18:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-01T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-12T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-07T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-18T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-10T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-21T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-08T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-09T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-30T03:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T21:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-14T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-15T06:00:00"/>
+			<date key="time:timestamp" value="2020-12-25T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-25T18:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
@@ -1844,10 +1811,11 @@
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-03T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-03T18:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="IV Liquid"/>
+			<string key="concept:name" value="Admission NC"/>
 			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-02-06T18:00:00"/>
 		</event>
@@ -1869,11 +1837,51 @@
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
@@ -1892,18 +1900,16 @@
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-05T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-06T06:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-11T09:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-27T15:00:00"/>
+			<date key="time:timestamp" value="2020-12-29T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-09T06:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -1916,16 +1922,17 @@
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2020-12-31T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-31T18:00:00"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-13T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-24T06:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -1935,67 +1942,31 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-12T06:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-04T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-15T06:00:00"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-07T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-18T06:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-10T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-21T06:00:00"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
 			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-16T18:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -2006,80 +1977,39 @@
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+			<date key="time:timestamp" value="2020-12-29T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-09T06:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-12T06:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2020-12-25T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-25T18:00:00"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
+			<string key="concept:name" value="CRP"/>
 			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-31T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-31T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2020-12-13T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T18:00:00"/>
-		</event>
-		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-22T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-22T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2020-12-17T09:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-02T03:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2020-12-20T09:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-05T03:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
 			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-13T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-24T06:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-06T18:00:00"/>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -2093,28 +2023,32 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-07T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-18T06:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-10T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-21T06:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
 			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -2134,279 +2068,12 @@
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-03T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-24T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
 			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-26T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-06T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-29T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-09T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-04T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-15T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-07T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-18T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-29T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-09T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-21T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-28T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-28T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-11-29T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-31T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-06T18:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-26T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-06T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-01T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-12T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-04T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-15T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-19T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-29T18:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2020-12-20T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2020-12-20T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
@@ -2414,11 +2081,244 @@
 			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
+			<string key="concept:name" value="Leucocytes"/>
 			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-06T18:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
 			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-29T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-09T06:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-10T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-21T06:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-19T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2020-12-25T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-25T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2020-12-28T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-28T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
 			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
 		</event>
 	</trace>
@@ -2437,23 +2337,22 @@
 			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="LacticAcid"/>
+			<string key="concept:name" value="IV Liquid"/>
 			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-28T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-28T18:00:00"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -2472,48 +2371,11 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-06T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-27T12:00:00"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-23T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Release A"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-14T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
+			<string key="concept:name" value="LacticAcid"/>
 			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
@@ -2522,18 +2384,132 @@
 			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
 		</event>
 		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2020-12-25T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-25T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
 			<string key="concept:name" value="Admission NC"/>
 			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Release A"/>
-			<date key="time:timestamp" value="2020-12-18T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-08T12:00:00"/>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
-			<string key="concept:name" value="Return ER"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+			<string key="concept:name" value="Release A"/>
+			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-06T18:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -2547,81 +2523,8 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-07T09:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-12T15:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-16T18:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-21T21:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-27T03:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-08T03:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T09:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Release A"/>
-			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-16T18:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-03T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-24T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
@@ -2633,8 +2536,121 @@
 			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
 		</event>
 		<event>
+			<string key="concept:name" value="Admission NC"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Release A"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Return ER"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2020-12-25T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-25T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-06T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-06T18:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
 			<string key="concept:name" value="LacticAcid"/>
 			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Admission NC"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Release A"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Admission NC"/>
@@ -2654,12 +2670,13 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-14T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
@@ -2668,7 +2685,8 @@
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
@@ -2677,48 +2695,11 @@
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-05T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-06T06:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-11-17T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-17T09:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-02T15:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2020-12-26T09:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-11T15:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
 			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
 		</event>
 	</trace>
@@ -2734,8 +2715,47 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2020-12-22T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-22T18:00:00"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2020-12-25T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-25T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2020-12-28T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-28T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2020-12-31T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-31T18:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
@@ -2752,8 +2772,7 @@
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-03T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-03T18:00:00"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -2763,12 +2782,12 @@
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-19T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-29T18:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
@@ -2777,16 +2796,17 @@
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
 			<date key="time:timestamp" value="2020-12-25T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T18:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-25T18:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-07T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-18T06:00:00"/>
+			<date key="time:timestamp" value="2020-12-28T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-28T18:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-31T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-31T18:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
@@ -2794,8 +2814,7 @@
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
 		</event>
 	</trace>
 	<trace>
@@ -2806,7 +2825,8 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-19T06:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-19T18:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
@@ -2814,51 +2834,13 @@
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-11-29T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2020-12-20T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
 			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
 			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
-		</event>
-	</trace>
-	<trace>
-		<event>
-			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2020-12-17T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
-		</event>
-		<event>
-			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
@@ -2877,17 +2859,52 @@
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Triage"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="LacticAcid"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Leucocytes"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="CRP"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="ER Sepsis Triage"/>
+			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Liquid"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+		</event>
+		<event>
+			<string key="concept:name" value="IV Antibiotics"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+		</event>
+	</trace>
+	<trace>
+		<event>
+			<string key="concept:name" value="ER Registration"/>
 			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-29T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-09T06:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-01T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-12T06:00:00"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
@@ -2896,8 +2913,7 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Admission NC"/>
@@ -2910,41 +2926,41 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Return ER"/>
-			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
 		</event>
 	</trace>
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2020-12-12T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-02T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -2954,22 +2970,21 @@
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-05T18:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-06T06:00:00"/>
+			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2020-12-01T15:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-17T21:00:00"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
@@ -2986,23 +3001,24 @@
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-22T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-11T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-02-01T12:00:00"/>
 		</event>
 	</trace>
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
-			<date key="time:timestamp" value="2020-12-14T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
@@ -3010,12 +3026,13 @@
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-31T06:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-31T18:00:00"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
@@ -3035,13 +3052,11 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-17T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
@@ -3059,8 +3074,7 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -3070,12 +3084,12 @@
 	<trace>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-21T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-11T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
@@ -3083,8 +3097,7 @@
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2020-12-20T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
@@ -3098,8 +3111,7 @@
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
-			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
+			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Liquid"/>
@@ -3118,7 +3130,8 @@
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
@@ -3126,16 +3139,17 @@
 		</event>
 		<event>
 			<string key="concept:name" value="LacticAcid"/>
-			<date key="time:timestamp" value="2020-12-23T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-16T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-05T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-26T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Leucocytes"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -3149,21 +3163,23 @@
 		</event>
 		<event>
 			<string key="concept:name" value="CRP"/>
-			<date key="time:timestamp" value="2021-01-04T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-24T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-14T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Registration"/>
-			<date key="time:timestamp" value="2020-12-17T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-07T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-27T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-17T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Triage"/>
-			<date key="time:timestamp" value="2020-12-20T00:00:00"/>
-			<date key="uncertainty:time:timestamp_max" value="2021-01-10T00:00:00"/>
+			<date key="time:timestamp" value="2020-12-30T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-20T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="ER Sepsis Triage"/>
-			<date key="time:timestamp" value="2021-01-13T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-02T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-23T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="IV Antibiotics"/>
@@ -3172,7 +3188,8 @@
 		</event>
 		<event>
 			<string key="concept:name" value="Admission NC"/>
-			<date key="time:timestamp" value="2021-01-19T00:00:00"/>
+			<date key="time:timestamp" value="2021-01-08T12:00:00"/>
+			<date key="uncertainty:time:timestamp_max" value="2021-01-29T12:00:00"/>
 		</event>
 		<event>
 			<string key="concept:name" value="Release A"/>

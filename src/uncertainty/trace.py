@@ -155,6 +155,12 @@ class UncertainDataValue:
     return self._kind
 
   def is_discrete(self):
+    if self._lower != None:
+      return self._lower != self._upper
+    else:
+      return len(self._values) == 1
+
+  def is_uncertain(self):
     return self._values != None
 
   def values(self):
@@ -278,6 +284,9 @@ class UncertainEvent:
 
   def has_uncertain_activity(self):
     return self._activity.is_uncertain()
+
+  def has_uncertain_data(self):
+    return any(d.is_uncertain() for d in self._data)
   
   def has_uncertain_time(self):
     return self._time.is_uncertain()
