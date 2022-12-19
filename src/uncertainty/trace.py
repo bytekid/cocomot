@@ -262,8 +262,6 @@ class UncertainEvent:
       data.append(UncertainDataValue(dtype, var, values=[val]))
     utime = UncertainTimestamp(time)
     return UncertainEvent(indet, activity, utime, data)
-    
-
 
   def __eq__(self, other):
     return str(self) == str(other) # not efficient but sufficient for now
@@ -277,6 +275,9 @@ class UncertainEvent:
 
   def is_uncertain(self):
     return self._indet._value < 1
+
+  def has_uncertain_activity(self):
+    return self._activity.is_uncertain()
   
   def has_uncertain_time(self):
     return self._time.is_uncertain()

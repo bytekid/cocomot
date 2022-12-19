@@ -19,7 +19,7 @@ from dpn.expr import Expr
 import uncertainty.read
 from uncertainty.encoding import UncertaintyEncoding
 from uncertainty.trace import UncertainTrace, UncertainLog
-from uncertainty.uncertainize import all as uncertainize_all, indeterminacy_extending
+from uncertainty.uncertainize import all as uncertainize_all, extending as uncertainty_extending
 from utils import pad_to, spaces
 
 ### printing
@@ -545,7 +545,7 @@ if __name__ == "__main__":
   (log, has_uncertainty) = read_log(ps["log"])
   if ps["obfuscate"]:
     log = uncertainty.read.xes(ps["log"])
-    indeterminacy_extending(log)
+    uncertainty_extending(log)
   else:
     dpn = DPN(read_pnml_input(ps["model"]))
     if ps["multi"]:
