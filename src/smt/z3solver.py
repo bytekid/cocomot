@@ -163,6 +163,30 @@ class Z3Solver(Solver):
       self.pop()
     return m
 
+  def minimize_inc(self, expr, max_val, start = 0):
+    self.push()
+    val = start
+    self.require(self.land([self.eq(expr, self.num(val))]))
+    t_start = time.perf_counter()
+    status = self.ctx.check()
+    if status == z3.unknown:
+      return None
+    m = Z3Model(self.ctx) if status == z3.sat else None
+    self.pop()
+    self.t_solve = time.perf_counter() - t_start
+    while status != z3.sat and val <= max_val:
+      self.push()
+      val += 1
+      self.require(self.land([self.eq(expr, self.num(val))]))
+      t_start = time.perf_counter()
+      status = self.ctx.check()
+      if status == z3.unknown:
+        return None
+      m = Z3Model(self.ctx) if status == z3.sat else None
+      self.pop()
+      self.t_solve += time.perf_counter() - t_start
+    return None if val > max_val else m
+
   # reset context
   def reset(self):
     #self.ctx = Optimize() # Optimize solver does not have reset function
