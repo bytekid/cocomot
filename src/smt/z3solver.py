@@ -8,6 +8,7 @@ class Z3Solver(Solver):
 
   def __init__(self):
     self.ctx = Optimize()
+    self.ctx.set("timeout", 600000) # timeout in milliseconds
     set_param('model.completion', True)
 
   def to_string(self, e):
@@ -164,12 +165,12 @@ class Z3Solver(Solver):
 
   # reset context
   def reset(self):
-    self.ctx = Optimize() # Optimize solver does not have reset function
+    #self.ctx = Optimize() # Optimize solver does not have reset function
     self.t_solve = 0
 
   # destroy context and config
   def destroy(self):
-    pass
+    del self.ctx
 
   @staticmethod
   def shutdown():

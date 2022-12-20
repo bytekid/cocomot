@@ -310,8 +310,8 @@ def read_log(logfile):
 
 
 def work_uncertain(job):
-  (i, trace, dpn, ukind, verbose) = job
-  solver = Z3Solver() #YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
+  (i, trace, dpn, ukind, verbose, solver) = job
+  solver.push()
   if not isinstance(trace, UncertainTrace):
     trace = UncertainTrace.from_certain_trace(preprocess_trace(trace, dpn))
   trace.normalize_time() # replace timestamps by floats
@@ -337,8 +337,9 @@ def work_uncertain(job):
     print_trace_distance_verbose(encoding._dpn, result["trace"], result)
   sys.stdout.flush()
   model.destroy()
+  solver.pop()
   solver.reset()
-  solver.destroy()
+  #solver.destroy()
   return (distance, t_enc, t_solve)
 
 ### main
@@ -349,9 +350,11 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
   if numprocs == 1:
     results = []
     reals = []
+    solver = Z3Solver() #YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
     for (i, trace) in enumerate(log):
       #reals+= trace.get_realizations()
-      results.append(work_uncertain((i, trace, dpn, ukind, verbose)))
+      results.append(work_uncertain((i, trace, dpn, ukind, verbose, solver)))
+    solver.destroy()
     for (d, t_enc, t_solv) in results:
       ts_encode.append(t_enc)
       ts_solve.append(t_solv)
