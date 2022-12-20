@@ -164,6 +164,30 @@ class OptiMathsatSolver:
     self.t_solve = time.perf_counter() - t_start
     #self.dump_model(model)
     return Model(self.env, model) if ret > 0 else None
+  
+  def minimize_inc(self, expr, max_val, start = 0):
+    self.push()
+    val = start
+    self.require(self.land([self.eq(expr, self.num(val))]))
+    t_start = time.perf_counter()
+    ret = om.msat_solve(self.env)
+    if ret < 0:
+      return None
+    m = Model(self.env, om.msat_get_model(self.env)) if ret > 0 else None
+    self.pop()
+    self.t_solve = time.perf_counter() - t_start
+    while ret <= 0 and val <= max_val:
+      self.push()
+      val += 1
+      self.require(self.land([self.eq(expr, self.num(val))]))
+      t_start = time.perf_counter()
+      ret = om.msat_solve(self.env)
+      if ret < 0:
+        return None
+      m = Model(self.env, om.msat_get_model(self.env)) if ret > 0 else None
+      self.pop()
+      self.t_solve += time.perf_counter() - t_start
+    return None if val > max_val else m
 
   def dump_model(self, model):
     miter = om.msat_model_create_iterator(model)
