@@ -311,7 +311,7 @@ def read_log(logfile):
 
 def work_uncertain(job):
   (i, trace, dpn, ukind, verbose) = job
-  solver = OptiMathsatSolver() #YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
+  solver = Z3Solver() #YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
   if not isinstance(trace, UncertainTrace):
     trace = UncertainTrace.from_certain_trace(preprocess_trace(trace, dpn))
   trace.normalize_time() # replace timestamps by floats
@@ -325,7 +325,7 @@ def work_uncertain(job):
     (dist, dconstr) = encoding.edit_distance_fitness(trace)
   t_enc =  t_enc + (time.perf_counter() - t_start)
   solver.require([dconstr])
-  model = solver.minimize_inc(dist, encoding.step_bound()+10)
+  model = solver.minimize(dist, encoding.step_bound()+10)
   t_solve = solver.t_solve
   distance = None if model == None else round(model.eval_real(dist),2)
   result = encoding.decode_alignment(trace, model)

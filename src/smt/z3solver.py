@@ -8,6 +8,7 @@ class Z3Solver(Solver):
 
   def __init__(self):
     self.ctx = Optimize()
+    set_param('model.completion', True)
 
   def to_string(self, e):
     return str(e)
@@ -150,11 +151,16 @@ class Z3Solver(Solver):
 
   # minimize given expression
   def minimize(self, expr, max_val):
+    self.push()
+    self.require([self.le(expr, max_val)])
     val = self.ctx.minimize(expr)
     t_start = time.perf_counter()
     result = self.ctx.check()
     self.t_solve = time.perf_counter() - t_start
-    return Z3Model(self.ctx) if result == z3.sat else None
+    m = Z3Model(self.ctx) if result == z3.sat else None
+    if not m:
+      self.pop()
+    return m
 
   # reset context
   def reset(self):
@@ -173,24 +179,26 @@ class Z3Solver(Solver):
 class Z3Model(Model):
 
   def __init__(self, ctx):
+    self.ctx = ctx
     self.model = ctx.model()
   
   def eval_bool(self, v):
-    val = self.model.eval(v)
-    return bool(val)
+    return bool(self.model.eval(v, model_completion=True))
   
   def eval_int(self, v):
     if isinstance(v, int):
       return v
-    return self.model.eval(v).as_long()
+    return self.model.eval(v, model_completion=True).as_long()
   
   def eval_real(self, v):
     if isinstance(v, float) or isinstance(v, int):
       return float(v)
-    val = self.model.eval(v)
+    val = self.model.eval(v, model_completion=True)
     if isinstance(val, IntNumRef):
       return float(val.as_long())
-    if val == v:
-      return -42
     return float(val.as_fraction())
+
+  def destroy(self):
+    self.ctx.pop()
+    del self.model
   
