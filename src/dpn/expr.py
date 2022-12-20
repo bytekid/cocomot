@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from utils import VarType
 
 class Expr:
   __metaclass__ = ABCMeta
@@ -46,7 +47,7 @@ class NotFound(Exception):
   pass
 
 class Var(Term):
-  def __init__(self, c, prime):
+  def __init__(self, c, prime, type=VarType.real):
     #assert(isinstance(c, basestring))
     self.name = c
     self.is_prime = (prime != None)
@@ -71,7 +72,8 @@ class Var(Term):
 
 
 class Num(Term):
-  def __init__(self, c):
+  def __init__(self, c, t = VarType.real):
+    self.type = t
     self.num = c
   
   def __str__(self):

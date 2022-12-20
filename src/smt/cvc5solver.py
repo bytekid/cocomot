@@ -1,14 +1,14 @@
 import time
 import sys
-
-from pycvc5 import *
+import cvc5
+from cvc5 import Kind
 
 from smt.solver import Solver, Model
 
 class CVC5Solver(Solver):
 
   def __init__(self):
-    self._solver = pycvc5.Solver()
+    self._solver = cvc5.Solver()
     self._solver.setOption("produce-models", "true")
     self._solver.setOption("incremental", "true")
     self._solver.setLogic("LIA")
@@ -21,10 +21,15 @@ class CVC5Solver(Solver):
     self._pop_level = 0
     self._consts = {}
 
+  # reset context
+  def reset(self):
+    self._checked = {}
+    self._simped = {}
+    self._solver.resetAssertions()
 
   def destroy(self):
     self.reset() # important: avoid seg fault for multiple checks
-    #del self._solver # ... e.g. as in test script
+    del self._solver # ... e.g. as in test script
 
   def are_equal_expr(self, a, b):
     return a == b
@@ -86,7 +91,9 @@ class CVC5Solver(Solver):
       return l[0]
     elif len(l) == 2 and self.is_true(l[0]):
       return l[1]
-    return self._solver.mkTerm(kinds.And, *l)
+    elif len(l) == 2 and self.is_true(l[1]):
+      return l[0]
+    return self._solver.mkTerm(Kind.AND, *l)
 
   # logical disjunction
   def lor(self, l):
@@ -94,11 +101,11 @@ class CVC5Solver(Solver):
       return self.true().notTerm()
     elif len(l) == 1:
       return l[0]
-    return self._solver.mkTerm(kinds.Or, *l)
+    return self._solver.mkTerm(Kind.OR, *l)
 
   # logical negation
   def neg(self, a):
-    return self._solver.mkTerm(kinds.Not, a)
+    return self._solver.mkTerm(Kind.NOT, a)
 
   # logical implication
   def implies(self, a, b):
@@ -110,18 +117,18 @@ class CVC5Solver(Solver):
 
   # equality of arithmetic terms
   def eq(self, a, b):
-    return self._solver.mkTerm(kinds.Equal, a, b)
+    return self._solver.mkTerm(Kind.EQUAL, a, b)
 
   def neq(self, a, b):
     return self.neg(self.eq(a,b))
   
   # less-than on arithmetic terms
   def lt(self, a, b):
-    return self._solver.mkTerm(kinds.Lt, a, b)
+    return self._solver.mkTerm(Kind.LT, a, b)
 
   # greater-or-equal on arithmetic terms
   def ge(self, a, b):
-    return self._solver.mkTerm(kinds.Geq, a, b)
+    return self._solver.mkTerm(Kind.GEQ, a, b)
 
   # increment of arithmetic term by 1
   def inc(self, a):
@@ -129,19 +136,19 @@ class CVC5Solver(Solver):
   
   # subtraction
   def minus(self, a, b):
-    return self._solver.mkTerm(kinds.Minus, a, b)
+    return self._solver.mkTerm(Kind.SUB, a, b)
 
   # addition
   def plus(self, a, b):
-    return self._solver.mkTerm(kinds.Plus, a, b)
+    return self._solver.mkTerm(Kind.ADD, a, b)
 
   # multiplication
   def mult(self, a, b):
-    return self._solver.mkTerm(kinds.Mult, a, b)
+    return self._solver.mkTerm(Kind.MULT, a, b)
 
   # if-then-else
   def ite(self, cond, a, b):
-    return self._solver.mkTerm(kinds.Ite, cond, a, b)
+    return self._solver.mkTerm(Kind.ITE, cond, a, b)
   
   # term inspection
   def num_args(self, e):
@@ -166,43 +173,46 @@ class CVC5Solver(Solver):
     return e.getIntegerValue() if e.isIntegerValue() else e.getRealValue()
 
   def is_var(self, e):
-    return e.getKind() == kinds.Variable
+    return e.getKind() == Kind.VARIABLE
 
   def is_not(self, e):
-    return e.getKind() == kinds.Not
+    return e.getKind() == Kind.NOT
 
   def is_and(self, e):
-    return e.getKind() == kinds.And
+    return e.getKind() == Kind.AND
 
   def is_or(self, e):
-    return e.getKind() == kinds.Or
+    return e.getKind() == Kind.OR
 
   def is_le(self, e):
-    return e.getKind() == kinds.Leq
+    return e.getKind() == Kind.LEQ
 
   def is_lt(self, e):
-    return e.getKind() == kinds.Lt
+    return e.getKind() == Kind.LT
 
   def is_ge(self, e):
-    return e.getKind() == kinds.Geq
+    return e.getKind() == Kind.GEQ
 
   def is_gt(self, e):
-    return e.getKind() == kinds.Gt
+    return e.getKind() == Kind.GT
 
   def is_eq(self, e):
-    return e.getKind() == kinds.Equal
+    return e.getKind() == Kind.EQUAL
 
   def is_forall(self, e):
-    return e.getKind() == kinds.Forall
+    return e.getKind() == Kind.FORALL
+
+  def is_exists(self, e):
+    return e.getKind() == Kind.EXISTS
 
   def is_plus(self, e):
-    return e.getKind() == kinds.Plus
+    return e.getKind() == Kind.ADD
 
   def is_minus(self, e):
-    return e.getKind() == kinds.Minus
+    return e.getKind() == Kind.SUB
 
   def is_mult(self, e):
-    return e.getKind() == kinds.Mult
+    return e.getKind() == Kind.MULT
 
   # minimum of two arithmetic expressions
   def min(self, a, b):
@@ -212,13 +222,17 @@ class CVC5Solver(Solver):
     return Terms.distinct(xs)
 
   def exists(self, xs, e):
-    bxs = self._solver.mkTerm(kinds.BoundVarList, xs)
-    return self._solver.mkTerm(kinds.Exists, bxs, e)
+    bxs = self._solver.mkTerm(Kind.VARIABLE_LIST, *xs)
+    return self._solver.mkTerm(Kind.EXISTS, bxs, e)
+
+  def replace_quant_body(self, e, new_body):
+    bxs = self.arg(e, 0)
+    return self._solver.mkTerm(Kind.EXISTS, bxs, new_body)
 
   def forall(self, xs, e):
-    bxs = xs if xs.getKind() == kinds.BoundVarList else \
-      self._solver.mkTerm(kinds.BoundVarList, xs) 
-    return self._solver.mkTerm(kinds.Forall, bxs, e)
+    bxs = xs if xs.getKind() == Kind.VARIABLE_LIST else \
+      self._solver.mkTerm(Kind.VARIABLE_LIST, xs) 
+    return self._solver.mkTerm(Kind.FORALL, bxs, e)
 
   def subst(self, vars, terms, e):
     for (x, t) in zip(vars, terms):
@@ -242,18 +256,6 @@ class CVC5Solver(Solver):
     self._simped[e] = ee
     self._simp_time += time.time() - start
     return ee
-
-  def qe_simp(self, e):
-    if e in self._simped:
-      return self._simped[e]
-    start = time.time()
-    if e.getKind() == kinds.Exists:
-      e1 = self._solver.getQuantifierElimination(e)
-    else:
-      e1 = self._solver.simplify(e)
-    self._simped[e] = e1
-    self._simp_time += time.time() - start
-    return e1
 
   def push(self):
     try:
@@ -288,12 +290,6 @@ class CVC5Solver(Solver):
     self._checks += 1
     self._check_time += time.time() - start
     return m
-
-  # reset context
-  def reset(self):
-    self._checked = {}
-    self._simped = {}
-    self._solver.resetAssertions()
   
   def to_string(self, t):
     return str(t)

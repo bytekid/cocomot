@@ -23,11 +23,11 @@ class Z3Solver(Solver):
   
   # integer constants
   def num(self, n):
-    return n
+    return IntVal(n)
   
   # real constants
   def real(self, n):
-    return n
+    return RealVal(n)
   
   # boolean variable with name
   def boolvar(self, n):

@@ -10,6 +10,7 @@ from collections import defaultdict
 from smt.ysolver import YicesSolver
 from smt.z3solver import Z3Solver
 from smt.omsolver import OptiMathsatSolver
+from smt.cvc5solver import CVC5Solver
 from dpn.read import read_json_input, read_pnml_input
 from cluster.partitioning import NaivePartitioning, IntervalPartitioning
 from dpn.dpn import DPN
@@ -310,7 +311,7 @@ def read_log(logfile):
 
 def work_uncertain(job):
   (i, trace, dpn, ukind, verbose) = job
-  solver = YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
+  solver = Z3Solver() #YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
   if not isinstance(trace, UncertainTrace):
     trace = UncertainTrace.from_certain_trace(preprocess_trace(trace, dpn))
   trace.normalize_time() # replace timestamps by floats

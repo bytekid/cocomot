@@ -2,6 +2,7 @@ from functools import reduce
 from itertools import groupby
 
 from dpn.expr import Expr
+from utils import VarType
 
 class Encoding:
 
@@ -26,10 +27,22 @@ class Encoding:
   def data_vars(self):
     varwrite = self._dpn.var_write_reach()
     vs = self._dpn.variables()
-    init = [(v["name"], v["initial"] if "initial" in v else 0) for v in vs]
-    vvars = [ dict([ (vn, self._solver.num(val)) for (vn,val) in init ]) ]
+
+    def init(v):
+      val = v["initial"] if "initial" in v else 0
+      type = VarType.from_java(v["type"])
+      return self._solver.real(val) if type == VarType.rat else \
+        self._solver.num(val)
+
+    def create_var(v, i):
+      name = "_" + v["name"] + str(i)
+      type = VarType.from_java(v["type"])
+      return self._solver.realvar(name) if type == VarType.rat else \
+        self._solver.intvar(name)
+
+    init = [(v["name"], init(v)) for v in vs]
+    vvars = [ dict([ (vn, val) for (vn,val) in init ]) ]
     
-    create_var = lambda v, i: self._solver.realvar("_" + v["name"] + str(i))
     for i in range(1, self._step_bound + 1):
       xis = {} # dictinary mapping data variable name to SMT variable
       for v in vs:
