@@ -8,7 +8,7 @@ class Z3Solver(Solver):
 
   def __init__(self):
     self.ctx = Optimize()
-    self.ctx.set("timeout", 600000) # timeout in milliseconds
+    #Sself.ctx.set("timeout", 600000) # timeout in milliseconds
     set_param('model.completion', True)
 
   def to_string(self, e):
