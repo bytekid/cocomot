@@ -10,7 +10,7 @@ from collections import defaultdict
 from smt.ysolver import YicesSolver
 from smt.z3solver import Z3Solver
 from smt.omsolver import OptiMathsatSolver
-from smt.cvc5solver import CVC5Solver
+#from smt.cvc5solver import CVC5Solver
 from dpn.read import read_json_input, read_pnml_input
 from cluster.partitioning import NaivePartitioning, IntervalPartitioning
 from dpn.dpn import DPN
