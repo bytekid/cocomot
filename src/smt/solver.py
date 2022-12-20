@@ -131,11 +131,6 @@ class Solver:
   def require(self, formulas):
     pass
 
-  # minimize given expression
-  @abstractmethod
-  def minimize(self, e, bound):
-    pass
-
   # reset context
   @abstractmethod
   def reset(self):

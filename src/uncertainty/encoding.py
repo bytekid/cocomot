@@ -47,7 +47,7 @@ class UncertaintyEncoding(Encoding):
         self._vs_mod_move[i][j] = s.eq(xs[i][j], mod_move)
         self._vs_syn_move[i][j] = s.eq(xs[i][j], sync_move)
         if i>0 or j > 0:
-          s.require([s.ge(xs[i][j], s.num(0)), s.ge(s.num(3), xs[i][j]) ])
+          s.require([s.lor([self._vs_log_move[i][j], self._vs_mod_move[i][j], self._vs_syn_move[i][j], s.eq(xs[i][j], drop_move)])])
         if i ==0:
           # no (silent) model, no sync move
           s.require([s.neg(s.eq(xs[i][j], sync_move)), \

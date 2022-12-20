@@ -311,7 +311,7 @@ def read_log(logfile):
 
 def work_uncertain(job):
   (i, trace, dpn, ukind, verbose) = job
-  solver = Z3Solver() #YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
+  solver = CVC5Solver() #YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
   if not isinstance(trace, UncertainTrace):
     trace = UncertainTrace.from_certain_trace(preprocess_trace(trace, dpn))
   trace.normalize_time() # replace timestamps by floats

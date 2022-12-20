@@ -20,12 +20,14 @@ class CVC5Solver(Solver):
     self._simped = {}
     self._pop_level = 0
     self._consts = {}
+    self._tsolve = 0
 
   # reset context
   def reset(self):
     self._checked = {}
     self._simped = {}
     self._solver.resetAssertions()
+    self._tsolve = 0
 
   def destroy(self):
     self.reset() # important: avoid seg fault for multiple checks
@@ -42,7 +44,9 @@ class CVC5Solver(Solver):
   
   # integer constants
   def num(self, n):
-    return self._solver.mkInteger(n)
+    # FIXME
+    #return self._solver.mkInteger(n)
+    return self._solver.mkReal(n)
   
   # real constants
   def real(self, n):
@@ -61,7 +65,9 @@ class CVC5Solver(Solver):
   # integer variable with name
   def intconst(self, n):
     intSort = self._solver.getIntegerSort()
-    return self._solver.mkConst(intSort, n)
+    # FIXME
+    #return self._solver.mkConst(intSort, n)
+    return self._solver.mkConst(realSort, n)
   
   # real variable with name
   def realconst(self, n):
@@ -71,17 +77,20 @@ class CVC5Solver(Solver):
   # boolean variable with name (might be used for quantification)
   def boolvar(self, n):
     boolSort = self._solver.getBooleanSort()
-    return self._solver.mkVar(boolSort, n)
+    return self._solver.mkConst(boolSort, n)
   
   # integer variable with name (might be used for quantification)
   def intvar(self, n):
     intSort = self._solver.getIntegerSort()
-    return self._solver.mkVar(intSort, n)
+    # FIXME
+    #return self._solver.mkConst(intSort, n)
+    realSort = self._solver.getRealSort()
+    return self._solver.mkConst(realSort, n)
   
   # real variable with name (might be used for quantification)
   def realvar(self, n):
     realSort = self._solver.getRealSort()
-    return self._solver.mkVar(realSort, n)
+    return self._solver.mkConst(realSort, n)
   
   # logical conjunction
   def land(self, l):
@@ -125,6 +134,10 @@ class CVC5Solver(Solver):
   # less-than on arithmetic terms
   def lt(self, a, b):
     return self._solver.mkTerm(Kind.LT, a, b)
+  
+  # less-than on arithmetic terms
+  def le(self, a, b):
+    return self._solver.mkTerm(Kind.LEQ, a, b)
 
   # greater-or-equal on arithmetic terms
   def ge(self, a, b):
@@ -272,7 +285,7 @@ class CVC5Solver(Solver):
 
   # add list of assertions
   def require(self, formulas):
-    self._solver.assertFormula(formulas)
+    self._solver.assertFormula(self.land(formulas))
 
   # check satisfiability
   def check_sat(self, e, eval = None):
@@ -291,6 +304,29 @@ class CVC5Solver(Solver):
     self._check_time += time.time() - start
     return m
   
+  def minimize(self, expr, max_val, start = 0):
+    self.push()
+    val = start
+    self.require([self.eq(expr, self.num(val))])
+    t_start = time.perf_counter()
+    status = self._solver.checkSat()
+    m = CVC5Model(self, eval) if status.isSat() else None
+    if m == None:
+      self.pop() # otherwise pop later when destroying model
+    self.t_solve = time.perf_counter() - t_start
+    while not status.isSat() and val <= max_val:
+      self.push()
+      val += 1
+      self.require([self.eq(expr, self.num(val))])
+      t_start = time.perf_counter()
+      status = self._solver.checkSat()
+      m = CVC5Model(self, eval) if status.isSat() else None
+      if m == None:
+        self.pop() # otherwise pop later when destroying model
+      self.t_solve += time.perf_counter() - t_start
+    return None if val > max_val else m
+
+
   def to_string(self, t):
     return str(t)
 
