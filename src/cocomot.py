@@ -349,7 +349,7 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
     results = []
     reals = []
     for (i, trace) in enumerate(log):
-      reals+= trace.get_realizations()
+      #reals+= trace.get_realizations()
       results.append(work_uncertain((i, trace, dpn, ukind, verbose)))
     for (d, t_enc, t_solv) in results:
       ts_encode.append(t_enc)

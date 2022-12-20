@@ -181,7 +181,7 @@ class UncertainDataValue:
       if str(val) in self._values:
         self._values = [val]
       else:
-        self._values = self._values[0]
+        self._values = [self._values[0]]
     else:
       if not (self._lower <= val and val <= self._upper):
         val = self._lower
