@@ -9,7 +9,7 @@ class OptiMathsatSolver:
   cfg = None
   env = None
 
-  def __init__(self):
+  def __init__(self, incremental = False):
     self.cfg = om.msat_create_config()
     om.msat_set_option(self.cfg, "opt.priority", "box")
     #om.msat_set_option(self.cfg, "opt.verbose", "true")
@@ -17,6 +17,7 @@ class OptiMathsatSolver:
     self.env = om._msat_create_opt_env(self.cfg)
     assert not om.MSAT_ERROR_CONFIG(self.cfg)
     self.t_solve = 0
+    self._incremental = incremental
 
   def destroy(self):
     if not om.MSAT_ERROR_CONFIG(self.cfg):
@@ -148,6 +149,11 @@ class OptiMathsatSolver:
 
   # minimize given expression
   def minimize(self, e, bound):
+    return self.minimize_inc(e, bound) if self._incremental \
+      else self.minimize_builtin(e, bound) 
+
+  # minimize given expression
+  def minimize_builtin(self, e, bound):
     t_start = time.perf_counter()
     assert not om.MSAT_ERROR_ENV(self.env)
     obj = om._msat_make_minimize(self.env, e)

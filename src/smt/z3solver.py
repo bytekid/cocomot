@@ -6,11 +6,15 @@ from smt.solver import Solver, Model
 
 class Z3Solver(Solver):
 
-  def __init__(self):
-    self.ctx = Optimize()
-    #Sself.ctx.set("timeout", 600000) # timeout in milliseconds
+  def __init__(self, incremental=False):
+    self._incremental = incremental
+    if not incremental:
+      self.ctx = Optimize()
+      self.ctx.set('optsmt_engine', 'symba') # no weird timeouts on simple traces
+    else:
+      self.ctx = z3.Solver()
     set_param('model.completion', True)
-    self.ctx.set('optsmt_engine', 'symba') # no weird timeouts on simple traces
+    #Sself.ctx.set("timeout", 600000) # timeout in milliseconds
 
   def to_string(self, e):
     return str(e)
@@ -151,8 +155,14 @@ class Z3Solver(Solver):
     self.t_solve = time.perf_counter() - t_start
     return Z3Model(self.ctx) if result == z3.sat else None
 
+
   # minimize given expression
-  def minimize(self, expr, max_val):
+  def minimize(self, e, bound):
+    return self.minimize_inc(e, bound) if self._incremental \
+      else self.minimize_builtin(e, bound) 
+
+  # minimize given expression
+  def minimize_builtin(self, expr, max_val):
     self.push()
     self.require([self.le(expr, max_val)])
     val = self.ctx.minimize(expr)
@@ -190,7 +200,8 @@ class Z3Solver(Solver):
 
   # reset context
   def reset(self):
-    #self.ctx = Optimize() # Optimize solver does not have reset function
+    if self._incremental:
+      self.ctx.reset()
     self.t_solve = 0
 
   # destroy context and config

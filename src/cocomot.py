@@ -22,6 +22,7 @@ from uncertainty.encoding import UncertaintyEncoding
 from uncertainty.trace import UncertainTrace, UncertainLog
 from uncertainty.uncertainize import all as uncertainize_all, extending as uncertainty_extending
 from utils import pad_to, spaces
+from options import default as default_options
 
 ### printing
 
@@ -309,8 +310,29 @@ def read_log(logfile):
     return (xes_importer.apply(logfile), False)
 
 
+### uncertainty
+def make_uncertainty_solver(opts):
+  if opts["solver"] == None:
+    return YicesSolver() if opts["uncertainty"] =="min" else OptiMathsatSolver()
+  else:
+    if opts["solver"] == "yices":
+      return YicesSolver()
+    elif opts["solver"] == "z3":
+      return Z3Solver()
+    elif opts["solver"] == "z3-inc":
+      return Z3Solver(incremental=True)
+    elif opts["solver"] == "optimathsat":
+      return OptiMathsatSolver()
+    elif opts["solver"] == "optimathsat-inc":
+      return OptiMathsatSolver(incremental=True)
+
 def work_uncertain(job):
-  (i, trace, dpn, ukind, verbose, solver) = job
+  (i, trace, dpn, opts, solver) = job
+  ukind, verbose = opts["uncertainty"], opts["verbose"]
+  own_solver = (solver == None)
+  if not solver:
+    solver = make_uncertainty_solver(opts)
+
   solver.push()
   if not isinstance(trace, UncertainTrace):
     trace = UncertainTrace.from_certain_trace(preprocess_trace(trace, dpn))
@@ -325,7 +347,7 @@ def work_uncertain(job):
     (dist, dconstr) = encoding.edit_distance_fitness(trace)
   t_enc =  t_enc + (time.perf_counter() - t_start)
   solver.require([dconstr])
-  model = solver.minimize_inc(dist, encoding.step_bound()+10)
+  model = solver.minimize(dist, encoding.step_bound()+10)
   t_solve = solver.t_solve
   distance = None if model == None else round(model.eval_real(dist),2)
   result = encoding.decode_alignment(trace, model)
@@ -339,21 +361,22 @@ def work_uncertain(job):
   model.destroy()
   solver.pop()
   solver.reset()
-  #solver.destroy()
+  if own_solver:
+    solver.destroy()
   return (distance, t_enc, t_solve)
 
-### main
-def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
+def cocomot_uncertain(dpn, log, os):
+  (ukind, verbose, numprocs) = (os["uncertainty"], os["verbose"],os["numprocs"])
   ts_encode = []
   ts_solve = []
   distances = defaultdict(lambda: 0)
   if numprocs == 1:
     results = []
     reals = []
-    solver = Z3Solver() #YicesSolver() if ukind == "min" else OptiMathsatSolver() #Z3Solver() #
+    solver = make_uncertainty_solver(os)
     for (i, trace) in enumerate(log):
       #reals+= trace.get_realizations()
-      results.append(work_uncertain((i, trace, dpn, ukind, verbose, solver)))
+      results.append(work_uncertain((i, trace, dpn, os, solver)))
     solver.destroy()
     for (d, t_enc, t_solv) in results:
       ts_encode.append(t_enc)
@@ -369,7 +392,7 @@ def cocomot_uncertain(dpn, log, ukind, verbose=1, numprocs=1):
     #print([str(UncertainTrace(r)) for r in reals])
   else:
     print("Parallel checking with %d processes ..." % numprocs)
-    jobs = [ (i, t, dpn, ukind, verbose) for (i,t) in enumerate(log) ]
+    jobs = [ (i, t, dpn, opts, None) for (i,t) in enumerate(log) ]
     #for j in jobs:
     #  work(j)
     pool = multiprocessing.Pool(numprocs)
@@ -497,65 +520,51 @@ def cocomot(dpn, log, opts):
 
 def process_args(argv):
   usage = "cocomot.py <model_file> <log_file> [-p <property_string> | -s] [-x <number>]"
-  model_file = None
-  log_file = None
-  many = None
-  multi = None
-  anti = None
-  numprocs = 1
-  obfuscate = None
-  uncertainty = None
-  json = False
-  verbose = 1
+  opts = default_options
   try:
-    opts, args = getopt.getopt(argv,"hjmo:u:v:d:l:n:x:a:")
+    optargs, args = getopt.getopt(argv,"hjmo:u:v:d:l:n:x:a:s:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(1)
-  for (opt, arg) in opts:
+  for (opt, arg) in optargs:
     if opt == '-h':
       print(usage)
       sys.exit()
     elif opt == "-d":
-      model_file = arg
+      opts["model"] = arg
     elif opt == "-l":
-      log_file = arg
+      opts["log"] = arg
     elif opt == "-x":
-      many = int(arg)
+      opts["many"] = int(arg)
     elif opt == "-u":
       if arg not in ["fit", "min"]:
         print(usage)
         sys.exit(1)
-      uncertainty = arg
+      opts["uncertainty"] = arg
     elif opt == "-m":
-      multi = True
+      opts["multi"] = True
     elif opt == "-j":
-      json = True
-      verbose = 0
+      opts["json"] = True
+      opts["verbose"] = 0
     elif opt == "-a":
-      anti = int(arg)
+      opts["anti"] = int(arg)
     elif opt == "-o":
       args = ["indet", "act", "time", "data", "mixed"]
-      if not (arg in ["indet", "act", "time", "data", "mixed"]):
+      if not (arg in args):
         print ("arguments supported for -o are ", args)
         sys.exit(1)
-      obfuscate = arg
+      opts["obfuscate"] = arg
+    elif opt == "-s":
+      args = ["yices", "optimathsat", "optimathsat-inc", "z3", "z3-inc"]
+      if not (arg in args):
+        print ("arguments supported for -s are ", args)
+        sys.exit(1)
+      opts["solver"] = arg
     elif opt == "-v":
-      verbose = int(arg)
+      opts["verbose"] = int(arg)
     elif opt == "-n":
-      numprocs = int(arg)
-  return {
-    "anti": anti,
-    "json": json,
-    "log": log_file,
-    "many": many,
-    "model": model_file, 
-    "multi": multi,
-    "numprocs": numprocs,
-    "obfuscate": obfuscate,
-    "uncertainty": uncertainty,
-    "verbose": verbose
-  }
+      opts["numprocs"] = int(arg)
+  return opts
 
 if __name__ == "__main__":
   ps = process_args(sys.argv[1:])
@@ -570,7 +579,7 @@ if __name__ == "__main__":
     elif ps["anti"]:
       conformance_check_anti(log, dpn, ps["verbose"], ps["anti"])
     elif ps["uncertainty"]: # has_uncertainty
-      cocomot_uncertain(dpn, log, ps["uncertainty"], ps["verbose"], numprocs=ps["numprocs"])
+      cocomot_uncertain(dpn, log, ps)
     else:
       cocomot(dpn, log, ps)
   YicesSolver.shutdown()
