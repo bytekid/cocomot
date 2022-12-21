@@ -10,6 +10,7 @@ class Z3Solver(Solver):
     self.ctx = Optimize()
     #Sself.ctx.set("timeout", 600000) # timeout in milliseconds
     set_param('model.completion', True)
+    self.ctx.set('optsmt_engine', 'symba') # no weird timeouts on simple traces
 
   def to_string(self, e):
     return str(e)
