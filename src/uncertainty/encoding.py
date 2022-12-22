@@ -418,7 +418,6 @@ class UncertaintyEncoding(Encoding):
 
   def edit_distance_fitness_fixed_order(self, trace):
     assert(isinstance(trace, UncertainTrace))
-    print(trace)
     s = self._solver
 
     def drop_cost(i):

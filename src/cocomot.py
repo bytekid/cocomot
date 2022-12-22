@@ -313,7 +313,7 @@ def read_log(logfile):
 ### uncertainty
 def make_uncertainty_solver(opts):
   if opts["solver"] == None:
-    return YicesSolver() if opts["uncertainty"] =="min" else OptiMathsatSolver()
+    return YicesSolver() if opts["uncertainty"] =="min" else Z3Solver()
   else:
     if opts["solver"] == "yices":
       return YicesSolver()
@@ -349,16 +349,21 @@ def work_uncertain(job):
   solver.require([dconstr])
   model = solver.minimize(dist, encoding.step_bound()+10)
   t_solve = solver.t_solve
-  distance = None if model == None else round(model.eval_real(dist),2)
-  result = encoding.decode_alignment(trace, model)
+  distance = -1 if model == None else round(model.eval_real(dist),2)
+  result = encoding.decode_alignment(trace, model) if model else None
   if verbose > 0:
-    print("%d. distance" % i, distance)
+    if model:
+      print("\n%d. distance" % i, distance)
+    else:
+      print("\n%d. (solver timeout)" % i)
     print("encoding time: %.2f" % t_enc)
     print("solving time: %.2f" % t_solve)
     #print(result)
-    print_trace_distance_verbose(encoding._dpn, result["trace"], result)
+    if model:
+      print_trace_distance_verbose(encoding._dpn, result["trace"], result)
   sys.stdout.flush()
-  model.destroy()
+  if model:
+    model.destroy()
   solver.pop()
   solver.reset()
   if own_solver:
@@ -370,6 +375,7 @@ def cocomot_uncertain(dpn, log, os):
   ts_encode = []
   ts_solve = []
   distances = defaultdict(lambda: 0)
+  timeouts = 0
   if numprocs == 1:
     results = []
     reals = []
@@ -382,7 +388,10 @@ def cocomot_uncertain(dpn, log, os):
       ts_encode.append(t_enc)
       ts_solve.append(t_solv)
       d = str(d)
-      distances[d] += 1
+      if d == "-1":
+        timeouts += 1
+      else:
+        distances[d] += 1
     #print(len(reals),"realizations")
     #log = UncertainLog([UncertainTrace(r) for r in reals])
     #xml = log.to_xes()
@@ -411,10 +420,11 @@ def cocomot_uncertain(dpn, log, os):
         distances[d] += 1
   mid = int(len(ts_encode)/2)
   if verbose > 0:
-    print("encoding time: total %.2f  avg %.2f median %.2f" % \
+    print("\nencoding time: total %.2f  avg %.2f median %.2f" % \
       (sum(ts_encode ), sum(ts_encode)/len(ts_encode), ts_encode[mid]))
     print("solving time:  total %.2f  avg %.2f median %.2f" % \
       (sum(ts_solve ), sum(ts_solve)/len(ts_solve), ts_solve[mid]))
+    print("timeouts: %d" % timeouts)
     for (d, cnt) in distances.items():
       print("distance %s: %d" % (d, cnt))
   return list(distances.keys())
