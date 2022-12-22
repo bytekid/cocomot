@@ -1,9 +1,43 @@
-import sys
+import sys, os
 import time
 from optimathsat import *
 import _optimathsat as om
 
 from fractions import Fraction
+
+class Timer(object): # pylint: disable=too-few-public-methods,locally-disabled
+    """A simple timer object."""
+
+    def __init__(self, timeout):
+        """
+        Timer Constructor.
+        :param timeout: the number of seconds before a timeout.
+        """
+        self._timeout = timeout
+        self._started = False
+        self._start = 0.0
+        self._end = 0.0
+
+    def __call__(self):
+        """
+        Callback function.
+        :returns: non-zero upon timeout.
+        """
+        now = time.time()
+        if not self._started:
+            self._started = now
+        self._end = now
+        ret = 0
+        if self._end - self._started > self._timeout:
+            ret = 1
+        return ret
+
+    def reset(self):
+        """
+        Reset the timer.
+        """
+        self._started = False
+        return
 
 class OptiMathsatSolver:
   cfg = None
@@ -12,10 +46,11 @@ class OptiMathsatSolver:
   def __init__(self, incremental = False):
     self.cfg = om.msat_create_config()
     om.msat_set_option(self.cfg, "opt.priority", "box")
-    #om.msat_set_option(self.cfg, "opt.verbose", "true")
+    om.msat_set_option(self.cfg, "opt.soft_timeout", "false")
     om.msat_set_option(self.cfg, "model_generation", "true")
     self.env = om._msat_create_opt_env(self.cfg)
     assert not om.MSAT_ERROR_CONFIG(self.cfg)
+    self._timeout = 600 # in seconds
     self.t_solve = 0
     self._incremental = incremental
 
@@ -157,16 +192,16 @@ class OptiMathsatSolver:
     t_start = time.perf_counter()
     assert not om.MSAT_ERROR_ENV(self.env)
     obj = om._msat_make_minimize(self.env, e)
-    ret = om.msat_solve(self.env)
-    #self.dump_model(om.msat_get_model(self.env))
     assert not om.MSAT_ERROR_OBJECTIVE(obj)
     ret = om._msat_assert_objective(self.env, obj)
     if ret != 0:
       raise Exception("Unable to assert objective.")
+    callback = Timer(self._timeout)
+    om.msat_set_termination_test(self.env, callback)
     # ret=0: unsat, ret > 0: sat, ret < 0: unknown
     ret = om.msat_solve(self.env)
-    sys.stdout.flush()
     model = om.msat_get_model(self.env)
+    sys.stdout.flush()
     self.t_solve = time.perf_counter() - t_start
     #self.dump_model(model)
     return Model(self.env, model) if ret > 0 else None
