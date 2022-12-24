@@ -378,10 +378,8 @@ def cocomot_uncertain(dpn, log, os):
   timeouts = 0
   if numprocs == 1:
     results = []
-    reals = []
     solver = make_uncertainty_solver(os)
     for (i, trace) in enumerate(log):
-      #reals+= trace.get_realizations()
       results.append(work_uncertain((i, trace, dpn, os, solver)))
     solver.destroy()
     for (d, t_enc, t_solv) in results:
@@ -392,20 +390,11 @@ def cocomot_uncertain(dpn, log, os):
         timeouts += 1
       else:
         distances[d] += 1
-    #log = UncertainLog([UncertainTrace(r) for r in reals])
-    #xml = log.to_xes()
-    #print("<?xml version='1.0' encoding='UTF-8'?>")
-    #print("<!-- %d realizations -->" % len(reals))
-    # print(xml.toprettyxml())
-    #f = open("/home/bytekid/tools/cocomot/data/uncertainty/road_fines/realizations/time_02.xes", "a")
-    #f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
-    #f.close()
-    #print([str(UncertainTrace(r)) for r in reals])
   else:
     print("Parallel checking with %d processes ..." % numprocs)
     jobs = [ (i, t, dpn, opts, None) for (i,t) in enumerate(log) ]
-    #for j in jobs:
-    #  work(j)
+    for j in jobs:
+      work(j)
     pool = multiprocessing.Pool(numprocs)
     results = pool.map_async(work_uncertain, jobs)
     pool.close()
@@ -431,6 +420,16 @@ def cocomot_uncertain(dpn, log, os):
       print("distance %s: %d" % (d, cnt))
   return list(distances.keys())
 
+def compute_realizations(log):
+  reals = []
+  for (i, trace) in enumerate(log):
+    reals+= trace.get_realizations()
+  avglen = sum([len(r) for r in reals])/float(len(reals))
+  log = UncertainLog([UncertainTrace(r) for r in reals])
+  xml = log.to_xes()
+  print("<?xml version='1.0' encoding='UTF-8'?>")
+  print("<!-- %d realizations, average length %.2f -->" % (len(reals), avglen))
+  print(xml.toprettyxml())
 
 def work(job):
   solver = YicesSolver()
@@ -468,6 +467,7 @@ def cocomot(dpn, log, opts):
 
   if numprocs == 1:
     solver = YicesSolver() # CVC5Solver()  # Z3Solver() # 
+    print("here")
     i = 0
     while i < len(parts):
       (trace, cnt) = parts[i]
@@ -534,7 +534,7 @@ def process_args(argv):
   usage = "cocomot.py <model_file> <log_file> [-p <property_string> | -s] [-x <number>]"
   opts = default_options
   try:
-    optargs, args = getopt.getopt(argv,"hjmo:u:v:d:l:n:x:a:s:")
+    optargs, args = getopt.getopt(argv,"hjmro:u:v:d:l:n:x:a:s:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(1)
@@ -555,6 +555,8 @@ def process_args(argv):
       opts["uncertainty"] = arg
     elif opt == "-m":
       opts["multi"] = True
+    elif opt == "-r":
+      opts["realizations"] = True
     elif opt == "-j":
       opts["json"] = True
       opts["verbose"] = 0
@@ -584,6 +586,9 @@ if __name__ == "__main__":
   if ps["obfuscate"]:
     log = uncertainty.read.xes(ps["log"])
     uncertainty_extending(log, ps["obfuscate"])
+  elif ps["realizations"]:
+    log = uncertainty.read.xes(ps["log"])
+    compute_realizations(log)
   else:
     dpn = DPN(read_pnml_input(ps["model"]))
     if ps["multi"]:

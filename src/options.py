@@ -7,6 +7,7 @@ default = {
     "multi": None,  # use multi-alignments
     "numprocs": 1,  # number of processsors to use in parallel
     "obfuscate": None, # make given log uncertain
+    "realizations": False, # compute realizations of uncertain log
     "solver": None, # could be yices, z3, z3-inc, om, om-inc
     "uncertainty": None, # use conformance checking with uncertainty
     "verbose": 1 # verbosity of output
