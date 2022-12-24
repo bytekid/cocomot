@@ -381,20 +381,21 @@ def cocomot_uncertain(dpn, log, os):
     reals = []
     solver = make_uncertainty_solver(os)
     for (i, trace) in enumerate(log):
-      #reals+= trace.get_realizations()
-      results.append(work_uncertain((i, trace, dpn, os, solver)))
+      reals+= trace.get_realizations()
+      #results.append(work_uncertain((i, trace, dpn, os, solver)))
     solver.destroy()
-    for (d, t_enc, t_solv) in results:
+    """for (d, t_enc, t_solv) in results:
       ts_encode.append(t_enc)
       ts_solve.append(t_solv)
       d = str(d)
       if d == "-1":
         timeouts += 1
       else:
-        distances[d] += 1
-    #print(len(reals),"realizations")
-    #log = UncertainLog([UncertainTrace(r) for r in reals])
-    #xml = log.to_xes()
+        distances[d] += 1"""
+    print("<!-- %d realizations -->" % len(reals))
+    log = UncertainLog([UncertainTrace(r) for r in reals])
+    xml = log.to_xes()
+    print("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
     #f = open("/home/bytekid/tools/cocomot/data/uncertainty/road_fines/realizations/time_02.xes", "a")
     #f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
     #f.close()
@@ -419,7 +420,7 @@ def cocomot_uncertain(dpn, log, os):
       if d in distances:
         distances[d] += 1
   mid = int(len(ts_encode)/2)
-  if verbose > 0:
+  if verbose > 0 and len(ts_encode) > 0:
     print("\nencoding time: total %.2f  avg %.2f median %.2f" % \
       (sum(ts_encode ), sum(ts_encode)/len(ts_encode), ts_encode[mid]))
     print("solving time:  total %.2f  avg %.2f median %.2f" % \

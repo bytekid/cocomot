@@ -50,7 +50,7 @@ class OptiMathsatSolver:
     om.msat_set_option(self.cfg, "model_generation", "true")
     self.env = om._msat_create_opt_env(self.cfg)
     assert not om.MSAT_ERROR_CONFIG(self.cfg)
-    self._timeout = 600 # in seconds
+    self._timeout = 1 # in seconds
     self.t_solve = 0
     self._incremental = incremental
 
@@ -272,19 +272,3 @@ class Model:
   def destroy(self):
     om.msat_destroy_model(self.mdl)
 
-
-
-if __name__ == "__main__":
-  slv = OptiMathsatSolver()
-  slv.push()
-  slv.pop()
-  ten = slv.real(10)
-  two = slv.real(2)
-  x = slv.realvar("x")
-  y = slv.realvar("y")
-  slv.require(slv.ge(x, two))
-  slv.require(slv.ge(y, two))
-  slv.require(slv.lt(ten, slv.plus(x,y)))
-  mdl = slv.minimize(y)
-  if mdl:
-    print(mdl.eval_int(x))

@@ -444,12 +444,9 @@ class UncertainTrace:
       seqs = [[]]
       for enew in comb:
         seqsx = []
-        print(enew)
         for seq in seqs:
-          print(seq)
           # interleave
           prepost = [ (seq[0:i], seq[i:]) for i in range(0, len(seq)+1)]
-          print(prepost)
           for (pre, post) in prepost:
             tpre = pre[-1].upper_time() if len(pre)>0 else enew.lower_time()
             tpost = post[0].lower_time() if len(post)>0 else enew.upper_time()
