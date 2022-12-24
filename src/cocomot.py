@@ -381,21 +381,22 @@ def cocomot_uncertain(dpn, log, os):
     reals = []
     solver = make_uncertainty_solver(os)
     for (i, trace) in enumerate(log):
-      reals+= trace.get_realizations()
-      #results.append(work_uncertain((i, trace, dpn, os, solver)))
+      #reals+= trace.get_realizations()
+      results.append(work_uncertain((i, trace, dpn, os, solver)))
     solver.destroy()
-    """for (d, t_enc, t_solv) in results:
+    for (d, t_enc, t_solv) in results:
       ts_encode.append(t_enc)
       ts_solve.append(t_solv)
       d = str(d)
       if d == "-1":
         timeouts += 1
       else:
-        distances[d] += 1"""
-    print("<!-- %d realizations -->" % len(reals))
-    log = UncertainLog([UncertainTrace(r) for r in reals])
-    xml = log.to_xes()
-    print("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
+        distances[d] += 1
+    #log = UncertainLog([UncertainTrace(r) for r in reals])
+    #xml = log.to_xes()
+    #print("<?xml version='1.0' encoding='UTF-8'?>")
+    #print("<!-- %d realizations -->" % len(reals))
+    # print(xml.toprettyxml())
     #f = open("/home/bytekid/tools/cocomot/data/uncertainty/road_fines/realizations/time_02.xes", "a")
     #f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
     #f.close()
