@@ -26,11 +26,11 @@ def extending(traces, unc):
     if unc == "indet" or unc == "mixed":
       add_indeterminacy(traces, prob=padd)
     if unc == "act" or unc == "mixed":
-      add_uncertain_activities(traces, prob=padd, num=2)
-      suffix = "_2"
+      add_uncertain_activities(traces, prob=padd, num=1)
+      suffix = "_1"
     if unc == "data" or unc == "mixed":
-      add_uncertain_discrete_data(traces, prob=padd, num=2)
-      suffix = "_2"
+      add_uncertain_discrete_data(traces, prob=padd, num=1)
+      suffix = "_1"
     if unc == "time" or unc == "mixed":
       add_uncertain_timestamps(traces, prob=padd)
     log = UncertainLog(traces)
