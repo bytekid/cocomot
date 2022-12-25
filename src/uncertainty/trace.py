@@ -154,19 +154,19 @@ class UncertainDataValue:
     self._name = name
     self._values = values # map value  to probability
     self._lower = float(lower) if lower else None
-    self._upper = float(upper) if upper else None 
+    self._upper = float(upper) if upper else None
 
   def kind(self):
     return self._kind
 
   def is_discrete(self):
+    return self._lower == None
+
+  def is_uncertain(self):
     if self._lower != None:
       return self._lower != self._upper
     else:
-      return len(self._values) == 1
-
-  def is_uncertain(self):
-    return self._values != None
+      return len(self._values) > 1
 
   def values(self):
     assert(self.is_discrete())
@@ -188,7 +188,7 @@ class UncertainDataValue:
       self._lower = val
       self._upper = val
 
-  def admissible(self):
+  def admissible(self): # get some admissible value
     return self._values[0] if self.is_discrete() else self._lower
 
   def __str__(self):

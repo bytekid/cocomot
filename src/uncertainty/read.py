@@ -76,7 +76,8 @@ def xes(logfile):
             data_type = e.tagName
             data_name = e.getAttribute('key')
             values.append(e.getAttribute('value'))
-          data.append(UncertainDataValue(data_type, data_name, values=values))
+          udval = UncertainDataValue(data_type, data_name, values=values)
+          data.append(udval)
         elif key == "uncertainty:continuous_strong": # uncertain data, interval
           for e in children(child):
             xbound = children(e)[0]
