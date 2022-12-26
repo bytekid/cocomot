@@ -302,10 +302,10 @@ class UncertaintyEncoding(Encoding):
 
     ps = []
     zero = s.real(0)
-    trans_events = [ (t,e) \
-      for t in self._dpn.reachable(i) for e in trace._events \
+    trans_events = [ (t, y, e) \
+      for t in self._dpn.reachable(i) for (y,e) in enumerate(trace._events) \
       if "label" in t and t["label"] in e.labels()]
-    for (t,e) in trans_events:
+    for (t, y, e) in trans_events:
       is_t = s.eq(self._vs_trans[i], s.num(t["id"]))
       is_event = s.eq(vs_trace[j], s.num(e._id))
       conf = e.indeterminacy()
@@ -314,12 +314,13 @@ class UncertaintyEncoding(Encoding):
       for (k, (lab, p)) in enumerate(activities):
         if "label" in t and t["label"] == lab:
           # FIXME is the following needed?
-          is_act = [s.land([s.eq(self._vs_act[y], s.num(k)), s.eq(self._vs_pos[y], s.num(j)) ]) for y in range(0, len(trace))]
+          print(self._vs_pos)
+          is_act = s.eq(self._vs_act[y], s.num(k))
           theta = s.real(2 - p - conf)
           if wdiff == None:
             wdiff = self.write_diff_var(trace, t, i, j)
           penalty = s.ite(s.eq(wdiff, zero), theta, s.mult(wdiff, theta))
-          ps.append((s.land([is_event, s.lor(is_act), is_t]), penalty))
+          ps.append((s.land([is_event, is_act, is_t]), penalty))
     return ps
 
 
@@ -457,6 +458,7 @@ class UncertaintyEncoding(Encoding):
   
 
   def edit_distance_fitness(self, trace):
+    print(trace)
     if not trace.has_uncertain_time():
       return self.edit_distance_fitness_fixed_order(trace)
     else:
