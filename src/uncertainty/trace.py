@@ -2,6 +2,7 @@ from xml.dom.minidom import getDOMImplementation
 import xml.dom.minidom
 from datetime import datetime, timedelta
 from copy import deepcopy
+from functools import reduce
 
 
 class Indeterminacy:
@@ -445,16 +446,39 @@ class UncertainTrace:
       for enew in comb:
         seqsx = []
         for seq in seqs:
-          # interleave
+          # interleave enew into seq
+          # split into (subseq before, subseq afterwards)
           prepost = [ (seq[0:i], seq[i:]) for i in range(0, len(seq)+1)]
+          estr = lambda e: "[" + str(e.lower_time()) + ", " + str(e.upper_time())  + "]"
+          seqstr = lambda l: reduce(lambda x,y: x+y,[estr(e) for e in l], "")
           for (pre, post) in prepost:
-            tpre = pre[-1].upper_time() if len(pre)>0 else enew.lower_time()
-            tpost = post[0].lower_time() if len(post)>0 else enew.upper_time()
-            if tpre <= enew.lower_time() and enew.upper_time() <= tpost:
-              t = (tpost - tpre)/2
-              e2 = deepcopy(enew)
-              e2._time.set(tpre + t)
-              seqsx.append(pre + [e2] + post)
+            
+            if (len(pre) > 0 and pre[-1].lower_time() > enew.upper_time()) or \
+               (len(post) > 0 and post[0].upper_time() < enew.lower_time()):
+               continue # thanks to invariant below this is complete check
+            #print("insert", estr(enew), "into", len(pre), len(post), seqstr(pre), seqstr(post))
+            #if len(pre) > 0:
+            #  print(pre[-1].lower_time(), ">", enew.upper_time(), pre[-1].lower_time() > enew.upper_time())
+            ex = deepcopy(enew)
+            # maintain invariant that new elements lb is not smaller than prev
+            # element's lb, and next element's upper bound is not higher
+            if len(pre) > 0:
+              pre = deepcopy(pre)
+              l = max(ex.lower_time(), pre[-1].lower_time())
+              ex._time._lower = min(ex.upper_time(), l)
+              u = min(ex.upper_time(), pre[-1].upper_time())
+              pre[-1]._time._upper = max(u, pre[-1].lower_time())
+              assert(pre[-1].lower_time() <= pre[-1].upper_time())
+            if len(post) > 0:
+              post = deepcopy(post)
+              u = min(ex.upper_time(), post[0].upper_time())
+              ex._time._upper = max(u,ex.lower_time())
+              l = max(ex.lower_time(), post[0].lower_time())
+              post[0]._time._lower = min(l, post[0].upper_time())
+              assert(post[0].lower_time() <= post[0].upper_time())
+            assert(ex.lower_time() <= ex.upper_time())
+            seqx = pre + [ex] + post
+            seqsx.append(seqx)
         seqs = seqsx
       eventseqs += seqs
 
@@ -463,6 +487,7 @@ class UncertainTrace:
     for events in eventseqs:
       reals = [[]]
       for e in events:
+        e.fix_time(e.lower_time())
         ers = e.get_realizations()
         reals = [ r + [er] for r in reals for er in ers ]
       realizations += reals

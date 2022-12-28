@@ -510,7 +510,7 @@ class UncertaintyEncoding(Encoding):
     (markings, transitions, valuations) = run
 
     ord_trace = self.decode_ordering(trace, model)
-    #self.print_distance_matrix(model)
+    self.print_distance_matrix(model)
 
     i = run_length # n
     j = len(ord_trace) # m
