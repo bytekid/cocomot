@@ -14,7 +14,7 @@ class YicesSolver(Solver):
     self.cfg.default_config_for_logic('QF_LRA')
     self.ctx = Context(self.cfg)
     self.t_solve = 0
-    self._timeout = 600
+    self._timeout = 60
 
   def are_equal_expr(self, a, b):
     return a == b

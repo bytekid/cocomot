@@ -399,7 +399,7 @@ def cocomot_uncertain(dpn, log, os):
     results = pool.map_async(work_uncertain, jobs)
     pool.close()
     pool.join()
-    sys.stdout.flush()
+    sys.stdout.flush(r)
     for (d, t_enc, t_solv) in results.get():
       if d != None:
         distances[d] = distances[d] + 1 if d in distances else 1
@@ -422,13 +422,16 @@ def cocomot_uncertain(dpn, log, os):
 
 def compute_realizations(log):
   reals = []
+  realcount = 0
   for (i, trace) in enumerate(log):
-    reals+= trace.get_realizations()
+    rs = trace.get_realizations()
+    realcount += len(rs)
+    reals += rs
   avglen = sum([len(r) for r in reals])/float(len(reals))
   log = UncertainLog([UncertainTrace(r) for r in reals])
   xml = log.to_xes()
   print("<?xml version='1.0' encoding='UTF-8'?>")
-  print("<!-- %d realizations, average length %.2f -->" % (len(reals), avglen))
+  print("<!-- %d realizations, average length %.2f -->" % (realcount, avglen))
   print(xml.toprettyxml())
 
 def work(job):
