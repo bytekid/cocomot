@@ -35,7 +35,7 @@ def extending(traces, unc):
       add_uncertain_timestamps(traces, prob=padd)
     log = UncertainLog(traces)
     xml = log.to_xes()
-    f = open("data/uncertainty/sepsis/"+unc+"/"+unc+suffix+"_0.%dd.xes" % r, "w")
+    f = open("/home/bytekid/tools/cocomot/data/uncertainty/hospital_billing/"+unc+"/"+unc+suffix+"_0.%dd.xes" % r, "w")
     f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
     f.close()
 
