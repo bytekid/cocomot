@@ -22,14 +22,14 @@ class Indeterminacy:
     #  </container>
     # only supposed to be called if self.is_uncertain()
     xcont = doc.createElement("container")
-    xcont.setAttribute("key", "uncertainty:entry");
+    xcont.setAttribute("key", "uncertainty:entry")
     xbool = doc.createElement("bool")
-    xbool.setAttribute("key", "uncertainty:indeterminacy");
-    xbool.setAttribute("value", "true");
+    xbool.setAttribute("key", "uncertainty:indeterminacy")
+    xbool.setAttribute("value", "true")
     xcont.appendChild(xbool)
     xbool = doc.createElement("float")
-    xbool.setAttribute("key", "uncertainty:probability");
-    xbool.setAttribute("value", str('{:04.2f}'.format(self._value)));
+    xbool.setAttribute("key", "uncertainty:probability")
+    xbool.setAttribute("value", str('{:04.2f}'.format(self._value)))
     xcont.appendChild(xbool)
     return xcont
 
@@ -143,6 +143,22 @@ class UncertainTimestamp:
       xs.append(xtimeu)
     return xs
 
+stringvalues = {}
+
+def to_num(v):
+  if v == "false":
+    return 0
+  if v == "true":
+    return 1
+  try:
+    return float(v)
+  except ValueError: # character
+    if v in stringvalues:
+      return stringvalues[v]
+    else:
+      k = len(stringvalues)
+      stringvalues[v] = k
+      return k
 
 class UncertainDataValue:
   # use either parameter values for discrete list of values, or upper and lower
@@ -153,9 +169,9 @@ class UncertainDataValue:
     assert(values == None or len(values) > 0)
     self._kind = kind
     self._name = name
-    self._values = [float(v) for v in values] # map value  to probability
-    self._lower = float(lower) if lower else None
-    self._upper = float(upper) if upper else None
+    self._values = [to_num(v) for v in values] # map value  to probability
+    self._lower = to_num(lower) if lower else None
+    self._upper = to_num(upper) if upper else None
 
   def kind(self):
     return self._kind
