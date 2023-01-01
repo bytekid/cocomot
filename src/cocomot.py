@@ -313,7 +313,7 @@ def read_log(logfile):
 ### uncertainty
 def make_uncertainty_solver(opts):
   if opts["solver"] == None:
-    return YicesSolver() if opts["uncertainty"] =="min" else Z3Solver()
+    return YicesSolver() if opts["uncertainty"] =="real" else Z3Solver()
   else:
     if opts["solver"] == "yices":
       return YicesSolver()
@@ -341,7 +341,7 @@ def work_uncertain(job):
   solver.push()
   solver.require([encoding.trace_constraints(trace)])
   t_start = time.perf_counter()
-  if ukind == "min":
+  if ukind == "real":
     (dist, dconstr) = encoding.edit_distance_min(trace)
   else:
     (dist, dconstr) = encoding.edit_distance_fitness(trace)
@@ -552,7 +552,7 @@ def process_args(argv):
     elif opt == "-x":
       opts["many"] = int(arg)
     elif opt == "-u":
-      if arg not in ["fit", "min"]:
+      if arg not in ["like", "real"]:
         print(usage)
         sys.exit(1)
       opts["uncertainty"] = arg
