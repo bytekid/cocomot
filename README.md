@@ -8,6 +8,8 @@ The script is written for python3, and requires currently the following:
  * pm4py v2.2.19.2 (https://pm4py.fit.fraunhofer.de/)
 
 ## Usage
+
+### Basic calls
 Example calls are as follows:  
  `$ python3 src/cocomot.py data/sat_paper/sat_paper_fig2.pnml data/sat_paper/sat_paper_fig2.xes`  
 For verbose output (i.e., to obtain the alignment), add option `-v`:  
@@ -19,6 +21,7 @@ the number of processes to be used (`-n`):
 
  `$ python3 src/cocomot.py -d data/road_traffic_billing/RoadFines_WithData.pnml -l data/road_traffic_billing/road_fines_27.xes -n 4`
 
+### Uncertainty
 CoCoMoT also supports conformance checking of logs with uncertainty, using the 
 option `-u` with either `real` or 'like' as arguments. For example, the call  
 
@@ -29,7 +32,12 @@ can be run as follows:
 
  `$ python3 src/test.py`
 
-## More data
+## Data and Experiments
+
+### Experiments with uncertainty
+Experimental data for cocomot with uncertainty can be found on [this website](http://cl-informatik.uibk.ac.at/users/swinkler/cocomot/uncertainty.html).
+
+### Data sets
 Complete log files for the road fine, hospital billing, and sepsis data sets are
 available:
   * M. de Leoni, F. Mannhardt: Road traffic fine management process
