@@ -35,7 +35,7 @@ can be run as follows:
 ## Data and Experiments
 
 ### Experiments with uncertainty
-Experimental data for cocomot with uncertainty can be found on [this website](http://cl-informatik.uibk.ac.at/users/swinkler/cocomot/uncertainty.html).
+Experimental data for cocomot with uncertainty can be found on [this website](http://cl-informatik.uibk.ac.at/users/swinkler/cocomot/uncertainty).
 
 ### Data sets
 Complete log files for the road fine, hospital billing, and sepsis data sets are
