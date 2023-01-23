@@ -458,7 +458,7 @@ class UncertaintyEncoding(Encoding):
   
 
   def edit_distance_fitness(self, trace):
-    print(trace)
+    #print(trace)
     if not trace.has_uncertain_time():
       return self.edit_distance_fitness_fixed_order(trace)
     else:

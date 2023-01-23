@@ -17,9 +17,14 @@ def parse_time(timestr):
       dateformat="%Y-%m-%dT%H:%M:%S"
       return datetime.strptime(timestr, dateformat)
     elif timestr[-3] == ":":
-      timestr=timestr[0:timestr.rfind(":")] + "00"
+      timestr0=timestr[0:timestr.rfind(":")] + "00"
       dateformat="%Y-%m-%dT%H:%M:%S%z" # 2000-05-06T00:00:00+0200
-      return datetime.strptime(timestr, dateformat)
+      try:
+        return datetime.strptime(timestr0, dateformat)
+      except:
+        timestr0=timestr[0:timestr.rfind(".")]
+        dateformat="%Y-%m-%dT%H:%M:%S" 
+        return datetime.strptime(timestr0, dateformat)
     else:
       return date.today()
 

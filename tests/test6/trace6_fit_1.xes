@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<log xes.version="1849-2016" xes.features="nested-attributes" xmlns="http://www.xes-standard.org/">
+<trace>
+		<event>
+			<string key="concept:name" value="Create Fine"/>
+			<date key="time:timestamp" value="2021-01-01T00:00:00+0000"/>
+			<float key="amount" value="0.0"/>
+			<float key="totalPaymentAmount" value="0.0"/>
+			<int key="points" value="10"/>
+			<list key="uncertainty:discrete_strong">
+				<values>
+					<int key="dismissal" value="0"/>
+					<int key="dismissal" value="1"/>
+				</values>
+			</list>
+		</event>
+		<event>
+			<string key="concept:name" value="Send Fine"/>
+			<date key="time:timestamp" value="2021-01-04T00:00:00+0000"/>
+			<list key="uncertainty:discrete_strong">
+				<values>
+					<int key="delaySend" value="5000"/>
+					<int key="delaySend" value="1000"/>
+				</values>
+			</list>
+		</event>
+		<event>
+			<string key="concept:name" value="Insert Fine Notification"/>
+			<date key="time:timestamp" value="2021-01-07T00:00:00+0000"/>
+		</event>
+		<event>
+			<string key="concept:name" value="Add penalty"/>
+			<date key="time:timestamp" value="2021-01-10T00:00:00+0000"/>
+			<float key="amount" value="0.0"/>
+		</event>
+	</trace>
+</log>
+

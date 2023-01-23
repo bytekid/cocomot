@@ -30,8 +30,9 @@ if __name__ == "__main__":
       trace = log[0] if is_uncertain else cocomot.preprocess_log(log, dpn)[0]
       start = time.time()
       if is_uncertain:
-        ukind = "min" if "min" in xes else "fit"
-        res = cocomot.cocomot_uncertain(dpn, [trace], ukind, verbose=0)
+        ukind = "real" if "min" in xes else "like" # FIXME rename test cases
+        opts = {"uncertainty": ukind, "verbose":0, "numprocs":1, "solver":None}
+        res = cocomot.cocomot_uncertain(dpn, [trace], opts)
       else:
         slv = YicesSolver()
         res = cocomot.conformance_check_single_trace(slv, (0,trace,1),dpn,verbose=0)

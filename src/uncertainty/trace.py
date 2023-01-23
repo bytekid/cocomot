@@ -169,7 +169,8 @@ class UncertainDataValue:
     assert(values == None or len(values) > 0)
     self._kind = kind
     self._name = name
-    self._values = [to_num(v) for v in values] # map value  to probability
+    # map value  to probability
+    self._values = [to_num(v) for v in values] if values else None
     self._lower = to_num(lower) if lower else None
     self._upper = to_num(upper) if upper else None
 

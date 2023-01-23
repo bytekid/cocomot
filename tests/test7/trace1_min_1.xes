@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<log xes.version="1849-2016" xes.features="nested-attributes" xmlns="http://www.xes-standard.org/">
+  <trace>
+    <event>
+      <string key="concept:name" value="a"/>
+      <date key="time:timestamp" value="2021-01-10T00:00:00"/>
+      <date key="uncertainty:time:timestamp_max" value="2021-01-15T00:00:00"/>
+			<container key="uncertainty:entry">
+        <bool key="uncertainty:indeterminacy" value="true" />
+        <float key="uncertainty:probability" value=".25" />
+      </container>
+			<list key="uncertainty:discrete_strong">
+				<values>
+					<int key="x" value="2"/>
+					<int key="x" value="3"/>
+				</values>
+			</list>
+    </event>
+    <event>
+      <list key="uncertainty:discrete_weak">
+        <values>
+          <container key="uncertainty:entry">
+            <string key="concept:name" value="b"/>
+            <float key="uncertainty:probability" value="0.8" />
+          </container>
+          <container key="uncertainty:entry">
+            <string key="concept:name" value="c"/>
+            <float key="uncertainty:probability" value="0.2" />
+          </container>
+        </values>
+      </list>
+      <date key="time:timestamp" value="2021-01-12T00:00:00"/>
+      <container key="uncertainty:entry">
+        <bool key="uncertainty:indeterminacy" value="true" />
+        <float key="uncertainty:probability" value=".9" />
+      </container>
+      <int key="y" value="1"/>
+    </event>
+  </trace>
+</log>
