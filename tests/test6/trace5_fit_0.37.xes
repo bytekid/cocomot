@@ -20,7 +20,7 @@
 			<date key="time:timestamp" value="2007-08-02T00:00:00+0200"/>
 			<float key="expenses" value="13.0"/>
 			<string key="lifecycle:transition" value="complete"/>
-			<int key="delaySend" value="3167"/>
+			<int key="delaySend" value="2159"/>
 			<container key="uncertainty:entry">
 				<bool key="uncertainty:indeterminacy" value="true"/>
 				<float key="uncertainty:probability" value="0.63"/>
