@@ -16,6 +16,7 @@ class Z3Solver(Solver):
       self.ctx = z3.Solver()
     set_param('model.completion', True)
     self.ctx.set("timeout", 600000) # timeout in milliseconds
+    self.cnt = 0
 
   def to_string(self, e):
     return str(e)
@@ -24,10 +25,10 @@ class Z3Solver(Solver):
     return hash(a) == hash(b)
   
   def true(self):
-    return And([])
+    return True
   
   def false(self):
-    return Or([])
+    return False
   
   # integer constants
   def num(self, n):
@@ -51,7 +52,7 @@ class Z3Solver(Solver):
   
   # logical conjunction
   def land(self, l):
-    return And(l)
+    return And(l) if len(l) > 0 else self.true()
 
   # logical disjunction
   def lor(self, l):
@@ -136,7 +137,10 @@ class Z3Solver(Solver):
     return simplify(e)
 
   def push(self):
-    self.ctx.push()
+    if self.ctx.check() == sat:
+      self.ctx.push()
+    else:
+      print (self.ctx.unsat_core())
 
   def pop(self):
     self.ctx.pop()
@@ -144,6 +148,11 @@ class Z3Solver(Solver):
   # add list of assertions
   def require(self, formulas):
     self.ctx.add(formulas)
+    #for f in formulas:
+    #  c = Bool("b" + str(self.cnt))
+    #  self.cnt += 1
+    #  print(c, "=", f)
+    #  self.ctx.assert_and_track(f, c)
 
   def is_sat(self):
     return self.ctx.check() == z3.sat

@@ -193,7 +193,8 @@ def conformance_check_trace(encoding, trace_data, verbose):
     sys.stdout.flush()
 
   #FIXME step_bound may in general not be valid upper bound due to writes
-  model = encoding.solver().minimize(dist, encoding.step_bound())
+  model = encoding.solver().minimize(dist, encoding.step_bound()) if len(trace) < 10 \
+    else encoding.solver().minimize_binsearch(dist, max=encoding.step_bound())
   t_solve = encoding.solver().t_solve
   if model == None: # timeout
     return (None, None, t_encode2, t_solve)
@@ -469,8 +470,7 @@ def cocomot(dpn, log, opts):
   parts = interval_part.partitions
 
   if numprocs == 1:
-    solver = YicesSolver() # CVC5Solver()  # Z3Solver() # 
-    print("here")
+    solver = YicesSolver() # CVC5Solver()  #  Z3Solver() # 
     i = 0
     while i < len(parts):
       (trace, cnt) = parts[i]
@@ -480,7 +480,7 @@ def cocomot(dpn, log, opts):
         i = i+1
         (trace, cnt) = parts[i]
         same_len_traces.append((i, trace, cnt))
-      #print("%d traces of length %d" % (len(same_len_traces), length))
+      print("%d traces of length %d" % (len(same_len_traces), length))
       res,tenc = conformance_check_traces(solver, same_len_traces, dpn, opts)
       for (j, (trace, (d, a, t_enc, t_solv))) in enumerate(res):
         if d == None:

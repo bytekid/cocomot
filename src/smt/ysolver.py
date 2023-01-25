@@ -1,5 +1,6 @@
 import time
 import sys
+from math import floor
 
 from yices import *
 from yices import Model as YModel
@@ -131,12 +132,12 @@ class YicesSolver(Solver):
   def minimize_binsearch(self, expr, max=100):
     upper = max
     lower = 0.0
-    topop = 0
+    to_pop = 0
     while (upper-lower >= 0.01):
       print("max %.2f min %.2f" % (upper, lower))
       self.push()
-      mid = lower + (upper-lower)/2
-      self.ctx.assert_formulas([self.ge(self.num(mid), expr)])
+      mid = floor(lower + (upper-lower)/2)
+      self.ctx.assert_formulas([self.le(expr, self.num(mid))])
       t_start = time.perf_counter()
       status = self.ctx.check_context(timeout=self._timeout)
       self.t_solve += time.perf_counter() - t_start
@@ -145,12 +146,12 @@ class YicesSolver(Solver):
         return None
       elif status == Status.SAT:
         upper = mid
-        topop += 1
+        to_pop += 1
       else:
         lower = mid
         self.pop()
       self.t_solve += time.perf_counter() - t_start
-    for i in range(0, topop):
+    for i in range(0, to_pop):
       self.pop()
     return m
 

@@ -116,7 +116,7 @@
                <fill color="#FFFFFF"/>
             </graphics>
             <writeVariable>delaySend</writeVariable>
-            <writeVariable>expenses</writeVariable>
+            <writeVariable>expense</writeVariable>
          </transition>
          <transition id="n12">
             <name>
@@ -139,7 +139,7 @@
             </graphics>
             <writeVariable>delayPrefecture</writeVariable>
          </transition>
-         <transition guard="(totalPaymentAmount &gt;= (amount + expenses))" id="n14" invisible="true">
+         <transition guard="(totalPaymentAmount &gt;= (amount + expense))" id="n14" invisible="true">
             <name>
                <text>Inv3</text>
             </name>
@@ -181,7 +181,7 @@
             <writeVariable>delayJudge</writeVariable>
             <writeVariable>dismissal</writeVariable>
          </transition>
-         <transition guard="(totalPaymentAmount &lt; (amount + expenses))" id="n18">
+         <transition guard="(totalPaymentAmount &lt; (amount + expense))" id="n18">
             <name>
                <text>Send for Credit Collection</text>
             </name>
@@ -256,7 +256,7 @@
             </graphics>
             <writeVariable>amount</writeVariable>
          </transition>
-         <transition guard="(totalPaymentAmount &gt;= (amount + expenses))" id="n25" invisible="true">
+         <transition guard="(totalPaymentAmount &gt;= (amount + expense))" id="n25" invisible="true">
             <name>
                <text>Inv2</text>
             </name>
@@ -745,7 +745,7 @@
             <dimension height="50" width="50"/>
          </variable>
          <variable maxValue="10000.0" minValue="0.0" type="java.lang.Double">
-            <name>expenses</name>
+            <name>expense</name>
             <position x="1250" y="521"/>
             <dimension height="50" width="50"/>
          </variable>
