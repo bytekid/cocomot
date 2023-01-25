@@ -93,7 +93,7 @@ class YicesSolver(Solver):
 
   # increment of arithmetic term by 1
   def inc(self, a):
-    return Terms.add(a, self.real(1))
+    return Terms.add(a, self.num(1))
   
   # subtraction
   def minus(self, a, b):
@@ -133,7 +133,8 @@ class YicesSolver(Solver):
     upper = max
     lower = 0
     to_pop = 0
-    while (upper-lower >= 0.01):
+    m = None
+    while (upper-lower >= 0.01 or m == None):
       #print("max %.2f min %.2f" % (upper, lower))
       self.push()
       mid = floor(lower + (upper-lower)/2)
@@ -141,14 +142,16 @@ class YicesSolver(Solver):
       t_start = time.perf_counter()
       status = self.ctx.check_context(timeout=self._timeout)
       self.t_solve += time.perf_counter() - t_start
-      m = YicesModel(self.ctx) if status == Status.SAT else None
       if status == Status.UNKNOWN:
+        print("yices returned unknown")
         return None
       elif status == Status.SAT:
         upper = mid
+        m = YicesModel(self.ctx) if upper-lower < 0.01 else None
         to_pop += 1
       else:
         lower = mid + 1
+        m = None
         self.pop()
       self.t_solve += time.perf_counter() - t_start
     for i in range(0, to_pop):

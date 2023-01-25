@@ -220,6 +220,17 @@ class DPN:
     return [ t["id"] for t in self._transitions \
       if  t["id"] not in self.reachable_from_trans(t["id"])]
 
+  def directly_follows_transitions(self):
+    if not self.has1token:
+      return []
+    pairs = []
+    for t in self._transitions:
+      post_t = [ a["target"] for a in self._arcs if a["source"] == t["id"]]
+      tnexts = [ a["target"] for a in self._arcs if a["source"] in post_t ]
+      if len(tnexts) == 1:
+        pairs.append(tuple([t["id"], tnexts[0]]))
+    return pairs
+
   def is_one_bounded(self):
     if self.has1token:
       return True

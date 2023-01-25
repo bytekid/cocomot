@@ -193,7 +193,7 @@ def conformance_check_trace(encoding, trace_data, verbose):
     sys.stdout.flush()
 
   #FIXME step_bound may in general not be valid upper bound due to writes
-  model = encoding.solver().minimize(dist, encoding.step_bound()) if len(trace) < 10 \
+  model = encoding.solver().minimize(dist, encoding.step_bound()) if len(trace) < 100 \
     else encoding.solver().minimize_binsearch(dist, max=encoding.step_bound())
   t_solve = encoding.solver().t_solve
   if model == None: # timeout

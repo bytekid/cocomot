@@ -28,20 +28,26 @@ class Encoding:
     varwrite = self._dpn.var_write_reach()
     vs = self._dpn.variables()
 
+    
     def init(v):
       val = v["initial"] if "initial" in v else 0
       type = VarType.from_java(v["type"])
-      return self._solver.real(val) if type == VarType.rat else \
+      return self._solver.real(val) if type == VarType.real else \
         self._solver.num(val)
 
     def create_var(v, i):
       name = "_" + v["name"] + str(i)
       type = VarType.from_java(v["type"])
-      return self._solver.realvar(name) if type == VarType.rat else \
+      return self._solver.realvar(name) if type == VarType.real else \
         self._solver.intvar(name)
 
     init = [(v["name"], init(v)) for v in vs]
     vvars = [ dict([ (vn, val) for (vn,val) in init ]) ]
+    # FIXME: beforehand all vars were reals. can be faster
+    # init = [(v["name"], v["initial"] if "initial" in v else 0) for v in vs]
+    # vvars = [ dict([ (vn, self._solver.num(val)) for (vn,val) in init ]) ]
+    # create_var = lambda v, i: self._solver.realvar("_" + v["name"] + str(i))
+
     
     for i in range(1, self._step_bound + 1):
       xis = {} # dictinary mapping data variable name to SMT variable
@@ -76,7 +82,7 @@ class Encoding:
   def edit_distance_vars(self, trace_len):
     s = self._solver
     def var(i, j):
-      return s.realvar("d" + str(i) + "_" + str(j)) if i > 0 or j>0 else s.real(0)
+      return s.intvar("d" + str(i) + "_" + str(j)) if i > 0 or j>0 else s.real(0)
     return [[var(i,j) \
       for j in range(0, trace_len+1)] for i in range(0, self._step_bound+1)]
 
@@ -127,10 +133,15 @@ class Encoding:
     butlast = range(0, len(tvs) - 1)
     tau_constr = [ s.implies(is_tau(tvs[i]), is_tau(tvs[i+1])) for i in butlast]
     #print("single", [ (t["label"] if t["label"] else tid) for tid in self._dpn.single_occurrence_transitions() for t in dpn._transitions if t["id"] == tid ])
-    unique = [ s.implies(s.eq(v, s.num(10)), s.neg(s.eq(w, s.num(10)))) \
+    unique = [ s.implies(s.eq(v, s.num(tid)), s.neg(s.eq(w, s.num(tid)))) \
       for tid in self._dpn.single_occurrence_transitions() \
-      for (i, v) in enumerate(tvs) for (j, w) in enumerate(tvs) if i < j]
-    return s.land(rng_constr + tau_constr + unique)
+      for (i, v) in enumerate(tvs) for (j, w) in enumerate(tvs) if i < j \
+      if tid in dpn.reachable(i) ]
+    follows = [ s.implies(s.eq(tvs[i], s.num(tid)), s.neg(s.eq(tvs[i+1], s.num(tnextid))))\
+      for i in range (0,len(tvs)-1) \
+      for (tid, tnextid) in dpn.directly_follows_transitions() \
+      if tid in dpn.reachable(i) ]
+    return s.land(rng_constr + tau_constr)
 
   # the last marking is final
   def final_state(self):
@@ -259,7 +270,7 @@ class Encoding:
     s = self._solver
 
     def write_diff(t):
-      diff = s.real(0)
+      diff = s.num(0)
       for x in t["write"]:
         # FIXME: perhaps no penalty should be given if a write value is not
         # mentioned in the trace but keeping the value beforehand is ok
@@ -298,8 +309,8 @@ class Encoding:
       return 0 if t["invisible"] else 1 + write_t # unless silent: #writes + 1
     wcs = [(t["id"], wcostint(t)) for t in dpn.transitions() ]
     per_cost = [ (c, [tid for (tid,c2) in wcs if c==c2]) for (_,c) in wcs ]
-    wcostvars = [s.realvar("wcost"+str(t["id"])) for t in dpn.transitions() ]
-    ws = [ s.eq(v, s.real(wcostint(t))) \
+    wcostvars = [s.intvar("wcost"+str(t["id"])) for t in dpn.transitions() ]
+    ws = [ s.eq(v, s.num(wcostint(t))) \
       for (v, t) in zip(wcostvars, dpn.transitions()) ]
     wcostd = dict([ (t["id"], v) for (t,v) in zip(dpn.transitions(), wcostvars)])
     
@@ -314,8 +325,8 @@ class Encoding:
       reach = dpn.reachable(i)
       return reduce(lambda c, wc: \
         s.ite(s.lor([s.eq(var, s.num(tid)) for tid in wc[1] if tid in reach]), \
-          s.real(wc[0]), c), per_cost[1:], s.real(per_cost[0][0]))
-    wcosts = [s.realvar("wcosti"+str(i)) for i in range(0,n) ]
+          s.num(wc[0]), c), per_cost[1:], s.num(per_cost[0][0]))
+    wcosts = [s.intvar("wcosti"+str(i)) for i in range(0,n) ]
     ws += [ s.eq(v, wcost(i)) for (i,v) in enumerate(wcosts) ]
 
     def is_silent(i): # transition i is silent
@@ -332,16 +343,16 @@ class Encoding:
     # delta[i+1][j+1] >= e due to minimization. replaced some for performance
     # base cases
     # 1. all intermediate distances delta[i][j] are non-negative
-    non_neg = [s.ge(delta[i][j], s.real(0))\
+    non_neg = [s.ge(delta[i][j], s.num(0))\
       for i in range(0,n+1) for j in range(0,m+1)]
     # 2. if the ith transition is not silent, delta[i+1][0] = delta[i][0] + wcost
     #    where wcost is the writing cost of the ith transition in the model
-    incdelta0 = [s.realvar("incd0"+str(i)) for i in range(0,n) ]
+    incdelta0 = [s.intvar("incd0"+str(i)) for i in range(0,n) ]
     bm = [ s.eq(incdelta0[i], s.plus(delta[i][0], wcosts[i])) for i in range(0,n)]
     base_model = [ s.implies(s.neg(self._silents[i]), \
       s.ge(delta[i+1][0], incdelta0[i])) for i in range(0,n)]
     # 3. delta[0][j+1] = (j + 1)
-    base_log = [ s.eq(delta[0][j+1], s.real(j + 1)) for j in range(0,m) ]
+    base_log = [ s.eq(delta[0][j+1], s.num(j + 1)) for j in range(0,m) ]
     # 4. if the ith step in the model and the jth step in the log have the
     #    the same label,  delta[i+1][j+1] >= delta[i][j] + penalty, where
     #    penalty accounts for the data mismatch (possibly 0)
