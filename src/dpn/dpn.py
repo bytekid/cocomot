@@ -196,6 +196,29 @@ class DPN:
       vs = [v for t in self._reachable[i] if "write" in t for v in t["write"]]
       vreach.append(list(set(vs)))
     return vreach
+      
+  
+  # transitions reachable from transition t in >= 1 step, overapproximation
+  def reachable_from_trans(self, tstart_id):
+    (src, tgt) = ("source", "target")
+    post_t = [ a[tgt] for a in self._arcs if a[src] == tstart_id]
+    frontier = set([ a[tgt] for a in self._arcs if a[src] in post_t ])
+    reachable = frontier
+    while len(frontier) > 0:
+      nextfrontier = set([])
+      for tid in frontier:
+        post_t = [ a[tgt] for a in self._arcs if a[src] == tid]
+        next = set([ a[tgt] for a in self._arcs if a[src] in post_t ])
+        nextfrontier = nextfrontier.union(next)
+      frontier = nextfrontier.difference(reachable)
+      reachable = reachable.union(nextfrontier)
+    return reachable
+
+  def single_occurrence_transitions(self):
+    if not self.has1token:
+      return []
+    return [ t["id"] for t in self._transitions \
+      if  t["id"] not in self.reachable_from_trans(t["id"])]
 
   def is_one_bounded(self):
     if self.has1token:
