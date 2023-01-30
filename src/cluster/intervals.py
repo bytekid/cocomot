@@ -95,8 +95,8 @@ def cmp_interval(c):
   return (var, ival)
 
 def is_interval_cmp(c):
-  return (isinstance(c.left, Var) or isinstance(c.left, Num)) and \
-    (isinstance(c.right, Var) or isinstance(c.right, Num))
+  return (isinstance(c.left, Var) and isinstance(c.right, Num)) or \
+    (isinstance(c.right, Var) and isinstance(c.left, Num)) #FIXME
 
 def comparison_intervals(dpn):
   cmps=set([])

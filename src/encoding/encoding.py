@@ -132,7 +132,7 @@ class Encoding:
     is_tau = lambda v: s.lor([s.eq(v, s.num(t["id"])) for t in tau_transs])
     butlast = range(0, len(tvs) - 1)
     tau_constr = [ s.implies(is_tau(tvs[i]), is_tau(tvs[i+1])) for i in butlast]
-    #print("single", [ (t["label"] if t["label"] else tid) for tid in self._dpn.single_occurrence_transitions() for t in dpn._transitions if t["id"] == tid ])
+    # FIXME: assess usefulness of the following
     unique = [ s.implies(s.eq(v, s.num(tid)), s.neg(s.eq(w, s.num(tid)))) \
       for tid in self._dpn.single_occurrence_transitions() \
       for (i, v) in enumerate(tvs) for (j, w) in enumerate(tvs) if i < j \
@@ -141,6 +141,8 @@ class Encoding:
       for i in range (0,len(tvs)-1) \
       for (tid, tnextid) in dpn.directly_follows_transitions() \
       if tid in dpn.reachable(i) ]
+    #print("follow", dpn.directly_follows_transitions())
+    #print("unique", dpn.single_occurrence_transitions())
     return s.land(rng_constr + tau_constr)
 
   # the last marking is final

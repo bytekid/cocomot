@@ -215,13 +215,11 @@ class DPN:
     return reachable
 
   def single_occurrence_transitions(self):
-    if not self.has1token:
-      return []
     return [ t["id"] for t in self._transitions \
       if  t["id"] not in self.reachable_from_trans(t["id"])]
 
   def directly_follows_transitions(self):
-    if not self.has1token:
+    if self.has1token:
       return []
     pairs = []
     for t in self._transitions:
