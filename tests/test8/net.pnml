@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+<net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel"><name><text>artificial net 3</text></name><page id="n0"><place id="init"><name><text>init</text></name> <initialMarking><text>1</text> </initialMarking></place>
+<place id="p0"><name><text>p0</text></name></place>
+<place id="p1"><name><text>p1</text></name></place>
+<place id="p2"><name><text>p2</text></name></place>
+<place id="p3"><name><text>p3</text></name></place>
+<place id="fin"><name><text>fin</text></name> <finalMarking><text>1</text> </finalMarking></place><transition id="tinit" guard="(s' &gt; 0)"><name><text>set</text></name><writeVariable>s</writeVariable></transition>
+<transition id="t10" guard="(x0' &lt; s)"><name><text>t1</text></name><writeVariable>x0</writeVariable></transition>
+<transition id="t11" guard="(x0' &lt; s)"><name><text>t1</text></name><writeVariable>x0</writeVariable></transition>
+<transition id="t20" guard="((x1' &gt; x0) &amp;&amp; (x1' &lt; s))"><name><text>t2</text></name><writeVariable>x1</writeVariable></transition>
+<transition id="t21" guard="((x1' &lt;= x0) &amp;&amp; (x1' &lt; s))"><name><text>t2</text></name><writeVariable>x1</writeVariable></transition>
+<transition id="t30" guard="((x2' &gt; x1) &amp;&amp; (x2' &lt; s))"><name><text>t3</text></name><writeVariable>x2</writeVariable></transition>
+<transition id="t31" guard="((x2' &lt;= x1) &amp;&amp; (x2' &lt; s))"><name><text>t3</text></name><writeVariable>x2</writeVariable></transition>
+<transition id="f0" guard="(s == (((0 + x0) + x1) + x2))"><name><text>check</text></name></transition>
+<transition id="f1" guard="(s == (((1 + x0) + x1) + x2))"><name><text>check</text></name></transition>
+<transition id="f2" guard="(s == (((2 + x0) + x1) + x2))"><name><text>check</text></name></transition>
+<arc id="arc0" source="init" target="tinit"></arc>
+<arc id="arc1" source="tinit" target="p0"></arc>
+<arc id="arc2" source="p0" target="t10"></arc>
+<arc id="arc3" source="t10" target="p1"></arc>
+<arc id="arc4" source="p0" target="t11"></arc>
+<arc id="arc5" source="t11" target="p1"></arc>
+<arc id="arc6" source="p1" target="t20"></arc>
+<arc id="arc7" source="t20" target="p2"></arc>
+<arc id="arc8" source="p1" target="t21"></arc>
+<arc id="arc9" source="t21" target="p2"></arc>
+<arc id="arc10" source="p2" target="t30"></arc>
+<arc id="arc11" source="t30" target="p3"></arc>
+<arc id="arc12" source="p2" target="t31"></arc>
+<arc id="arc13" source="t31" target="p3"></arc>
+<arc id="arc14" source="p3" target="f0"></arc>
+<arc id="arc15" source="f0" target="fin"></arc>
+<arc id="arc16" source="p3" target="f1"></arc>
+<arc id="arc17" source="f1" target="fin"></arc>
+<arc id="arc18" source="p3" target="f2"></arc>
+<arc id="arc19" source="f2" target="fin"></arc>
+<variables>
+<variable maxValue="100000" minValue="0" type="java.lang.Integer"> <name>s</name></variable>
+<variable maxValue="100000" minValue="0" type="java.lang.Integer"> <name>x0</name></variable>
+<variable maxValue="100000" minValue="0" type="java.lang.Integer"> <name>x1</name></variable>
+<variable maxValue="100000" minValue="0" type="java.lang.Integer"> <name>x2</name></variable>
+</variables>
+<finalmarkings><marking><place idref="init"> <text>0</text> </place>
+<place idref="p0"> <text>0</text> </place>
+<place idref="p0"> <text>0</text> </place>
+<place idref="p1"> <text>0</text> </place>
+<place idref="p1"> <text>0</text> </place>
+<place idref="p2"> <text>0</text> </place>
+<place idref="p2"> <text>0</text> </place>
+<place idref="p3"> <text>0</text> </place>
+<place idref="p3"> <text>0</text> </place>
+<place idref="fin"> <text>1</text> </place>
+</marking></finalmarkings>
+</page></net></pnml>

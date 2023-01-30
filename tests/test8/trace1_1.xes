@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<log xes.version="1.0" xes.features="nested-attributes" openxes.version="1.0RC7">
+<trace>
+<event>
+	<string key="concept:name" value="set"/>
+	<int key="s" value="2"/>
+  <date key="time:timestamp" value="2013-12-17T00:00:00" />
+  <string key="lifecycle:transition" value="complete" />
+</event><event>
+	<string key="concept:name" value="t1"/>
+	<int key="x0" value="1"/>
+  <date key="time:timestamp" value="2013-12-17T01:00:00" />
+  <string key="lifecycle:transition" value="complete" />
+</event>
+<event>
+	<string key="concept:name" value="t2"/>
+	<int key="x1" value="2"/>
+  <date key="time:timestamp" value="2013-12-17T02:00:00" />
+  <string key="lifecycle:transition" value="complete" />
+</event>
+<event>
+	<string key="concept:name" value="t3"/>
+	<int key="x2" value="3"/>
+  <date key="time:timestamp" value="2013-12-17T03:00:00" />
+  <string key="lifecycle:transition" value="complete" />
+</event>
+<event><string key="concept:name" value="check"/>  <date key="time:timestamp" value="2013-12-17T04:00:00" />
+  <string key="lifecycle:transition" value="complete" />
+</event>
+</trace>
+</log>
