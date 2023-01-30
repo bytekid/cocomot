@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+   <net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+      <name>
+         <text>Example from BPM'22 paper</text>
+      </name>
+      <page id="n0">
+         <place id="n0">
+            <name>
+               <text>pl0</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="n1">
+            <name>
+               <text>pl1</text>
+            </name>
+         </place>
+         <place id="n2">
+            <name>
+               <text>pl2</text>
+            </name>
+         </place>
+         <place id="n3">
+            <name>
+               <text>pl3</text>
+            </name>
+            <finalMarking>
+               <text>1</text>
+            </finalMarking>
+         </place>
+         
+         <transition  guard="(x' &gt;= 0)" id="n01">
+            <name>
+               <text>a</text>
+            </name>
+            <writeVariable>x</writeVariable>
+         </transition>
+         
+         <transition guard="(y' &gt; 0)" id="n12">
+            <name>
+               <text>b</text>
+            </name>
+            <writeVariable>y</writeVariable>
+         </transition>
+         
+         <transition guard="(x != y)"  id="n23c">
+            <name>
+               <text>c</text>
+            </name>
+         </transition>
+         
+         <transition guard="(x == y)" id="n23d">
+            <name>
+               <text>d</text>
+            </name>
+         </transition>
+         
+         <transition guard="(y' == y+1)" id="n33">
+            <name>
+               <text>e</text>
+            </name>
+            <writeVariable>y</writeVariable>
+         </transition>
+         
+         <arc id="arc0" source="n0" target="n01"></arc>
+         <arc id="arc1" source="n01" target="n1"></arc>
+         <arc id="arc2" source="n1" target="n12"></arc>
+         <arc id="arc3" source="n12" target="n2"></arc>
+         <arc id="arc4" source="n2" target="n23c"></arc>
+         <arc id="arc5" source="n2" target="n23d"></arc>
+         <arc id="arc6" source="n23c" target="n3"></arc>
+         <arc id="arc7" source="n23d" target="n3"></arc>
+         <arc id="arc8" source="n3" target="n33"></arc>
+         <arc id="arc9" source="n33" target="n3"></arc>
+      <finalmarkings />
+      <variables>
+         <variable maxValue="100000.0" minValue="0.0" type="java.lang.Integer">
+            <name>x</name>
+         </variable>
+         <variable maxValue="100000" minValue="0" type="java.lang.Integer">
+            <name>y</name>
+         </variable>
+      </variables>
+    </page>
+   </net>
+</pnml>
