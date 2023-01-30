@@ -271,6 +271,8 @@ class Encoding:
     subst_prime = dict([ (x, v) for (x, v) in self._vs_data[i+1].items() ])
     s = self._solver
 
+    vartypes = dict([ (v["name"], VarType.from_java(v["type"])) for v in self._dpn._variables ])
+
     def write_diff(t):
       diff = s.num(0)
       for x in t["write"]:
@@ -280,7 +282,8 @@ class Encoding:
           diff = s.inc(diff) 
         else:
           val = Expr.numval(trace[j]["valuation"][x])
-          diff = s.ite(s.eq(subst_prime[x], s.real(val)), diff, s.inc(diff))
+          valexpr = s.real(val) if vartypes[x] == VarType.real else s.num(val)
+          diff = s.ite(s.eq(subst_prime[x], valexpr), diff, s.inc(diff))
       return (diff, len(t["write"]) > 0)
 
     return [ (s.eq(self._vs_trans[i], s.num(t["id"])), write_diff(t)) \

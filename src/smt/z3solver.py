@@ -208,6 +208,12 @@ class Z3Solver(Solver):
       self.t_solve += time.perf_counter() - t_start
     return None if val > max_val else m
 
+  def check(self):
+    t_start = time.perf_counter()
+    status = self.ctx.check()
+    self.t_solve = time.perf_counter() - t_start
+    return Z3Model(self.ctx) if status == z3.sat else None
+
   # reset context
   def reset(self):
     if self._incremental:
