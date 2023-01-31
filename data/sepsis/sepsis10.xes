@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <log>
   <trace>
-    <string key="concept:name" value="F"/>
+    <string key="concept:name" value="KB"/>
     <event>
       <boolean key="InfectionSuspected" value="true"/>
       <string key="org:group" value="A"/>
@@ -13,7 +13,7 @@
       <boolean key="Infusion" value="true"/>
       <boolean key="DiagnosticArtAstrup" value="false"/>
       <string key="concept:name" value="ER Registration"/>
-      <int key="Age" value="50"/>
+      <int key="Age" value="70"/>
       <boolean key="DiagnosticIC" value="true"/>
       <boolean key="DiagnosticSputum" value="false"/>
       <boolean key="DiagnosticLiquor" value="false"/>
@@ -21,76 +21,68 @@
       <boolean key="SIRSCriteria2OrMore" value="true"/>
       <boolean key="DiagnosticXthorax" value="true"/>
       <boolean key="SIRSCritTemperature" value="true"/>
-      <date key="time:timestamp" value="2014-05-07T18:56:57.000+02:00"/>
-      <boolean key="DiagnosticUrinaryCulture" value="false"/>
+      <date key="time:timestamp" value="2014-06-17T11:02:28.000+02:00"/>
+      <boolean key="DiagnosticUrinaryCulture" value="true"/>
       <boolean key="SIRSCritLeucos" value="false"/>
       <boolean key="Oligurie" value="false"/>
       <boolean key="DiagnosticLacticAcid" value="true"/>
       <string key="lifecycle:transition" value="complete"/>
-      <string key="Diagnose" value="E"/>
+      <string key="Diagnose" value="H"/>
       <boolean key="Hypoxie" value="false"/>
-      <boolean key="DiagnosticUrinarySediment" value="false"/>
+      <boolean key="DiagnosticUrinarySediment" value="true"/>
       <boolean key="DiagnosticECG" value="true"/>
     </event>
     <event>
       <string key="org:group" value="C"/>
       <string key="lifecycle:transition" value="complete"/>
       <string key="concept:name" value="ER Triage"/>
-      <date key="time:timestamp" value="2014-05-07T18:57:49.000+02:00"/>
-      <float key="timeTriage" value="0.86"/>
+      <date key="time:timestamp" value="2014-06-17T11:09:16.000+02:00"/>
+      <float key="timeTriage" value="6.8"/>
     </event>
     <event>
       <string key="org:group" value="A"/>
       <string key="lifecycle:transition" value="complete"/>
       <string key="concept:name" value="ER Sepsis Triage"/>
-      <date key="time:timestamp" value="2014-05-07T18:58:08.000+02:00"/>
-    </event>
-    <event>
-      <float key="Leucocytes" value="18.8"/>
-      <string key="org:group" value="B"/>
-      <string key="lifecycle:transition" value="complete"/>
-      <string key="concept:name" value="Leucocytes"/>
-      <date key="time:timestamp" value="2014-05-07T19:11:00.000+02:00"/>
-    </event>
-    <event>
-      <float key="CRP" value="15.0"/>
-      <string key="org:group" value="B"/>
-      <string key="lifecycle:transition" value="complete"/>
-      <string key="concept:name" value="CRP"/>
-      <date key="time:timestamp" value="2014-05-07T19:11:00.000+02:00"/>
+      <date key="time:timestamp" value="2014-06-17T11:09:41.000+02:00"/>
     </event>
     <event>
       <string key="org:group" value="B"/>
-      <float key="LacticAcid" value="2.3"/>
+      <float key="LacticAcid" value="1.5"/>
       <string key="lifecycle:transition" value="complete"/>
       <string key="concept:name" value="LacticAcid"/>
-      <date key="time:timestamp" value="2014-05-07T19:11:00.000+02:00"/>
-      <float key="timeLacticAcid" value="14.05"/>
+      <date key="time:timestamp" value="2014-06-17T11:20:00.000+02:00"/>
+      <float key="timeLacticAcid" value="17.53"/>
     </event>
     <event>
       <string key="org:group" value="A"/>
       <string key="lifecycle:transition" value="complete"/>
       <string key="concept:name" value="IV Antibiotics"/>
-      <date key="time:timestamp" value="2014-05-07T22:01:28.000+02:00"/>
-      <float key="timeAntibiotics" value="184.51"/>
+      <date key="time:timestamp" value="2014-06-17T11:30:00.000+02:00"/>
+      <float key="timeAntibiotics" value="27.53"/>
     </event>
     <event>
       <string key="org:group" value="A"/>
       <string key="lifecycle:transition" value="complete"/>
       <string key="concept:name" value="IV Liquid"/>
-      <date key="time:timestamp" value="2014-05-07T22:01:28.000+02:00"/>
+      <date key="time:timestamp" value="2014-06-17T11:30:00.000+02:00"/>
     </event>
     <event>
-      <string key="org:group" value="I"/>
+      <string key="org:group" value="F"/>
       <string key="lifecycle:transition" value="complete"/>
       <string key="concept:name" value="Admission NC"/>
-      <date key="time:timestamp" value="2014-05-07T22:03:00.000+02:00"/>
+      <date key="time:timestamp" value="2014-06-17T15:10:43.000+02:00"/>
     </event>
     <event>
       <string key="org:group" value="E"/>
       <string key="lifecycle:transition" value="complete"/>
       <string key="concept:name" value="Release A"/>
-      <date key="time:timestamp" value="2014-05-09T11:00:00.000+02:00"/>
+      <date key="time:timestamp" value="2014-06-23T14:15:00.000+02:00"/>
+    </event>
+    <event>
+      <string key="org:group" value="?"/>
+      <string key="lifecycle:transition" value="complete"/>
+      <string key="concept:name" value="Return ER"/>
+      <date key="time:timestamp" value="2014-11-08T22:04:52.000+01:00"/>
     </event>
   </trace>
 </log>

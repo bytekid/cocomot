@@ -133,6 +133,7 @@ class Encoding:
     butlast = range(0, len(tvs) - 1)
     tau_constr = [ s.implies(is_tau(tvs[i]), is_tau(tvs[i+1])) for i in butlast]
     # FIXME: assess usefulness of the following
+    """
     unique = [ s.implies(s.eq(v, s.num(tid)), s.neg(s.eq(w, s.num(tid)))) \
       for tid in self._dpn.single_occurrence_transitions() \
       for (i, v) in enumerate(tvs) for (j, w) in enumerate(tvs) if i < j \
@@ -141,6 +142,7 @@ class Encoding:
       for i in range (0,len(tvs)-1) \
       for (tid, tnextid) in dpn.directly_follows_transitions() \
       if tid in dpn.reachable(i) ]
+    """
     #print("follow", dpn.directly_follows_transitions())
     #print("unique", dpn.single_occurrence_transitions())
     return s.land(rng_constr + tau_constr)
@@ -390,8 +392,9 @@ class Encoding:
           side_constr.append(vs_log[i+1][j+1])
 
     # symmetry breaking: enforce log steps before model steps
-    for i in range(2,n):
-      for j in range(3,m):
+    # do not enforce at border: would be unsound
+    for i in range(2,n-1):
+      for j in range(3,m-1):
         c = s.implies(vs_mod[i][j-1], s.neg(vs_log[i][j]))
         side_constr.append(c)
     
@@ -400,7 +403,7 @@ class Encoding:
     silent = [ s.implies(self._silents[i], s.eq(delta[i+1][j], delta[i][j])) \
       for i in range(0,n) for j in range(0,m+1) ]
     
-    # run length, only relevant for multiple tokens
+    # run length, only relevant for multiple tokens/ no final places
     rl = [s.ge(self._run_length, s.num(0)), s.ge(s.num(n), self._run_length)]
     
     if self._dpn.has_final_places():
@@ -450,7 +453,8 @@ class Encoding:
     for j in range(0, len(self._vs_dist[0])):
       d = ""
       for i in range(0, len(self._vs_dist)):
-        d = d + " " + str(model.eval_int(self._vs_dist[i][j]))
+        s = str(model.eval_int(self._vs_dist[i][j]))
+        d = d + " " + (s if len(s) == 2 else (" "+s))
       print(d)
 
   def decode_alignment(self, trace, model):
@@ -462,7 +466,7 @@ class Encoding:
     run = self.decode_process_run(model, run_length_dec)
     (markings, transitions, valuations) = run
     run_length = len(transitions)
-    # self.print_distance_matrix(model)
+    #self.print_distance_matrix(model)
 
     i = run_length # self._step_bound # n
     j = len(trace) # m

@@ -15,6 +15,7 @@ class YicesSolver(Solver):
     self.cfg.default_config_for_logic('QF_LRA')
     self.ctx = Context(self.cfg)
     self.t_solve = 0
+    self.cfg.set_config("mode", "push-pop")
     self._timeout = 60
 
   def are_equal_expr(self, a, b):

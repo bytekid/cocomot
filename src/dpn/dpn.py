@@ -1,4 +1,5 @@
 from sys import maxsize
+from smt.z3solver import Z3Solver
 
 class DPN:
 
@@ -215,8 +216,11 @@ class DPN:
     return reachable
 
   def single_occurrence_transitions(self):
-    return [ t["id"] for t in self._transitions \
-      if  t["id"] not in self.reachable_from_trans(t["id"])]
+    transs = dict([ (t["id"], t) for t in self._transitions ])
+    ts = [ t["id"] for t in self._transitions \
+      if not t["invisible"] \
+      if all(t["label"] != transs[t2]["label"] for t2 in self.reachable_from_trans(t["id"]))]
+    return set(ts)
 
   def directly_follows_transitions(self):
     if self.has1token:
@@ -254,3 +258,30 @@ class DPN:
         return False
     self.has1token = True
     return True
+
+  def lower_bound_alignment_cost(self, trace):
+    # multiple occurrences of transitions that can occur only once in model runs
+    singles = set([ t["label"] for tid in self.single_occurrence_transitions() \
+      for t in self.transitions() if t["id"] == tid])
+    d = [len([ e for e in trace if e['label'] == l]) for l in singles]
+    bnd = max(d+[1]) - 1
+    #print("initial", d, bnd)
+
+    cmps=set([])
+    solver = Z3Solver()
+    subst = {}
+    for v in self.variables():
+      vals = [e["valuation"][v["name"]] for e in trace if v["name"] in e["valuation"]]
+      if len(vals) == 1:
+        subst[v["name"]] = solver.real(vals[0])
+        subst[v["name"]+"'"] = solver.real(vals[0])
+    for t in self.transitions():
+      if "constraint" in t:
+        for cmp in t["constraint"].comparisons():
+          cmpsmt = cmp.toSMT(solver, subst)
+          if solver.simplify(cmpsmt) == solver.false():
+            bnd += 1
+            print(cmpsmt, "not sat")
+
+    solver.destroy()
+    return bnd

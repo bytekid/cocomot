@@ -193,7 +193,9 @@ def conformance_check_trace(encoding, trace_data, verbose):
     sys.stdout.flush()
 
   #FIXME step_bound may in general not be valid upper bound due to writes
-  model = encoding.solver().minimize(dist, encoding.step_bound()) if len(trace) < 100 \
+  distmin = dpn.lower_bound_alignment_cost(trace)
+  print("min dist", distmin)
+  model = encoding.solver().minimize(dist, encoding.step_bound(), start=distmin) if len(trace) < 100 \
     else encoding.solver().minimize_binsearch(dist, max=encoding.step_bound())
   t_solve = encoding.solver().t_solve
   if model == None: # timeout
@@ -218,7 +220,9 @@ def create_encoding(solver, trace_length, dpn, uncertain=False, all_sol=False):
   # estimate of upper bound on steps to be considered: length of trace + length
   # of shortest accepting path
   # FIXME step bound if not ok for non-state machine
-  step_bound = trace_length + dpn.shortest_accepted() + 2
+  f = 0 if len(dpn.transitions()) < 30 else \
+    int(trace_length/4)
+  step_bound = trace_length + dpn.shortest_accepted() + 2 + f
   dpn.compute_reachable(step_bound)
 
   if uncertain:
