@@ -281,7 +281,7 @@ class DPN:
           cmpsmt = cmp.toSMT(solver, subst)
           if solver.simplify(cmpsmt) == solver.false():
             bnd += 1
-            print(cmpsmt, "not sat")
+            #print(cmpsmt, "not sat")
 
     solver.destroy()
     return bnd
