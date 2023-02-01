@@ -181,8 +181,9 @@ class YicesSolver(Solver):
       val += 1
       self.require([self.eq(expr, self.num(val))])
       t_start = time.perf_counter()
-      timeout = self._timeout - t_solve
+      timeout = self._timeout - self.t_solve
       if timeout <= 0:
+        print("timeout exhausted")
         return None
       status = self.ctx.check_context(timeout=timeout)
       if status == Status.UNKNOWN:
