@@ -16,7 +16,7 @@ class YicesSolver(Solver):
     self.ctx = Context(self.cfg)
     self.t_solve = 0
     self.cfg.set_config("mode", "push-pop")
-    self._timeout = 60
+    self._timeout = 120
 
   def are_equal_expr(self, a, b):
     return a == b
@@ -181,7 +181,10 @@ class YicesSolver(Solver):
       val += 1
       self.require([self.eq(expr, self.num(val))])
       t_start = time.perf_counter()
-      status = self.ctx.check_context(timeout=self._timeout)
+      timeout = self._timeout - t_solve
+      if timeout <= 0:
+        return None
+      status = self.ctx.check_context(timeout=timeout)
       if status == Status.UNKNOWN:
         return None
 
