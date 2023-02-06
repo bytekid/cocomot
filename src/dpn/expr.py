@@ -112,7 +112,7 @@ class Bool(Term):
 
   def __init__(self, c):
     c = c.lower()
-    assert(c == "True" or c == "False")
+    assert(c == "true" or c == "false")
     self.val = (c == "True")
   
   def __str__(self):
@@ -127,6 +127,7 @@ class Bool(Term):
   def value(self, subst):
     return Expr.numval(self.chr)
 
+top = Bool("True")
 
 class BinOp(Term):
 

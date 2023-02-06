@@ -1,5 +1,8 @@
 from sys import maxsize
 from smt.z3solver import Z3Solver
+import xml.dom.minidom
+from dpn.expr import top
+from utils import VarType
 
 class DPN:
 
@@ -285,3 +288,136 @@ class DPN:
 
     solver.destroy()
     return bnd
+
+  def hackstates(self, k):
+    #print("<!-- hack states", k, "-->")
+
+    thesource = self._places[2]["id"] # a place
+    thetarget = [ a["target"] for a in self._arcs if a["source"] == thesource][0]
+    trans = [t for t in self._transitions if not t["id"] in self._silent_final_transitions ]
+    arcs = [a for a in self._arcs if not (a["source"] == thesource and a["target"] == thetarget) and \
+      not (a["source"] in self._silent_final_transitions or a["target"] in self._silent_final_transitions) ]
+    
+    places = dict([(p["id"], p) for p in self._places])
+    lastid = thesource
+    for i in range(0, k):
+      l = len(places)
+      assert(not(l in places))
+      places[l] = {"id": "p"+str(l), "name": "pdummy" + str(l) }
+      trans.append({"id": "t"+str(l), "label": "Inv_" + str(l), "invisible":True })
+      arcs.append({"id": "1"+str(len(arcs)), "source": lastid, "target": "t"+str(l), \
+        "name":"arcdummy1"+str(i), "constraint":top, "written":[]})
+      arcs.append({"id": "2"+str(len(trans)), "source": "t"+str(l), "target": "p"+str(l), \
+        "name":"arcdummy2"+str(i), "constraint":top, "written":[]})
+      lastid = "p"+str(l)
+
+    arcs.append({"id": len(trans), "source": lastid, "target": thetarget, \
+      "name":"tdummy"+str(k), "constraint":top, "written":[]})
+
+    for t in trans:
+      if "constraint" in t:
+        t["constraint"] = str(t["constraint"]) 
+
+    vars = []
+    for v in self._variables:
+      v["type"] = "bool" if v["type"] == "bool" else VarType.to_str(v["type"])
+      vars.append(v)
+
+    dpn = {
+      "places": list(places.values()) , 
+      "transitions": trans,
+      "arcs":arcs,
+      "variables": vars}
+    return DPN(dpn)
+
+  def export_pnml(self):
+    doc = xml.dom.minidom.parseString("<pnml/>")
+
+    def place_to_pnml(p):
+      xplace = doc.createElement("place")
+      xplace.setAttribute("id", str(p["id"]))
+      xname = doc.createElement("name")
+      xplace.appendChild(xname)
+      xtext = doc.createElement("text")
+      xname.appendChild(xtext)
+      xlabel = doc.createTextNode(str(p["id"]))
+      xtext.appendChild(xlabel)
+      xplace.appendChild(xname)
+      if "initial" in p:
+        ximark = doc.createElement("initialMarking")
+        xtext = doc.createElement("text")
+        ximark.appendChild(xtext)
+        xlabel = doc.createTextNode("1")
+        xtext.appendChild(xlabel)
+        xplace.appendChild(ximark)
+      if "final" in p:
+        xfmark = doc.createElement("finalMarking")
+        xtext = doc.createElement("text")
+        xfmark.appendChild(xtext)
+        xlabel = doc.createTextNode("1")
+        xtext.appendChild(xlabel)
+        xplace.appendChild(xfmark)
+      return xplace
+
+    def trans_to_pnml(p):
+      xtrans = doc.createElement("transition")
+      xtrans.setAttribute("id", str(p["id"]))
+      xname = doc.createElement("name")
+      xtrans.appendChild(xname)
+      xtext = doc.createElement("text")
+      xname.appendChild(xtext)
+      xlabel = doc.createTextNode(str(p["label"]))
+      xtext.appendChild(xlabel)
+      if "write" in p:
+        for v in p["write"]:
+          xwrite = doc.createElement("writeVariable")
+          xtext = doc.createTextNode(v)
+          xwrite.appendChild(xtext)
+          xtrans.appendChild(xwrite)
+      if "invisible" in p and [["invisible"]]:
+        xtrans.setAttribute("invisible", "True")
+      if "constraint" in p:
+        xtrans.setAttribute("constraint", p["constraint"])
+      return xtrans
+
+    def arc_to_pnml(a):
+      xarc = doc.createElement("arc")
+      xarc.setAttribute("source", str(a["source"]))
+      xarc.setAttribute("target", str(a["target"]))
+      if "id" in a:
+        xarc.setAttribute("id", str(a["id"]))
+      return xarc
+      
+    def var_to_pnml(v):
+      xvar = doc.createElement("variable")
+      xvar.setAttribute("maxValue", "1000000")
+      xvar.setAttribute("minValue", "0")
+      xname = doc.createElement("name")
+      xvar.appendChild(xname)
+      xtext = doc.createTextNode(v["name"])
+      xname.appendChild(xtext)
+      xvar.setAttribute("type", VarType.to_java(v["type"]))
+      return xvar
+
+
+    root = doc.documentElement
+    xnet = doc.createElement("net")
+    xnet.setAttribute("id", "net1")
+    xnet.setAttribute("type", "http://www.pnml.org/version-2009/grammar/pnmlcoremodel")
+    root.appendChild(xnet)
+    xpage = doc.createElement("page")
+    xpage.setAttribute("id", "page1")
+    xnet.appendChild(xpage)
+
+    for p in self._places:
+      xpage.appendChild(place_to_pnml(p))
+    for t in self._transitions:
+      xpage.appendChild(trans_to_pnml(t))
+    for a in self._arcs:
+      xpage.appendChild(arc_to_pnml(a))
+    xvars = doc.createElement("variables")
+    xpage.appendChild(xvars)
+    for v in self._variables:
+      xvars.appendChild(var_to_pnml(v))
+    return root
+    

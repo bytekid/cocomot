@@ -10,5 +10,6 @@ default = {
     "realizations": False, # compute realizations of uncertain log
     "solver": None, # could be yices, z3, z3-inc, om, om-inc
     "uncertainty": None, # use conformance checking with uncertainty
-    "verbose": 1 # verbosity of output
+    "verbose": 1, # verbosity of output
+    "z": False # debugging
   }

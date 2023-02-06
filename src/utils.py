@@ -34,6 +34,17 @@ class VarType:
       return "string" 
     return "real"
 
+  def to_java(t):
+    if t == VarType.bool:
+      return "java.lang.Boolean"
+    if t == VarType.int:
+      return "java.lang.Integer"
+    if t == VarType.rat:
+      return "java.lang.Double" 
+    if t == VarType.string:
+      return "java.lang.String" 
+    return "java.lang.Double"
+
   def from_java(t):
     map_java_type = {
       "java.lang.Boolean": VarType.bool,

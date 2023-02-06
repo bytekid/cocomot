@@ -541,7 +541,7 @@ def process_args(argv):
   usage = "cocomot.py <model_file> <log_file> [-p <property_string> | -s] [-x <number>]"
   opts = default_options
   try:
-    optargs, args = getopt.getopt(argv,"hjmro:u:v:d:l:n:x:a:s:")
+    optargs, args = getopt.getopt(argv,"hjzmro:u:v:d:l:n:x:a:s:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(1)
@@ -569,6 +569,8 @@ def process_args(argv):
       opts["verbose"] = 0
     elif opt == "-a":
       opts["anti"] = int(arg)
+    elif opt == "-z":
+      opts["z"] = True
     elif opt == "-o":
       args = ["indet", "act", "time", "data", "mixed"]
       if not (arg in args):
@@ -605,6 +607,11 @@ if __name__ == "__main__":
     elif ps["uncertainty"]: # has_uncertainty
       cocomot_uncertain(dpn, log, ps)
     else:
+      if ps["z"]:
+        xml = dpn.hackstates(2).export_pnml()
+        print("<?xml version='1.0' encoding='UTF-8'?>")
+        print(xml.toprettyxml())
+        exit()
       cocomot(dpn, log, ps)
   YicesSolver.shutdown()
   
