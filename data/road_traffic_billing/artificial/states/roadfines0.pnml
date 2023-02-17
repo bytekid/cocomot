@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+   <net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+      <name>
+         <text>Data Petri Net for Road-Fine Management</text>
+      </name>
+      <page id="n0">
+         <place id="n1">
+            <name>
+               <text>pl1</text>
+            </name>
+            <graphics>
+               <position x="6.25" y="260.5"/>
+               <dimension x="12.5" y="12.5"/>
+            </graphics>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="n2">
+            <name>
+               <text>pl6</text>
+            </name>
+            <graphics>
+               <position x="200.0" y="137.0"/>
+               <dimension x="12.5" y="12.5"/>
+            </graphics>
+         </place>
+         <place id="n3">
+            <name>
+               <text>pl7</text>
+            </name>
+            <graphics>
+               <position x="293.75" y="186.0"/>
+               <dimension x="12.5" y="12.5"/>
+            </graphics>
+         </place>
+         <place id="n4">
+            <name>
+               <text>End</text>
+            </name>
+            <graphics>
+               <position x="637.5" y="187.0"/>
+               <dimension x="12.5" y="12.5"/>
+            </graphics>
+            <finalMarking>
+               <text>1</text>
+            </finalMarking>
+         </place>
+         <place id="n5">
+            <name>
+               <text>pl10</text>
+            </name>
+            <graphics>
+               <position x="537.5" y="227.5"/>
+               <dimension x="12.5" y="12.5"/>
+            </graphics>
+         </place>
+         <place id="n6">
+            <name>
+               <text>pl13</text>
+            </name>
+            <graphics>
+               <position x="387.5" y="178.0"/>
+               <dimension x="12.5" y="12.5"/>
+            </graphics>
+         </place>
+         <place id="n7">
+            <name>
+               <text>pl14</text>
+            </name>
+            <graphics>
+               <position x="487.5" y="144.5"/>
+               <dimension x="12.5" y="12.5"/>
+            </graphics>
+         </place>
+         <place id="n8">
+            <name>
+               <text>pl15</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="161.5"/>
+               <dimension x="12.5" y="12.5"/>
+            </graphics>
+         </place>
+         <place id="n9">
+            <name>
+               <text>pl12</text>
+            </name>
+            <graphics>
+               <position x="100.0" y="240.0"/>
+               <dimension x="12.5" y="12.5"/>
+            </graphics>
+         </place>
+         <transition id="n10">
+            <name>
+               <text>Create Fine</text>
+            </name>
+            <graphics>
+               <position x="50.0" y="260.5"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+            <writeVariable>amount</writeVariable>
+            <writeVariable>totalPaymentAmount</writeVariable>
+            <writeVariable>dismissal</writeVariable>
+            <writeVariable>points</writeVariable>
+         </transition>
+         <transition guard="(delaySend' &lt; 2160)" id="n11">
+            <name>
+               <text>Send Fine</text>
+            </name>
+            <graphics>
+               <position x="150.0" y="188.0"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+            <writeVariable>delaySend</writeVariable>
+            <writeVariable>expense</writeVariable>
+         </transition>
+         <transition id="n12">
+            <name>
+               <text>Insert Fine Notification</text>
+            </name>
+            <graphics>
+               <position x="250.0" y="161.0"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+         </transition>
+         <transition guard="(delayPrefecture' &lt; 1440)" id="n13">
+            <name>
+               <text>Insert Date Appeal to Prefecture</text>
+            </name>
+            <graphics>
+               <position x="337.5" y="176.0"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+            <writeVariable>delayPrefecture</writeVariable>
+         </transition>
+         <transition guard="(totalPaymentAmount &gt;= (amount + expense))" id="n14" invisible="true">
+            <name>
+               <text>Inv3</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="98.0"/>
+               <dimension x="15.0" y="15.0"/>
+               <fill color="#ff0000"/>
+            </graphics>
+         </transition>
+         <transition guard="(dismissal == &#34;NIL&#34;)" id="n15" invisible="true">
+            <name>
+               <text>Inv5</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="285.5"/>
+               <dimension x="15.0" y="15.0"/>
+               <fill color="#ff0000"/>
+            </graphics>
+         </transition>
+         <transition guard="(dismissal == &#34;#&#34;)" id="n16" invisible="true">
+            <name>
+               <text>Inv4</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="255.5"/>
+               <dimension x="15.0" y="15.0"/>
+               <fill color="#ff0000"/>
+            </graphics>
+         </transition>
+         <transition guard="(delayJudge' &lt; 1440)" id="n17">
+            <name>
+               <text>Appeal to Judge</text>
+            </name>
+            <graphics>
+               <position x="487.5" y="220.0"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+            <writeVariable>delayJudge</writeVariable>
+            <writeVariable>dismissal</writeVariable>
+         </transition>
+         <transition guard="(totalPaymentAmount &lt; (amount + expense))" id="n18">
+            <name>
+               <text>Send for Credit Collection</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="223.0"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+         </transition>
+         <transition guard="((dismissal != &#34;NIL&#34;) || ((points == 0) &amp;&amp; (totalPaymentAmount &gt;= amount)))"
+                     id="n19"
+                     invisible="true">
+            <name>
+               <text>Inv1</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="345.5"/>
+               <dimension x="15.0" y="15.0"/>
+               <fill color="#ff0000"/>
+            </graphics>
+         </transition>
+         <transition id="n20">
+            <name>
+               <text>Send Appeal to Prefecture</text>
+            </name>
+            <graphics>
+               <position x="437.5" y="161.5"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+            <writeVariable>dismissal</writeVariable>
+         </transition>
+         <transition guard="(dismissal == &#34;NIL&#34;)" id="n21">
+            <name>
+               <text>Receive Result Appeal from Prefecture</text>
+            </name>
+            <graphics>
+               <position x="537.5" y="123.5"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+         </transition>
+         <transition id="n22">
+            <name>
+               <text>Notify Result Appeal to Offender</text>
+            </name>
+            <graphics>
+               <position x="637.5" y="234.5"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+         </transition>
+         <transition id="n23">
+            <name>
+               <text>Payment</text>
+            </name>
+            <graphics>
+               <position x="250.0" y="124.5"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+			<writeVariable>totalPaymentAmount</writeVariable>
+         </transition>
+         <transition id="n24">
+            <name>
+               <text>Add penalty</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="130.5"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+            <writeVariable>amount</writeVariable>
+         </transition>
+         <transition guard="(totalPaymentAmount &gt;= (amount + expense))" id="n25" invisible="true">
+            <name>
+               <text>Inv2</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="68.0"/>
+               <dimension x="15.0" y="15.0"/>
+               <fill color="#ff0000"/>
+            </graphics>
+         </transition>
+         <transition id="n26">
+            <name>
+               <text>Payment</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="378.0"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+			<writeVariable>totalPaymentAmount</writeVariable>
+         </transition>
+         <transition id="n27">
+            <name>
+               <text>Payment</text>
+            </name>
+            <graphics>
+               <position x="337.5" y="141.0"/>
+               <dimension x="25.0" y="20.0"/>
+               <fill color="#FFFFFF"/>
+            </graphics>
+			<writeVariable>totalPaymentAmount</writeVariable>
+         </transition>
+         <transition guard="(dismissal == &#34;G&#34;)" id="n28" invisible="true">
+            <name>
+               <text>Inv6</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="190.5"/>
+               <dimension x="15.0" y="15.0"/>
+               <fill color="#ff0000"/>
+            </graphics>
+         </transition>
+         <arc id="arc29" source="n3" target="n14">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="337.5" y="101.0"/>
+               <position x="387.5" y="87.5"/>
+               <position x="437.5" y="87.5"/>
+               <position x="487.5" y="87.0"/>
+               <position x="537.5" y="79.5"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc30" source="n7" target="n21">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc31" source="n18" target="n4">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc32" source="n14" target="n4">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc33" source="n5" target="n16">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc34" source="n28" target="n4">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc35" source="n3" target="n18">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="337.5" y="201.0"/>
+               <position x="387.5" y="199.0"/>
+               <position x="437.5" y="186.5"/>
+               <position x="487.5" y="181.0"/>
+               <position x="537.5" y="163.5"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc36" source="n21" target="n8">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc37" source="n16" target="n4">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc38" source="n3" target="n17">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="337.5" y="216.0"/>
+               <position x="387.5" y="216.0"/>
+               <position x="437.5" y="208.0"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc39" source="n3" target="n24">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="337.5" y="116.0"/>
+               <position x="387.5" y="107.0"/>
+               <position x="437.5" y="107.0"/>
+               <position x="487.5" y="106.0"/>
+               <position x="537.5" y="95.5"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc40" source="n2" target="n23">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="224.09049140611376" y="127.111965624455"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc41" source="n25" target="n4">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc42" source="n24" target="n3">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="537.5" y="288.5"/>
+               <position x="487.5" y="245.0"/>
+               <position x="437.5" y="230.0"/>
+               <position x="387.5" y="237.0"/>
+               <position x="337.5" y="231.0"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc43" source="n26" target="n9">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="537.5" y="378.5"/>
+               <position x="487.5" y="363.5"/>
+               <position x="437.5" y="359.5"/>
+               <position x="387.5" y="359.5"/>
+               <position x="337.5" y="332.5"/>
+               <position x="293.75" y="327.5"/>
+               <position x="250.0" y="320.0"/>
+               <position x="200.0" y="300.0"/>
+               <position x="150.0" y="263.5"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc44" source="n2" target="n25">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="250.0" y="99.5"/>
+               <position x="293.75" y="83.0"/>
+               <position x="337.5" y="73.0"/>
+               <position x="387.5" y="69.0"/>
+               <position x="437.5" y="68.5"/>
+               <position x="487.5" y="68.5"/>
+               <position x="537.5" y="63.5"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc45" source="n22" target="n3">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="587.5" y="308.0"/>
+               <position x="537.5" y="303.5"/>
+               <position x="487.5" y="264.5"/>
+               <position x="437.5" y="251.5"/>
+               <position x="387.5" y="257.5"/>
+               <position x="337.5" y="246.0"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc46" source="n13" target="n6">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc47" source="n7" target="n28">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="537.5" y="148.5"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc48" source="n20" target="n7">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc49" source="n5" target="n15">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc50" source="n11" target="n2">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc51" source="n3" target="n13">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc52" source="n17" target="n5">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc53" source="n10" target="n9">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc54" source="n6" target="n20">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc55" source="n1" target="n10">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc56" source="n9" target="n19">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="150.0" y="248.5"/>
+               <position x="200.0" y="259.0"/>
+               <position x="250.0" y="284.0"/>
+               <position x="293.75" y="290.5"/>
+               <position x="337.5" y="306.0"/>
+               <position x="387.5" y="339.0"/>
+               <position x="437.5" y="338.0"/>
+               <position x="487.5" y="343.5"/>
+               <position x="537.5" y="363.5"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc57" source="n15" target="n3">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="537.5" y="318.5"/>
+               <position x="487.5" y="284.5"/>
+               <position x="437.5" y="273.0"/>
+               <position x="387.5" y="277.5"/>
+               <position x="337.5" y="261.0"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc58" source="n27" target="n3">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="318.31373094555414" y="166.11404397484426"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc59" source="n12" target="n3">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc60" source="n23" target="n2">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="225.90950859388624" y="134.388034375545"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc61" source="n3" target="n27">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="312.93626905444586" y="160.88595602515574"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc62" source="n19" target="n4">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc63" source="n8" target="n22">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc64" source="n2" target="n12">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc65" source="n9" target="n26">
+            <name>
+               <text>1</text>
+            </name>
+            <graphics>
+               <position x="150.0" y="229.0"/>
+               <position x="200.0" y="218.0"/>
+               <position x="250.0" y="248.0"/>
+               <position x="293.75" y="253.0"/>
+               <position x="337.5" y="291.0"/>
+               <position x="387.5" y="318.5"/>
+               <position x="437.5" y="316.5"/>
+               <position x="487.5" y="324.0"/>
+               <position x="537.5" y="348.5"/>
+            </graphics>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+         <arc id="arc66" source="n9" target="n11">
+            <name>
+               <text>1</text>
+            </name>
+            <arctype>
+               <text>normal</text>
+            </arctype>
+         </arc>
+      </page>
+      <variables>
+         <variable maxValue="100000.0" minValue="0.0" type="java.lang.Double">
+            <name>amount</name>
+            <position x="1250" y="218"/>
+            <dimension height="50" width="50"/>
+         </variable>
+         <variable maxValue="100000" minValue="0" type="java.lang.Integer">
+            <name>delayJudge</name>
+            <position x="1050" y="497"/>
+            <dimension height="50" width="50"/>
+         </variable>
+         <variable maxValue="100000" minValue="0" type="java.lang.Integer">
+            <name>delayPrefecture</name>
+            <position x="750" y="264"/>
+            <dimension height="50" width="50"/>
+         </variable>
+         <variable maxValue="100000.0" minValue="0.0" type="java.lang.Double">
+            <name>totalPaymentAmount</name>
+            <position x="1250" y="731"/>
+            <dimension height="50" width="50"/>
+         </variable>
+         <variable maxValue="100" minValue="0" type="java.lang.Integer">
+            <name>points</name>
+            <position x="175" y="582"/>
+            <dimension height="50" width="50"/>
+         </variable>
+         <variable type="java.lang.String">
+            <name>dismissal</name>
+            <position x="1050" y="363"/>
+            <dimension height="50" width="50"/>
+         </variable>
+         <variable maxValue="100000" minValue="0" type="java.lang.Integer">
+            <name>delaySend</name>
+            <position x="375" y="317"/>
+            <dimension height="50" width="50"/>
+         </variable>
+         <variable maxValue="10000.0" minValue="0.0" type="java.lang.Double">
+            <name>expense</name>
+            <position x="1250" y="521"/>
+            <dimension height="50" width="50"/>
+         </variable>
+      </variables>
+   </net>
+</pnml>

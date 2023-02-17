@@ -1,0 +1,719 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pnml>
+	<net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+		<page id="page1">
+			<place id="0">
+				<name>
+					<text>0</text>
+				</name>
+				<initialMarking>
+					<text>1</text>
+				</initialMarking>
+			</place>
+			<place id="1">
+				<name>
+					<text>1</text>
+				</name>
+			</place>
+			<place id="2">
+				<name>
+					<text>2</text>
+				</name>
+			</place>
+			<place id="3">
+				<name>
+					<text>3</text>
+				</name>
+				<finalMarking>
+					<text>1</text>
+				</finalMarking>
+			</place>
+			<place id="4">
+				<name>
+					<text>4</text>
+				</name>
+			</place>
+			<place id="5">
+				<name>
+					<text>5</text>
+				</name>
+			</place>
+			<place id="6">
+				<name>
+					<text>6</text>
+				</name>
+			</place>
+			<place id="7">
+				<name>
+					<text>7</text>
+				</name>
+			</place>
+			<place id="8">
+				<name>
+					<text>8</text>
+				</name>
+			</place>
+			<place id="9">
+				<name>
+					<text>9</text>
+				</name>
+			</place>
+			<place id="10">
+				<name>
+					<text>10</text>
+				</name>
+			</place>
+			<place id="11">
+				<name>
+					<text>11</text>
+				</name>
+			</place>
+			<place id="12">
+				<name>
+					<text>12</text>
+				</name>
+			</place>
+			<place id="13">
+				<name>
+					<text>13</text>
+				</name>
+			</place>
+			<place id="14">
+				<name>
+					<text>14</text>
+				</name>
+			</place>
+			<place id="15">
+				<name>
+					<text>15</text>
+				</name>
+			</place>
+			<place id="16">
+				<name>
+					<text>16</text>
+				</name>
+			</place>
+			<place id="17">
+				<name>
+					<text>17</text>
+				</name>
+			</place>
+			<place id="18">
+				<name>
+					<text>18</text>
+				</name>
+			</place>
+			<place id="19">
+				<name>
+					<text>19</text>
+				</name>
+			</place>
+			<place id="20">
+				<name>
+					<text>20</text>
+				</name>
+			</place>
+			<place id="21">
+				<name>
+					<text>21</text>
+				</name>
+			</place>
+			<place id="22">
+				<name>
+					<text>22</text>
+				</name>
+			</place>
+			<place id="23">
+				<name>
+					<text>23</text>
+				</name>
+			</place>
+			<place id="24">
+				<name>
+					<text>24</text>
+				</name>
+			</place>
+			<place id="25">
+				<name>
+					<text>25</text>
+				</name>
+			</place>
+			<place id="26">
+				<name>
+					<text>26</text>
+				</name>
+			</place>
+			<place id="27">
+				<name>
+					<text>27</text>
+				</name>
+			</place>
+			<place id="28">
+				<name>
+					<text>28</text>
+				</name>
+			</place>
+			<place id="29">
+				<name>
+					<text>29</text>
+				</name>
+			</place>
+			<place id="30">
+				<name>
+					<text>30</text>
+				</name>
+			</place>
+			<place id="31">
+				<name>
+					<text>31</text>
+				</name>
+			</place>
+			<place id="32">
+				<name>
+					<text>32</text>
+				</name>
+			</place>
+			<place id="33">
+				<name>
+					<text>33</text>
+				</name>
+			</place>
+			<place id="34">
+				<name>
+					<text>34</text>
+				</name>
+			</place>
+			<place id="35">
+				<name>
+					<text>35</text>
+				</name>
+			</place>
+			<place id="36">
+				<name>
+					<text>36</text>
+				</name>
+			</place>
+			<place id="37">
+				<name>
+					<text>37</text>
+				</name>
+			</place>
+			<place id="38">
+				<name>
+					<text>38</text>
+				</name>
+			</place>
+			<place id="39">
+				<name>
+					<text>39</text>
+				</name>
+			</place>
+			<place id="40">
+				<name>
+					<text>40</text>
+				</name>
+			</place>
+			<place id="41">
+				<name>
+					<text>41</text>
+				</name>
+			</place>
+			<place id="42">
+				<name>
+					<text>42</text>
+				</name>
+			</place>
+			<place id="43">
+				<name>
+					<text>43</text>
+				</name>
+			</place>
+			<place id="44">
+				<name>
+					<text>44</text>
+				</name>
+			</place>
+			<place id="45">
+				<name>
+					<text>45</text>
+				</name>
+			</place>
+			<place id="46">
+				<name>
+					<text>46</text>
+				</name>
+			</place>
+			<place id="47">
+				<name>
+					<text>47</text>
+				</name>
+			</place>
+			<place id="48">
+				<name>
+					<text>48</text>
+				</name>
+			</place>
+			<transition id="49" invisible="True">
+				<name>
+					<text>Create Fine</text>
+				</name>
+				<writeVariable>amount</writeVariable>
+				<writeVariable>totalPaymentAmount</writeVariable>
+				<writeVariable>dismissal</writeVariable>
+				<writeVariable>points</writeVariable>
+			</transition>
+			<transition id="50" invisible="True" guard="(delaySend' &lt; 2160)">
+				<name>
+					<text>Send Fine</text>
+				</name>
+				<writeVariable>delaySend</writeVariable>
+				<writeVariable>expense</writeVariable>
+			</transition>
+			<transition id="51" invisible="True">
+				<name>
+					<text>Insert Fine Notification</text>
+				</name>
+			</transition>
+			<transition id="52" invisible="True" guard="(delayPrefecture' &lt; 1440)">
+				<name>
+					<text>Insert Date Appeal to Prefecture</text>
+				</name>
+				<writeVariable>delayPrefecture</writeVariable>
+			</transition>
+			<transition id="53" invisible="True" guard="(totalPaymentAmount &gt;= (amount + expense))">
+				<name>
+					<text>Inv3</text>
+				</name>
+			</transition>
+			<transition id="54" invisible="True" guard="(dismissal == &quot;NIL&quot;)">
+				<name>
+					<text>Inv5</text>
+				</name>
+			</transition>
+			<transition id="55" invisible="True" guard="(dismissal == &quot;#&quot;)">
+				<name>
+					<text>Inv4</text>
+				</name>
+			</transition>
+			<transition id="56" invisible="True" guard="(delayJudge' &lt; 1440)">
+				<name>
+					<text>Appeal to Judge</text>
+				</name>
+				<writeVariable>delayJudge</writeVariable>
+				<writeVariable>dismissal</writeVariable>
+			</transition>
+			<transition id="57" invisible="True" guard="(totalPaymentAmount &lt; (amount + expense))">
+				<name>
+					<text>Send for Credit Collection</text>
+				</name>
+			</transition>
+			<transition id="58" invisible="True" guard="((dismissal != &quot;NIL&quot;) || ((points == 0) &amp;&amp; (totalPaymentAmount &gt;= amount)))">
+				<name>
+					<text>Inv1</text>
+				</name>
+			</transition>
+			<transition id="59" invisible="True">
+				<name>
+					<text>Send Appeal to Prefecture</text>
+				</name>
+				<writeVariable>dismissal</writeVariable>
+			</transition>
+			<transition id="60" invisible="True" guard="(dismissal == &quot;NIL&quot;)">
+				<name>
+					<text>Receive Result Appeal from Prefecture</text>
+				</name>
+			</transition>
+			<transition id="61" invisible="True">
+				<name>
+					<text>Notify Result Appeal to Offender</text>
+				</name>
+			</transition>
+			<transition id="62" invisible="True">
+				<name>
+					<text>Payment</text>
+				</name>
+				<writeVariable>totalPaymentAmount</writeVariable>
+			</transition>
+			<transition id="63" invisible="True">
+				<name>
+					<text>Add penalty</text>
+				</name>
+				<writeVariable>amount</writeVariable>
+			</transition>
+			<transition id="64" invisible="True" guard="(totalPaymentAmount &gt;= (amount + expense))">
+				<name>
+					<text>Inv2</text>
+				</name>
+			</transition>
+			<transition id="65" invisible="True">
+				<name>
+					<text>Payment</text>
+				</name>
+				<writeVariable>totalPaymentAmount</writeVariable>
+			</transition>
+			<transition id="66" invisible="True">
+				<name>
+					<text>Payment</text>
+				</name>
+				<writeVariable>totalPaymentAmount</writeVariable>
+			</transition>
+			<transition id="67" invisible="True" guard="(dismissal == &quot;G&quot;)">
+				<name>
+					<text>Inv6</text>
+				</name>
+			</transition>
+			<transition id="68" invisible="True">
+				<name>
+					<text>Inv_9</text>
+				</name>
+			</transition>
+			<transition id="69" invisible="True">
+				<name>
+					<text>Inv_10</text>
+				</name>
+			</transition>
+			<transition id="70" invisible="True">
+				<name>
+					<text>Inv_11</text>
+				</name>
+			</transition>
+			<transition id="71" invisible="True">
+				<name>
+					<text>Inv_12</text>
+				</name>
+			</transition>
+			<transition id="72" invisible="True">
+				<name>
+					<text>Inv_13</text>
+				</name>
+			</transition>
+			<transition id="73" invisible="True">
+				<name>
+					<text>Inv_14</text>
+				</name>
+			</transition>
+			<transition id="74" invisible="True">
+				<name>
+					<text>Inv_15</text>
+				</name>
+			</transition>
+			<transition id="75" invisible="True">
+				<name>
+					<text>Inv_16</text>
+				</name>
+			</transition>
+			<transition id="76" invisible="True">
+				<name>
+					<text>Inv_17</text>
+				</name>
+			</transition>
+			<transition id="77" invisible="True">
+				<name>
+					<text>Inv_18</text>
+				</name>
+			</transition>
+			<transition id="78" invisible="True">
+				<name>
+					<text>Inv_19</text>
+				</name>
+			</transition>
+			<transition id="79" invisible="True">
+				<name>
+					<text>Inv_20</text>
+				</name>
+			</transition>
+			<transition id="80" invisible="True">
+				<name>
+					<text>Inv_21</text>
+				</name>
+			</transition>
+			<transition id="81" invisible="True">
+				<name>
+					<text>Inv_22</text>
+				</name>
+			</transition>
+			<transition id="82" invisible="True">
+				<name>
+					<text>Inv_23</text>
+				</name>
+			</transition>
+			<transition id="83" invisible="True">
+				<name>
+					<text>Inv_24</text>
+				</name>
+			</transition>
+			<transition id="84" invisible="True">
+				<name>
+					<text>Inv_25</text>
+				</name>
+			</transition>
+			<transition id="85" invisible="True">
+				<name>
+					<text>Inv_26</text>
+				</name>
+			</transition>
+			<transition id="86" invisible="True">
+				<name>
+					<text>Inv_27</text>
+				</name>
+			</transition>
+			<transition id="87" invisible="True">
+				<name>
+					<text>Inv_28</text>
+				</name>
+			</transition>
+			<transition id="88" invisible="True">
+				<name>
+					<text>Inv_29</text>
+				</name>
+			</transition>
+			<transition id="89" invisible="True">
+				<name>
+					<text>Inv_30</text>
+				</name>
+			</transition>
+			<transition id="90" invisible="True">
+				<name>
+					<text>Inv_31</text>
+				</name>
+			</transition>
+			<transition id="91" invisible="True">
+				<name>
+					<text>Inv_32</text>
+				</name>
+			</transition>
+			<transition id="92" invisible="True">
+				<name>
+					<text>Inv_33</text>
+				</name>
+			</transition>
+			<transition id="93" invisible="True">
+				<name>
+					<text>Inv_34</text>
+				</name>
+			</transition>
+			<transition id="94" invisible="True">
+				<name>
+					<text>Inv_35</text>
+				</name>
+			</transition>
+			<transition id="95" invisible="True">
+				<name>
+					<text>Inv_36</text>
+				</name>
+			</transition>
+			<transition id="96" invisible="True">
+				<name>
+					<text>Inv_37</text>
+				</name>
+			</transition>
+			<transition id="97" invisible="True">
+				<name>
+					<text>Inv_38</text>
+				</name>
+			</transition>
+			<transition id="98" invisible="True">
+				<name>
+					<text>Inv_39</text>
+				</name>
+			</transition>
+			<transition id="99" invisible="True">
+				<name>
+					<text>Inv_40</text>
+				</name>
+			</transition>
+			<transition id="100" invisible="True">
+				<name>
+					<text>Inv_41</text>
+				</name>
+			</transition>
+			<transition id="101" invisible="True">
+				<name>
+					<text>Inv_42</text>
+				</name>
+			</transition>
+			<transition id="102" invisible="True">
+				<name>
+					<text>Inv_43</text>
+				</name>
+			</transition>
+			<transition id="103" invisible="True">
+				<name>
+					<text>Inv_44</text>
+				</name>
+			</transition>
+			<transition id="104" invisible="True">
+				<name>
+					<text>Inv_45</text>
+				</name>
+			</transition>
+			<transition id="105" invisible="True">
+				<name>
+					<text>Inv_46</text>
+				</name>
+			</transition>
+			<transition id="106" invisible="True">
+				<name>
+					<text>Inv_47</text>
+				</name>
+			</transition>
+			<transition id="107" invisible="True">
+				<name>
+					<text>Inv_48</text>
+				</name>
+			</transition>
+			<transition id="109" invisible="True">
+				<name>
+					<text>None</text>
+				</name>
+			</transition>
+			<arc source="6" target="60" id="arc30"/>
+			<arc source="57" target="3" id="arc31"/>
+			<arc source="53" target="3" id="arc32"/>
+			<arc source="4" target="55" id="arc33"/>
+			<arc source="67" target="3" id="arc34"/>
+			<arc source="2" target="57" id="arc35"/>
+			<arc source="60" target="7" id="arc36"/>
+			<arc source="55" target="3" id="arc37"/>
+			<arc source="2" target="56" id="arc38"/>
+			<arc source="2" target="63" id="arc39"/>
+			<arc source="1" target="62" id="arc40"/>
+			<arc source="64" target="3" id="arc41"/>
+			<arc source="63" target="2" id="arc42"/>
+			<arc source="65" target="8" id="arc43"/>
+			<arc source="1" target="64" id="arc44"/>
+			<arc source="61" target="2" id="arc45"/>
+			<arc source="52" target="5" id="arc46"/>
+			<arc source="6" target="67" id="arc47"/>
+			<arc source="59" target="6" id="arc48"/>
+			<arc source="4" target="54" id="arc49"/>
+			<arc source="50" target="1" id="arc50"/>
+			<arc source="2" target="52" id="arc51"/>
+			<arc source="56" target="4" id="arc52"/>
+			<arc source="49" target="8" id="arc53"/>
+			<arc source="5" target="59" id="arc54"/>
+			<arc source="0" target="49" id="arc55"/>
+			<arc source="8" target="58" id="arc56"/>
+			<arc source="54" target="2" id="arc57"/>
+			<arc source="66" target="2" id="arc58"/>
+			<arc source="51" target="2" id="arc59"/>
+			<arc source="62" target="1" id="arc60"/>
+			<arc source="2" target="66" id="arc61"/>
+			<arc source="58" target="3" id="arc62"/>
+			<arc source="7" target="61" id="arc63"/>
+			<arc source="1" target="51" id="arc64"/>
+			<arc source="8" target="65" id="arc65"/>
+			<arc source="8" target="50" id="arc66"/>
+			<arc source="2" target="68" id="137"/>
+			<arc source="68" target="9" id="220"/>
+			<arc source="9" target="69" id="139"/>
+			<arc source="69" target="10" id="221"/>
+			<arc source="10" target="70" id="141"/>
+			<arc source="70" target="11" id="222"/>
+			<arc source="11" target="71" id="143"/>
+			<arc source="71" target="12" id="223"/>
+			<arc source="12" target="72" id="145"/>
+			<arc source="72" target="13" id="224"/>
+			<arc source="13" target="73" id="147"/>
+			<arc source="73" target="14" id="225"/>
+			<arc source="14" target="74" id="149"/>
+			<arc source="74" target="15" id="226"/>
+			<arc source="15" target="75" id="151"/>
+			<arc source="75" target="16" id="227"/>
+			<arc source="16" target="76" id="153"/>
+			<arc source="76" target="17" id="228"/>
+			<arc source="17" target="77" id="155"/>
+			<arc source="77" target="18" id="229"/>
+			<arc source="18" target="78" id="157"/>
+			<arc source="78" target="19" id="230"/>
+			<arc source="19" target="79" id="159"/>
+			<arc source="79" target="20" id="231"/>
+			<arc source="20" target="80" id="161"/>
+			<arc source="80" target="21" id="232"/>
+			<arc source="21" target="81" id="163"/>
+			<arc source="81" target="22" id="233"/>
+			<arc source="22" target="82" id="165"/>
+			<arc source="82" target="23" id="234"/>
+			<arc source="23" target="83" id="167"/>
+			<arc source="83" target="24" id="235"/>
+			<arc source="24" target="84" id="169"/>
+			<arc source="84" target="25" id="236"/>
+			<arc source="25" target="85" id="171"/>
+			<arc source="85" target="26" id="237"/>
+			<arc source="26" target="86" id="173"/>
+			<arc source="86" target="27" id="238"/>
+			<arc source="27" target="87" id="175"/>
+			<arc source="87" target="28" id="239"/>
+			<arc source="28" target="88" id="177"/>
+			<arc source="88" target="29" id="240"/>
+			<arc source="29" target="89" id="179"/>
+			<arc source="89" target="30" id="241"/>
+			<arc source="30" target="90" id="181"/>
+			<arc source="90" target="31" id="242"/>
+			<arc source="31" target="91" id="183"/>
+			<arc source="91" target="32" id="243"/>
+			<arc source="32" target="92" id="185"/>
+			<arc source="92" target="33" id="244"/>
+			<arc source="33" target="93" id="187"/>
+			<arc source="93" target="34" id="245"/>
+			<arc source="34" target="94" id="189"/>
+			<arc source="94" target="35" id="246"/>
+			<arc source="35" target="95" id="191"/>
+			<arc source="95" target="36" id="247"/>
+			<arc source="36" target="96" id="193"/>
+			<arc source="96" target="37" id="248"/>
+			<arc source="37" target="97" id="195"/>
+			<arc source="97" target="38" id="249"/>
+			<arc source="38" target="98" id="197"/>
+			<arc source="98" target="39" id="250"/>
+			<arc source="39" target="99" id="199"/>
+			<arc source="99" target="40" id="251"/>
+			<arc source="40" target="100" id="1101"/>
+			<arc source="100" target="41" id="252"/>
+			<arc source="41" target="101" id="1103"/>
+			<arc source="101" target="42" id="253"/>
+			<arc source="42" target="102" id="1105"/>
+			<arc source="102" target="43" id="254"/>
+			<arc source="43" target="103" id="1107"/>
+			<arc source="103" target="44" id="255"/>
+			<arc source="44" target="104" id="1109"/>
+			<arc source="104" target="45" id="256"/>
+			<arc source="45" target="105" id="1111"/>
+			<arc source="105" target="46" id="257"/>
+			<arc source="46" target="106" id="1113"/>
+			<arc source="106" target="47" id="258"/>
+			<arc source="47" target="107" id="1115"/>
+			<arc source="107" target="48" id="259"/>
+			<arc source="48" target="53" id="59"/>
+			<arc source="3" target="109"/>
+			<arc source="109" target="3"/>
+		</page>
+		<variables>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Double">
+				<name>amount</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Integer">
+				<name>delayJudge</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Integer">
+				<name>delayPrefecture</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Double">
+				<name>totalPaymentAmount</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Integer">
+				<name>points</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.String">
+				<name>dismissal</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Integer">
+				<name>delaySend</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Double">
+				<name>expense</name>
+			</variable>
+		</variables>
+	</net>
+</pnml>
+

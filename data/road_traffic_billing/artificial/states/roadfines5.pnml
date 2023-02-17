@@ -1,0 +1,299 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pnml>
+	<net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+		<page id="page1">
+			<place id="0">
+				<name>
+					<text>0</text>
+				</name>
+				<initialMarking>
+					<text>1</text>
+				</initialMarking>
+			</place>
+			<place id="1">
+				<name>
+					<text>1</text>
+				</name>
+			</place>
+			<place id="2">
+				<name>
+					<text>2</text>
+				</name>
+			</place>
+			<place id="3">
+				<name>
+					<text>3</text>
+				</name>
+				<finalMarking>
+					<text>1</text>
+				</finalMarking>
+			</place>
+			<place id="4">
+				<name>
+					<text>4</text>
+				</name>
+			</place>
+			<place id="5">
+				<name>
+					<text>5</text>
+				</name>
+			</place>
+			<place id="6">
+				<name>
+					<text>6</text>
+				</name>
+			</place>
+			<place id="7">
+				<name>
+					<text>7</text>
+				</name>
+			</place>
+			<place id="8">
+				<name>
+					<text>8</text>
+				</name>
+			</place>
+			<place id="9">
+				<name>
+					<text>9</text>
+				</name>
+			</place>
+			<place id="10">
+				<name>
+					<text>10</text>
+				</name>
+			</place>
+			<place id="11">
+				<name>
+					<text>11</text>
+				</name>
+			</place>
+			<place id="12">
+				<name>
+					<text>12</text>
+				</name>
+			</place>
+			<place id="13">
+				<name>
+					<text>13</text>
+				</name>
+			</place>
+			<transition id="14" invisible="True">
+				<name>
+					<text>Create Fine</text>
+				</name>
+				<writeVariable>amount</writeVariable>
+				<writeVariable>totalPaymentAmount</writeVariable>
+				<writeVariable>dismissal</writeVariable>
+				<writeVariable>points</writeVariable>
+			</transition>
+			<transition id="15" invisible="True" guard="(delaySend' &lt; 2160)">
+				<name>
+					<text>Send Fine</text>
+				</name>
+				<writeVariable>delaySend</writeVariable>
+				<writeVariable>expense</writeVariable>
+			</transition>
+			<transition id="16" invisible="True">
+				<name>
+					<text>Insert Fine Notification</text>
+				</name>
+			</transition>
+			<transition id="17" invisible="True" guard="(delayPrefecture' &lt; 1440)">
+				<name>
+					<text>Insert Date Appeal to Prefecture</text>
+				</name>
+				<writeVariable>delayPrefecture</writeVariable>
+			</transition>
+			<transition id="18" invisible="True" guard="(totalPaymentAmount &gt;= (amount + expense))">
+				<name>
+					<text>Inv3</text>
+				</name>
+			</transition>
+			<transition id="19" invisible="True" guard="(dismissal == &quot;NIL&quot;)">
+				<name>
+					<text>Inv5</text>
+				</name>
+			</transition>
+			<transition id="20" invisible="True" guard="(dismissal == &quot;#&quot;)">
+				<name>
+					<text>Inv4</text>
+				</name>
+			</transition>
+			<transition id="21" invisible="True" guard="(delayJudge' &lt; 1440)">
+				<name>
+					<text>Appeal to Judge</text>
+				</name>
+				<writeVariable>delayJudge</writeVariable>
+				<writeVariable>dismissal</writeVariable>
+			</transition>
+			<transition id="22" invisible="True" guard="(totalPaymentAmount &lt; (amount + expense))">
+				<name>
+					<text>Send for Credit Collection</text>
+				</name>
+			</transition>
+			<transition id="23" invisible="True" guard="((dismissal != &quot;NIL&quot;) || ((points == 0) &amp;&amp; (totalPaymentAmount &gt;= amount)))">
+				<name>
+					<text>Inv1</text>
+				</name>
+			</transition>
+			<transition id="24" invisible="True">
+				<name>
+					<text>Send Appeal to Prefecture</text>
+				</name>
+				<writeVariable>dismissal</writeVariable>
+			</transition>
+			<transition id="25" invisible="True" guard="(dismissal == &quot;NIL&quot;)">
+				<name>
+					<text>Receive Result Appeal from Prefecture</text>
+				</name>
+			</transition>
+			<transition id="26" invisible="True">
+				<name>
+					<text>Notify Result Appeal to Offender</text>
+				</name>
+			</transition>
+			<transition id="27" invisible="True">
+				<name>
+					<text>Payment</text>
+				</name>
+				<writeVariable>totalPaymentAmount</writeVariable>
+			</transition>
+			<transition id="28" invisible="True">
+				<name>
+					<text>Add penalty</text>
+				</name>
+				<writeVariable>amount</writeVariable>
+			</transition>
+			<transition id="29" invisible="True" guard="(totalPaymentAmount &gt;= (amount + expense))">
+				<name>
+					<text>Inv2</text>
+				</name>
+			</transition>
+			<transition id="30" invisible="True">
+				<name>
+					<text>Payment</text>
+				</name>
+				<writeVariable>totalPaymentAmount</writeVariable>
+			</transition>
+			<transition id="31" invisible="True">
+				<name>
+					<text>Payment</text>
+				</name>
+				<writeVariable>totalPaymentAmount</writeVariable>
+			</transition>
+			<transition id="32" invisible="True" guard="(dismissal == &quot;G&quot;)">
+				<name>
+					<text>Inv6</text>
+				</name>
+			</transition>
+			<transition id="33" invisible="True">
+				<name>
+					<text>Inv_9</text>
+				</name>
+			</transition>
+			<transition id="34" invisible="True">
+				<name>
+					<text>Inv_10</text>
+				</name>
+			</transition>
+			<transition id="35" invisible="True">
+				<name>
+					<text>Inv_11</text>
+				</name>
+			</transition>
+			<transition id="36" invisible="True">
+				<name>
+					<text>Inv_12</text>
+				</name>
+			</transition>
+			<transition id="37" invisible="True">
+				<name>
+					<text>Inv_13</text>
+				</name>
+			</transition>
+			<transition id="39" invisible="True">
+				<name>
+					<text>None</text>
+				</name>
+			</transition>
+			<arc source="6" target="25" id="arc30"/>
+			<arc source="22" target="3" id="arc31"/>
+			<arc source="18" target="3" id="arc32"/>
+			<arc source="4" target="20" id="arc33"/>
+			<arc source="32" target="3" id="arc34"/>
+			<arc source="2" target="22" id="arc35"/>
+			<arc source="25" target="7" id="arc36"/>
+			<arc source="20" target="3" id="arc37"/>
+			<arc source="2" target="21" id="arc38"/>
+			<arc source="2" target="28" id="arc39"/>
+			<arc source="1" target="27" id="arc40"/>
+			<arc source="29" target="3" id="arc41"/>
+			<arc source="28" target="2" id="arc42"/>
+			<arc source="30" target="8" id="arc43"/>
+			<arc source="1" target="29" id="arc44"/>
+			<arc source="26" target="2" id="arc45"/>
+			<arc source="17" target="5" id="arc46"/>
+			<arc source="6" target="32" id="arc47"/>
+			<arc source="24" target="6" id="arc48"/>
+			<arc source="4" target="19" id="arc49"/>
+			<arc source="15" target="1" id="arc50"/>
+			<arc source="2" target="17" id="arc51"/>
+			<arc source="21" target="4" id="arc52"/>
+			<arc source="14" target="8" id="arc53"/>
+			<arc source="5" target="24" id="arc54"/>
+			<arc source="0" target="14" id="arc55"/>
+			<arc source="8" target="23" id="arc56"/>
+			<arc source="19" target="2" id="arc57"/>
+			<arc source="31" target="2" id="arc58"/>
+			<arc source="16" target="2" id="arc59"/>
+			<arc source="27" target="1" id="arc60"/>
+			<arc source="2" target="31" id="arc61"/>
+			<arc source="23" target="3" id="arc62"/>
+			<arc source="7" target="26" id="arc63"/>
+			<arc source="1" target="16" id="arc64"/>
+			<arc source="8" target="30" id="arc65"/>
+			<arc source="8" target="15" id="arc66"/>
+			<arc source="2" target="33" id="137"/>
+			<arc source="33" target="9" id="220"/>
+			<arc source="9" target="34" id="139"/>
+			<arc source="34" target="10" id="221"/>
+			<arc source="10" target="35" id="141"/>
+			<arc source="35" target="11" id="222"/>
+			<arc source="11" target="36" id="143"/>
+			<arc source="36" target="12" id="223"/>
+			<arc source="12" target="37" id="145"/>
+			<arc source="37" target="13" id="224"/>
+			<arc source="13" target="18" id="24"/>
+			<arc source="3" target="39"/>
+			<arc source="39" target="3"/>
+		</page>
+		<variables>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Double">
+				<name>amount</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Integer">
+				<name>delayJudge</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Integer">
+				<name>delayPrefecture</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Double">
+				<name>totalPaymentAmount</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Integer">
+				<name>points</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.String">
+				<name>dismissal</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Integer">
+				<name>delaySend</name>
+			</variable>
+			<variable maxValue="1000000" minValue="0" type="java.lang.Double">
+				<name>expense</name>
+			</variable>
+		</variables>
+	</net>
+</pnml>
+
