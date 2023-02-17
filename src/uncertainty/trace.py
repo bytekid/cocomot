@@ -170,7 +170,10 @@ class UncertainDataValue:
     self._kind = kind
     self._name = name
     # map value  to probability
-    self._values = [to_num(v) for v in values] if values else None
+    if kind == "string":
+      self._values = [v for v in values] if values else None
+    else:
+      self._values = [to_num(v) for v in values] if values else None
     self._lower = to_num(lower) if lower else None
     self._upper = to_num(upper) if upper else None
 
@@ -235,13 +238,19 @@ class UncertainDataValue:
         for v in self._values:
           xval = doc.createElement(self._kind)
           xval.setAttribute("key", self._name)
-          xval.setAttribute("value", str(v))
+          xval.setAttribute("value", str(val))
           xvals.appendChild(xval)
         return xlist
       else:
         xval = doc.createElement(self._kind)
         xval.setAttribute("key", self._name)
-        xval.setAttribute("value", str(self._values[0]))
+        if self._kind == "string":
+          val =  self._values[0]
+        elif self._kind == "boolean":
+          val = "true" if self._values[0] else "false"
+        else:
+          val = self._values[0] if self._kind == "float" else int(self._values[0])
+        xval.setAttribute("value", str(val))
         return xval
     else:
       #	<list key="uncertainty:continuous_strong">
@@ -282,12 +291,15 @@ class UncertainEvent:
     UncertainEvent.id_counter += 1
 
   @staticmethod
-  def from_certain_event(e, time):
+  def from_certain_event(e, time, vartypes=None):
     indet = Indeterminacy(1)
     activity = UncertainActivity(e["label"])
     data = []
     for (var,val) in e["valuation"].items():
-      dtype = "int" if not ("." in str(val)) else "float"
+      if vartypes and var in vartypes:
+        dtype = vartypes[var]
+      else:
+        dtype = "int" if not ("." in str(val)) else "float"
       data.append(UncertainDataValue(dtype, var, values=[val]))
     utime = UncertainTimestamp(time)
     return UncertainEvent(indet, activity, utime, data)
@@ -409,11 +421,11 @@ class UncertainTrace:
     self._events = events
 
   @staticmethod
-  def from_certain_trace(events):
+  def from_certain_trace(events, vartypes=None):
     time = datetime.strptime("2021-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S")
     ues = []
     for e in events:
-      ue = UncertainEvent.from_certain_event(e, time)
+      ue = UncertainEvent.from_certain_event(e, time, vartypes=vartypes)
       time = time + timedelta(days=3)
       ues.append(ue)
     return UncertainTrace(ues)

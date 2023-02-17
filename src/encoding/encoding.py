@@ -36,7 +36,7 @@ class Encoding:
         self._solver.num(val)
 
     def create_var(v, i):
-      name = "_" + v["name"] + str(i)
+      name = "_" + v["name"] + "_" + str(i)
       type = VarType.from_java(v["type"])
       return self._solver.realvar(name) if type == VarType.real else \
         self._solver.intvar(name)

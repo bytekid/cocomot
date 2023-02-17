@@ -178,240 +178,240 @@
 					<text>33</text>
 				</name>
 			</place>
-			<transition id="34" invisible="True">
+			<transition id="34" invisible="true">
 				<name>
 					<text>LacticAcid</text>
 				</name>
 			</transition>
-			<transition id="35" invisible="True">
+			<transition id="35" invisible="true">
 				<name>
 					<text>t100</text>
 				</name>
 			</transition>
-			<transition id="36" invisible="True">
+			<transition id="36" invisible="true">
 				<name>
 					<text>t25</text>
 				</name>
 			</transition>
-			<transition id="37" invisible="True">
+			<transition id="37" invisible="true">
 				<name>
 					<text>t5</text>
 				</name>
 			</transition>
-			<transition id="38" invisible="True">
+			<transition id="38" invisible="true">
 				<name>
 					<text>t6</text>
 				</name>
 			</transition>
-			<transition id="39" invisible="True">
+			<transition id="39" invisible="true">
 				<name>
 					<text>ER Sepsis Triage</text>
 				</name>
 				<writeVariable>timeTriage</writeVariable>
 			</transition>
-			<transition id="40" invisible="True">
+			<transition id="40" invisible="true">
 				<name>
 					<text>t2</text>
 				</name>
 			</transition>
-			<transition id="41" invisible="True">
+			<transition id="41" invisible="true">
 				<name>
 					<text>Transfer NC</text>
 				</name>
 			</transition>
-			<transition id="42" invisible="True">
+			<transition id="42" invisible="true">
 				<name>
 					<text>ER Triage</text>
 				</name>
 			</transition>
-			<transition id="43" invisible="True">
+			<transition id="43" invisible="true">
 				<name>
 					<text>t13</text>
 				</name>
 			</transition>
-			<transition id="44" invisible="True" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
+			<transition id="44" invisible="true" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
 				<name>
 					<text>LacticAcid</text>
 				</name>
 				<writeVariable>timeLacticAcid</writeVariable>
 			</transition>
-			<transition id="45" invisible="True">
+			<transition id="45" invisible="true">
 				<name>
 					<text>Admission IC</text>
 				</name>
 			</transition>
-			<transition id="46" invisible="True">
+			<transition id="46" invisible="true">
 				<name>
 					<text>Release C</text>
 				</name>
 			</transition>
-			<transition id="47" invisible="True">
+			<transition id="47" invisible="true">
 				<name>
 					<text>Release B</text>
 				</name>
 			</transition>
-			<transition id="48" invisible="True">
+			<transition id="48" invisible="true">
 				<name>
 					<text>t22</text>
 				</name>
 			</transition>
-			<transition id="49" invisible="True">
+			<transition id="49" invisible="true">
 				<name>
 					<text>Release E</text>
 				</name>
 			</transition>
-			<transition id="50" invisible="True">
+			<transition id="50" invisible="true">
 				<name>
 					<text>Release D</text>
 				</name>
 			</transition>
-			<transition id="51" invisible="True">
+			<transition id="51" invisible="true">
 				<name>
 					<text>Release A</text>
 				</name>
 			</transition>
-			<transition id="52" invisible="True">
+			<transition id="52" invisible="true">
 				<name>
 					<text>t800</text>
 				</name>
 			</transition>
-			<transition id="53" invisible="True">
+			<transition id="53" invisible="true">
 				<name>
 					<text>Leucocytes</text>
 				</name>
 			</transition>
-			<transition id="54" invisible="True">
+			<transition id="54" invisible="true">
 				<name>
 					<text>t38</text>
 				</name>
 			</transition>
-			<transition id="55" invisible="True">
+			<transition id="55" invisible="true">
 				<name>
 					<text>Return ER</text>
 				</name>
 			</transition>
-			<transition id="56" invisible="True">
+			<transition id="56" invisible="true">
 				<name>
 					<text>IV Liquid</text>
 				</name>
 			</transition>
-			<transition id="57" invisible="True" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
+			<transition id="57" invisible="true" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
 				<name>
 					<text>IV Antibiotics</text>
 				</name>
 				<writeVariable>timeAntibiotics</writeVariable>
 			</transition>
-			<transition id="58" invisible="True">
+			<transition id="58" invisible="true">
 				<name>
 					<text>t9</text>
 				</name>
 			</transition>
-			<transition id="59" invisible="True">
+			<transition id="59" invisible="true">
 				<name>
 					<text>t700</text>
 				</name>
 			</transition>
-			<transition id="60" invisible="True">
+			<transition id="60" invisible="true">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="61" invisible="True">
+			<transition id="61" invisible="true">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="62" invisible="True">
+			<transition id="62" invisible="true">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="63" invisible="True">
+			<transition id="63" invisible="true">
 				<name>
 					<text>Admission IC</text>
 				</name>
 			</transition>
-			<transition id="64" invisible="True">
+			<transition id="64" invisible="true">
 				<name>
 					<text>t12</text>
 				</name>
 			</transition>
-			<transition id="65" invisible="True">
+			<transition id="65" invisible="true">
 				<name>
 					<text>t703</text>
 				</name>
 			</transition>
-			<transition id="66" invisible="True">
+			<transition id="66" invisible="true">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="67" invisible="True">
+			<transition id="67" invisible="true">
 				<name>
 					<text>Leucocytes</text>
 				</name>
 			</transition>
-			<transition id="68" invisible="True">
+			<transition id="68" invisible="true">
 				<name>
 					<text>t803</text>
 				</name>
 			</transition>
-			<transition id="69" invisible="True">
+			<transition id="69" invisible="true">
 				<name>
 					<text>ER Registration</text>
 				</name>
 			</transition>
-			<transition id="70" invisible="True">
+			<transition id="70" invisible="true">
 				<name>
 					<text>Inv_24</text>
 				</name>
 			</transition>
-			<transition id="71" invisible="True">
+			<transition id="71" invisible="true">
 				<name>
 					<text>Inv_25</text>
 				</name>
 			</transition>
-			<transition id="72" invisible="True">
+			<transition id="72" invisible="true">
 				<name>
 					<text>Inv_26</text>
 				</name>
 			</transition>
-			<transition id="73" invisible="True">
+			<transition id="73" invisible="true">
 				<name>
 					<text>Inv_27</text>
 				</name>
 			</transition>
-			<transition id="74" invisible="True">
+			<transition id="74" invisible="true">
 				<name>
 					<text>Inv_28</text>
 				</name>
 			</transition>
-			<transition id="75" invisible="True">
+			<transition id="75" invisible="true">
 				<name>
 					<text>Inv_29</text>
 				</name>
 			</transition>
-			<transition id="76" invisible="True">
+			<transition id="76" invisible="true">
 				<name>
 					<text>Inv_30</text>
 				</name>
 			</transition>
-			<transition id="77" invisible="True">
+			<transition id="77" invisible="true">
 				<name>
 					<text>Inv_31</text>
 				</name>
 			</transition>
-			<transition id="78" invisible="True">
+			<transition id="78" invisible="true">
 				<name>
 					<text>Inv_32</text>
 				</name>
 			</transition>
-			<transition id="79" invisible="True">
+			<transition id="79" invisible="true">
 				<name>
 					<text>Inv_33</text>
 				</name>
 			</transition>
-			<transition id="81" invisible="True">
+			<transition id="81" invisible="true">
 				<name>
 					<text>None</text>
 				</name>

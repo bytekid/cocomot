@@ -133,24 +133,26 @@ def print_alignments_json(alignments):
     alldata.append(data)
   print(json.dumps(alldata, indent=2))
 
-def preprocess_trace(trace, dpn):
+def preprocess_trace(trace, dpn, replace_strings=True):
   simple_trace = []
   for e in trace:
     valuation = {}
     for v in dpn.variables():
       if v["name"] in e:
         val = e[v["name"]]
-        valuation[v["name"]] = val if not isinstance(val,str) else \
-          0 if val == "NIL" else ord(val[0])
+        if replace_strings and isinstance(val,str):
+          valuation[v["name"]] = 0 if val == "NIL" else ord(val[0])
+        else:
+          valuation[v["name"]] = val
     if "concept:name" in e:
       simple_trace.append({"label" : e["concept:name"], "valuation": valuation})
   return simple_trace
 
 
-def preprocess_log(log, dpn):
+def preprocess_log(log, dpn, replace_strings=True):
   log_processed = []
   for trace in log:
-    log_processed.append(preprocess_trace(trace, dpn))
+    log_processed.append(preprocess_trace(trace, dpn, replace_strings))
   return log_processed
 
 def conformance_check_trace_many(encoding, trace_data, opts):
@@ -194,7 +196,7 @@ def conformance_check_trace(encoding, trace_data, verbose):
 
   #FIXME step_bound may in general not be valid upper bound due to writes
   distmin = dpn.lower_bound_alignment_cost(trace)
-  print("lower bound for cost is", distmin)
+  #print("lower bound for cost is", distmin)
   model = encoding.solver().minimize(dist, encoding.step_bound(), start=distmin) if len(trace) < 100 \
     else encoding.solver().minimize_binsearch(dist, max=encoding.step_bound())
   t_solve = encoding.solver().t_solve
@@ -607,6 +609,37 @@ if __name__ == "__main__":
     elif ps["uncertainty"]: # has_uncertainty
       cocomot_uncertain(dpn, log, ps)
     else:
+      if ps["z"] != None:
+        k = ps["z"]
+        vs = [ v["name"] for v in dpn.variables()]
+        base_vars = [ v for v in vs if not \
+          any( len(u) < len(v) and v.startswith(u) for u in vs )]
+        log = preprocess_log(log, dpn, replace_strings=False)
+        naive_part = NaivePartitioning([ (t,1) for t in log if len(t) < 9]).representatives()
+        traces = []
+        shorttypes = { "java.lang.Integer": "int", "java.lang.Double": "float",
+          "java.lang.Boolean": "boolean", "java.lang.String": "string"}
+        vartypes = dict([ (v["name"], shorttypes[v["type"]]) for v in dpn.variables()])
+        for (trace, _) in naive_part:
+          t = UncertainTrace.from_certain_trace(trace, vartypes)
+          for e in t.events():
+            for v in base_vars:
+              if e.has_data_variable(v):
+                val = e.data_variable(v).values()
+                kind = e.data_variable(v).kind()
+                for i in range(0,k):
+                  dval = UncertainDataValue(kind, v + str(i), val)
+                  e.set_data(v + str(i), dval)
+          traces.append(t)
+        log = UncertainLog(traces)
+        xml = log.to_xes()
+        #f = open("/home/bytekid/tools/cocomot/test.xes", "w")
+        #f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
+        #f.close()
+        #xml = dpn.hackvars(ps["z"]).export_pnml()
+        #print("<?xml version='1.0' encoding='UTF-8'?>")
+        print(xml.toprettyxml())
+        exit()
       cocomot(dpn, log, ps)
   YicesSolver.shutdown()
   

@@ -53,7 +53,7 @@
 					<text>8</text>
 				</name>
 			</place>
-			<transition id="9" invisible="True">
+			<transition id="9" invisible="true">
 				<name>
 					<text>Create Fine</text>
 				</name>
@@ -90,7 +90,7 @@
 				<writeVariable>points5</writeVariable>
 				<writeVariable>points6</writeVariable>
 			</transition>
-			<transition id="10" invisible="True" guard="((((((((delaySend' == delaySend0') &amp;&amp; (delaySend0' == delaySend1')) &amp;&amp; (delaySend1' == delaySend2')) &amp;&amp; (delaySend2' == delaySend3')) &amp;&amp; (delaySend3' == delaySend4')) &amp;&amp; (delaySend4' == delaySend5')) &amp;&amp; (delaySend5' == delaySend6')) &amp;&amp; (delaySend6' &lt; 2160))">
+			<transition id="10" invisible="true" guard="((((((((delaySend' == delaySend0') &amp;&amp; (delaySend0' == delaySend1')) &amp;&amp; (delaySend1' == delaySend2')) &amp;&amp; (delaySend2' == delaySend3')) &amp;&amp; (delaySend3' == delaySend4')) &amp;&amp; (delaySend4' == delaySend5')) &amp;&amp; (delaySend5' == delaySend6')) &amp;&amp; (delaySend6' &lt; 2160))">
 				<name>
 					<text>Send Fine</text>
 				</name>
@@ -111,12 +111,12 @@
 				<writeVariable>expense5</writeVariable>
 				<writeVariable>expense6</writeVariable>
 			</transition>
-			<transition id="11" invisible="True">
+			<transition id="11" invisible="true">
 				<name>
 					<text>Insert Fine Notification</text>
 				</name>
 			</transition>
-			<transition id="12" invisible="True" guard="((((((((delayPrefecture' == delayPrefecture0') &amp;&amp; (delayPrefecture0' == delayPrefecture1')) &amp;&amp; (delayPrefecture1' == delayPrefecture2')) &amp;&amp; (delayPrefecture2' == delayPrefecture3')) &amp;&amp; (delayPrefecture3' == delayPrefecture4')) &amp;&amp; (delayPrefecture4' == delayPrefecture5')) &amp;&amp; (delayPrefecture5' == delayPrefecture6')) &amp;&amp; (delayPrefecture6' &lt; 1440))">
+			<transition id="12" invisible="true" guard="((((((((delayPrefecture' == delayPrefecture0') &amp;&amp; (delayPrefecture0' == delayPrefecture1')) &amp;&amp; (delayPrefecture1' == delayPrefecture2')) &amp;&amp; (delayPrefecture2' == delayPrefecture3')) &amp;&amp; (delayPrefecture3' == delayPrefecture4')) &amp;&amp; (delayPrefecture4' == delayPrefecture5')) &amp;&amp; (delayPrefecture5' == delayPrefecture6')) &amp;&amp; (delayPrefecture6' &lt; 1440))">
 				<name>
 					<text>Insert Date Appeal to Prefecture</text>
 				</name>
@@ -129,22 +129,22 @@
 				<writeVariable>delayPrefecture5</writeVariable>
 				<writeVariable>delayPrefecture6</writeVariable>
 			</transition>
-			<transition id="13" invisible="True" guard="((((((((totalPaymentAmount == totalPaymentAmount0) &amp;&amp; (totalPaymentAmount0 == totalPaymentAmount1)) &amp;&amp; (totalPaymentAmount1 == totalPaymentAmount2)) &amp;&amp; (totalPaymentAmount2 == totalPaymentAmount3)) &amp;&amp; (totalPaymentAmount3 == totalPaymentAmount4)) &amp;&amp; (totalPaymentAmount4 == totalPaymentAmount5)) &amp;&amp; (totalPaymentAmount5 == totalPaymentAmount6)) &amp;&amp; (totalPaymentAmount6 &gt;= (amount + expense)))">
+			<transition id="13" invisible="true" guard="((((((((totalPaymentAmount == totalPaymentAmount0) &amp;&amp; (totalPaymentAmount0 == totalPaymentAmount1)) &amp;&amp; (totalPaymentAmount1 == totalPaymentAmount2)) &amp;&amp; (totalPaymentAmount2 == totalPaymentAmount3)) &amp;&amp; (totalPaymentAmount3 == totalPaymentAmount4)) &amp;&amp; (totalPaymentAmount4 == totalPaymentAmount5)) &amp;&amp; (totalPaymentAmount5 == totalPaymentAmount6)) &amp;&amp; (totalPaymentAmount6 &gt;= (amount + expense)))">
 				<name>
 					<text>Inv3</text>
 				</name>
 			</transition>
-			<transition id="14" invisible="True" guard="((((((((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == dismissal2)) &amp;&amp; (dismissal2 == dismissal3)) &amp;&amp; (dismissal3 == dismissal4)) &amp;&amp; (dismissal4 == dismissal5)) &amp;&amp; (dismissal5 == dismissal6)) &amp;&amp; (dismissal6 == &quot;NIL&quot;))">
+			<transition id="14" invisible="true" guard="((((((((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == dismissal2)) &amp;&amp; (dismissal2 == dismissal3)) &amp;&amp; (dismissal3 == dismissal4)) &amp;&amp; (dismissal4 == dismissal5)) &amp;&amp; (dismissal5 == dismissal6)) &amp;&amp; (dismissal6 == &quot;NIL&quot;))">
 				<name>
 					<text>Inv5</text>
 				</name>
 			</transition>
-			<transition id="15" invisible="True" guard="((((((((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == dismissal2)) &amp;&amp; (dismissal2 == dismissal3)) &amp;&amp; (dismissal3 == dismissal4)) &amp;&amp; (dismissal4 == dismissal5)) &amp;&amp; (dismissal5 == dismissal6)) &amp;&amp; (dismissal6 == &quot;#&quot;))">
+			<transition id="15" invisible="true" guard="((((((((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == dismissal2)) &amp;&amp; (dismissal2 == dismissal3)) &amp;&amp; (dismissal3 == dismissal4)) &amp;&amp; (dismissal4 == dismissal5)) &amp;&amp; (dismissal5 == dismissal6)) &amp;&amp; (dismissal6 == &quot;#&quot;))">
 				<name>
 					<text>Inv4</text>
 				</name>
 			</transition>
-			<transition id="16" invisible="True" guard="((((((((delayJudge' == delayJudge0') &amp;&amp; (delayJudge0' == delayJudge1')) &amp;&amp; (delayJudge1' == delayJudge2')) &amp;&amp; (delayJudge2' == delayJudge3')) &amp;&amp; (delayJudge3' == delayJudge4')) &amp;&amp; (delayJudge4' == delayJudge5')) &amp;&amp; (delayJudge5' == delayJudge6')) &amp;&amp; (delayJudge6' &lt; 1440))">
+			<transition id="16" invisible="true" guard="((((((((delayJudge' == delayJudge0') &amp;&amp; (delayJudge0' == delayJudge1')) &amp;&amp; (delayJudge1' == delayJudge2')) &amp;&amp; (delayJudge2' == delayJudge3')) &amp;&amp; (delayJudge3' == delayJudge4')) &amp;&amp; (delayJudge4' == delayJudge5')) &amp;&amp; (delayJudge5' == delayJudge6')) &amp;&amp; (delayJudge6' &lt; 1440))">
 				<name>
 					<text>Appeal to Judge</text>
 				</name>
@@ -165,17 +165,17 @@
 				<writeVariable>dismissal5</writeVariable>
 				<writeVariable>dismissal6</writeVariable>
 			</transition>
-			<transition id="17" invisible="True" guard="((((((((totalPaymentAmount == totalPaymentAmount0) &amp;&amp; (totalPaymentAmount0 == totalPaymentAmount1)) &amp;&amp; (totalPaymentAmount1 == totalPaymentAmount2)) &amp;&amp; (totalPaymentAmount2 == totalPaymentAmount3)) &amp;&amp; (totalPaymentAmount3 == totalPaymentAmount4)) &amp;&amp; (totalPaymentAmount4 == totalPaymentAmount5)) &amp;&amp; (totalPaymentAmount5 == totalPaymentAmount6)) &amp;&amp; (totalPaymentAmount6 &lt; (amount + expense)))">
+			<transition id="17" invisible="true" guard="((((((((totalPaymentAmount == totalPaymentAmount0) &amp;&amp; (totalPaymentAmount0 == totalPaymentAmount1)) &amp;&amp; (totalPaymentAmount1 == totalPaymentAmount2)) &amp;&amp; (totalPaymentAmount2 == totalPaymentAmount3)) &amp;&amp; (totalPaymentAmount3 == totalPaymentAmount4)) &amp;&amp; (totalPaymentAmount4 == totalPaymentAmount5)) &amp;&amp; (totalPaymentAmount5 == totalPaymentAmount6)) &amp;&amp; (totalPaymentAmount6 &lt; (amount + expense)))">
 				<name>
 					<text>Send for Credit Collection</text>
 				</name>
 			</transition>
-			<transition id="18" invisible="True" guard="(((((((((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == dismissal2)) &amp;&amp; (dismissal2 == dismissal3)) &amp;&amp; (dismissal3 == dismissal4)) &amp;&amp; (dismissal4 == dismissal5)) &amp;&amp; (dismissal5 == dismissal6)) &amp;&amp; (dismissal6 != &quot;NIL&quot;)) || ((points == 0) &amp;&amp; (totalPaymentAmount &gt;= amount)))">
+			<transition id="18" invisible="true" guard="(((((((((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == dismissal2)) &amp;&amp; (dismissal2 == dismissal3)) &amp;&amp; (dismissal3 == dismissal4)) &amp;&amp; (dismissal4 == dismissal5)) &amp;&amp; (dismissal5 == dismissal6)) &amp;&amp; (dismissal6 != &quot;NIL&quot;)) || ((points == 0) &amp;&amp; (totalPaymentAmount &gt;= amount)))">
 				<name>
 					<text>Inv1</text>
 				</name>
 			</transition>
-			<transition id="19" invisible="True">
+			<transition id="19" invisible="true">
 				<name>
 					<text>Send Appeal to Prefecture</text>
 				</name>
@@ -188,17 +188,17 @@
 				<writeVariable>dismissal5</writeVariable>
 				<writeVariable>dismissal6</writeVariable>
 			</transition>
-			<transition id="20" invisible="True" guard="((((((((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == dismissal2)) &amp;&amp; (dismissal2 == dismissal3)) &amp;&amp; (dismissal3 == dismissal4)) &amp;&amp; (dismissal4 == dismissal5)) &amp;&amp; (dismissal5 == dismissal6)) &amp;&amp; (dismissal6 == &quot;NIL&quot;))">
+			<transition id="20" invisible="true" guard="((((((((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == dismissal2)) &amp;&amp; (dismissal2 == dismissal3)) &amp;&amp; (dismissal3 == dismissal4)) &amp;&amp; (dismissal4 == dismissal5)) &amp;&amp; (dismissal5 == dismissal6)) &amp;&amp; (dismissal6 == &quot;NIL&quot;))">
 				<name>
 					<text>Receive Result Appeal from Prefecture</text>
 				</name>
 			</transition>
-			<transition id="21" invisible="True">
+			<transition id="21" invisible="true">
 				<name>
 					<text>Notify Result Appeal to Offender</text>
 				</name>
 			</transition>
-			<transition id="22" invisible="True">
+			<transition id="22" invisible="true">
 				<name>
 					<text>Payment</text>
 				</name>
@@ -211,7 +211,7 @@
 				<writeVariable>totalPaymentAmount5</writeVariable>
 				<writeVariable>totalPaymentAmount6</writeVariable>
 			</transition>
-			<transition id="23" invisible="True">
+			<transition id="23" invisible="true">
 				<name>
 					<text>Add penalty</text>
 				</name>
@@ -224,12 +224,12 @@
 				<writeVariable>amount5</writeVariable>
 				<writeVariable>amount6</writeVariable>
 			</transition>
-			<transition id="24" invisible="True" guard="((((((((totalPaymentAmount == totalPaymentAmount0) &amp;&amp; (totalPaymentAmount0 == totalPaymentAmount1)) &amp;&amp; (totalPaymentAmount1 == totalPaymentAmount2)) &amp;&amp; (totalPaymentAmount2 == totalPaymentAmount3)) &amp;&amp; (totalPaymentAmount3 == totalPaymentAmount4)) &amp;&amp; (totalPaymentAmount4 == totalPaymentAmount5)) &amp;&amp; (totalPaymentAmount5 == totalPaymentAmount6)) &amp;&amp; (totalPaymentAmount6 &gt;= (amount + expense)))">
+			<transition id="24" invisible="true" guard="((((((((totalPaymentAmount == totalPaymentAmount0) &amp;&amp; (totalPaymentAmount0 == totalPaymentAmount1)) &amp;&amp; (totalPaymentAmount1 == totalPaymentAmount2)) &amp;&amp; (totalPaymentAmount2 == totalPaymentAmount3)) &amp;&amp; (totalPaymentAmount3 == totalPaymentAmount4)) &amp;&amp; (totalPaymentAmount4 == totalPaymentAmount5)) &amp;&amp; (totalPaymentAmount5 == totalPaymentAmount6)) &amp;&amp; (totalPaymentAmount6 &gt;= (amount + expense)))">
 				<name>
 					<text>Inv2</text>
 				</name>
 			</transition>
-			<transition id="25" invisible="True">
+			<transition id="25" invisible="true">
 				<name>
 					<text>Payment</text>
 				</name>
@@ -242,7 +242,7 @@
 				<writeVariable>totalPaymentAmount5</writeVariable>
 				<writeVariable>totalPaymentAmount6</writeVariable>
 			</transition>
-			<transition id="26" invisible="True">
+			<transition id="26" invisible="true">
 				<name>
 					<text>Payment</text>
 				</name>
@@ -255,17 +255,17 @@
 				<writeVariable>totalPaymentAmount5</writeVariable>
 				<writeVariable>totalPaymentAmount6</writeVariable>
 			</transition>
-			<transition id="27" invisible="True" guard="((((((((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == dismissal2)) &amp;&amp; (dismissal2 == dismissal3)) &amp;&amp; (dismissal3 == dismissal4)) &amp;&amp; (dismissal4 == dismissal5)) &amp;&amp; (dismissal5 == dismissal6)) &amp;&amp; (dismissal6 == &quot;G&quot;))">
+			<transition id="27" invisible="true" guard="((((((((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == dismissal2)) &amp;&amp; (dismissal2 == dismissal3)) &amp;&amp; (dismissal3 == dismissal4)) &amp;&amp; (dismissal4 == dismissal5)) &amp;&amp; (dismissal5 == dismissal6)) &amp;&amp; (dismissal6 == &quot;G&quot;))">
 				<name>
 					<text>Inv6</text>
 				</name>
 			</transition>
-			<transition id="28" invisible="True">
+			<transition id="28" invisible="true">
 				<name>
 					<text>None</text>
 				</name>
 			</transition>
-			<transition id="30" invisible="True">
+			<transition id="30" invisible="true">
 				<name>
 					<text>None</text>
 				</name>

@@ -439,8 +439,8 @@ class DPN:
           xtext = doc.createTextNode(v)
           xwrite.appendChild(xtext)
           xtrans.appendChild(xwrite)
-      if "invisible" in p and [["invisible"]]:
-        xtrans.setAttribute("invisible", "True")
+      if "invisible" in p and p["invisible"]:
+        xtrans.setAttribute("invisible", "true")
       if "constraint" in p:
         xtrans.setAttribute("guard", p["constraint"])
       return xtrans

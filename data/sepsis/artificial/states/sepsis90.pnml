@@ -578,640 +578,640 @@
 					<text>113</text>
 				</name>
 			</place>
-			<transition id="114" invisible="True">
+			<transition id="114" invisible="true">
 				<name>
 					<text>LacticAcid</text>
 				</name>
 			</transition>
-			<transition id="115" invisible="True">
+			<transition id="115" invisible="true">
 				<name>
 					<text>t100</text>
 				</name>
 			</transition>
-			<transition id="116" invisible="True">
+			<transition id="116" invisible="true">
 				<name>
 					<text>t25</text>
 				</name>
 			</transition>
-			<transition id="117" invisible="True">
+			<transition id="117" invisible="true">
 				<name>
 					<text>t5</text>
 				</name>
 			</transition>
-			<transition id="118" invisible="True">
+			<transition id="118" invisible="true">
 				<name>
 					<text>t6</text>
 				</name>
 			</transition>
-			<transition id="119" invisible="True">
+			<transition id="119" invisible="true">
 				<name>
 					<text>ER Sepsis Triage</text>
 				</name>
 				<writeVariable>timeTriage</writeVariable>
 			</transition>
-			<transition id="120" invisible="True">
+			<transition id="120" invisible="true">
 				<name>
 					<text>t2</text>
 				</name>
 			</transition>
-			<transition id="121" invisible="True">
+			<transition id="121" invisible="true">
 				<name>
 					<text>Transfer NC</text>
 				</name>
 			</transition>
-			<transition id="122" invisible="True">
+			<transition id="122" invisible="true">
 				<name>
 					<text>ER Triage</text>
 				</name>
 			</transition>
-			<transition id="123" invisible="True">
+			<transition id="123" invisible="true">
 				<name>
 					<text>t13</text>
 				</name>
 			</transition>
-			<transition id="124" invisible="True" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
+			<transition id="124" invisible="true" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
 				<name>
 					<text>LacticAcid</text>
 				</name>
 				<writeVariable>timeLacticAcid</writeVariable>
 			</transition>
-			<transition id="125" invisible="True">
+			<transition id="125" invisible="true">
 				<name>
 					<text>Admission IC</text>
 				</name>
 			</transition>
-			<transition id="126" invisible="True">
+			<transition id="126" invisible="true">
 				<name>
 					<text>Release C</text>
 				</name>
 			</transition>
-			<transition id="127" invisible="True">
+			<transition id="127" invisible="true">
 				<name>
 					<text>Release B</text>
 				</name>
 			</transition>
-			<transition id="128" invisible="True">
+			<transition id="128" invisible="true">
 				<name>
 					<text>t22</text>
 				</name>
 			</transition>
-			<transition id="129" invisible="True">
+			<transition id="129" invisible="true">
 				<name>
 					<text>Release E</text>
 				</name>
 			</transition>
-			<transition id="130" invisible="True">
+			<transition id="130" invisible="true">
 				<name>
 					<text>Release D</text>
 				</name>
 			</transition>
-			<transition id="131" invisible="True">
+			<transition id="131" invisible="true">
 				<name>
 					<text>Release A</text>
 				</name>
 			</transition>
-			<transition id="132" invisible="True">
+			<transition id="132" invisible="true">
 				<name>
 					<text>t800</text>
 				</name>
 			</transition>
-			<transition id="133" invisible="True">
+			<transition id="133" invisible="true">
 				<name>
 					<text>Leucocytes</text>
 				</name>
 			</transition>
-			<transition id="134" invisible="True">
+			<transition id="134" invisible="true">
 				<name>
 					<text>t38</text>
 				</name>
 			</transition>
-			<transition id="135" invisible="True">
+			<transition id="135" invisible="true">
 				<name>
 					<text>Return ER</text>
 				</name>
 			</transition>
-			<transition id="136" invisible="True">
+			<transition id="136" invisible="true">
 				<name>
 					<text>IV Liquid</text>
 				</name>
 			</transition>
-			<transition id="137" invisible="True" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
+			<transition id="137" invisible="true" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
 				<name>
 					<text>IV Antibiotics</text>
 				</name>
 				<writeVariable>timeAntibiotics</writeVariable>
 			</transition>
-			<transition id="138" invisible="True">
+			<transition id="138" invisible="true">
 				<name>
 					<text>t9</text>
 				</name>
 			</transition>
-			<transition id="139" invisible="True">
+			<transition id="139" invisible="true">
 				<name>
 					<text>t700</text>
 				</name>
 			</transition>
-			<transition id="140" invisible="True">
+			<transition id="140" invisible="true">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="141" invisible="True">
+			<transition id="141" invisible="true">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="142" invisible="True">
+			<transition id="142" invisible="true">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="143" invisible="True">
+			<transition id="143" invisible="true">
 				<name>
 					<text>Admission IC</text>
 				</name>
 			</transition>
-			<transition id="144" invisible="True">
+			<transition id="144" invisible="true">
 				<name>
 					<text>t12</text>
 				</name>
 			</transition>
-			<transition id="145" invisible="True">
+			<transition id="145" invisible="true">
 				<name>
 					<text>t703</text>
 				</name>
 			</transition>
-			<transition id="146" invisible="True">
+			<transition id="146" invisible="true">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="147" invisible="True">
+			<transition id="147" invisible="true">
 				<name>
 					<text>Leucocytes</text>
 				</name>
 			</transition>
-			<transition id="148" invisible="True">
+			<transition id="148" invisible="true">
 				<name>
 					<text>t803</text>
 				</name>
 			</transition>
-			<transition id="149" invisible="True">
+			<transition id="149" invisible="true">
 				<name>
 					<text>ER Registration</text>
 				</name>
 			</transition>
-			<transition id="150" invisible="True">
+			<transition id="150" invisible="true">
 				<name>
 					<text>Inv_24</text>
 				</name>
 			</transition>
-			<transition id="151" invisible="True">
+			<transition id="151" invisible="true">
 				<name>
 					<text>Inv_25</text>
 				</name>
 			</transition>
-			<transition id="152" invisible="True">
+			<transition id="152" invisible="true">
 				<name>
 					<text>Inv_26</text>
 				</name>
 			</transition>
-			<transition id="153" invisible="True">
+			<transition id="153" invisible="true">
 				<name>
 					<text>Inv_27</text>
 				</name>
 			</transition>
-			<transition id="154" invisible="True">
+			<transition id="154" invisible="true">
 				<name>
 					<text>Inv_28</text>
 				</name>
 			</transition>
-			<transition id="155" invisible="True">
+			<transition id="155" invisible="true">
 				<name>
 					<text>Inv_29</text>
 				</name>
 			</transition>
-			<transition id="156" invisible="True">
+			<transition id="156" invisible="true">
 				<name>
 					<text>Inv_30</text>
 				</name>
 			</transition>
-			<transition id="157" invisible="True">
+			<transition id="157" invisible="true">
 				<name>
 					<text>Inv_31</text>
 				</name>
 			</transition>
-			<transition id="158" invisible="True">
+			<transition id="158" invisible="true">
 				<name>
 					<text>Inv_32</text>
 				</name>
 			</transition>
-			<transition id="159" invisible="True">
+			<transition id="159" invisible="true">
 				<name>
 					<text>Inv_33</text>
 				</name>
 			</transition>
-			<transition id="160" invisible="True">
+			<transition id="160" invisible="true">
 				<name>
 					<text>Inv_34</text>
 				</name>
 			</transition>
-			<transition id="161" invisible="True">
+			<transition id="161" invisible="true">
 				<name>
 					<text>Inv_35</text>
 				</name>
 			</transition>
-			<transition id="162" invisible="True">
+			<transition id="162" invisible="true">
 				<name>
 					<text>Inv_36</text>
 				</name>
 			</transition>
-			<transition id="163" invisible="True">
+			<transition id="163" invisible="true">
 				<name>
 					<text>Inv_37</text>
 				</name>
 			</transition>
-			<transition id="164" invisible="True">
+			<transition id="164" invisible="true">
 				<name>
 					<text>Inv_38</text>
 				</name>
 			</transition>
-			<transition id="165" invisible="True">
+			<transition id="165" invisible="true">
 				<name>
 					<text>Inv_39</text>
 				</name>
 			</transition>
-			<transition id="166" invisible="True">
+			<transition id="166" invisible="true">
 				<name>
 					<text>Inv_40</text>
 				</name>
 			</transition>
-			<transition id="167" invisible="True">
+			<transition id="167" invisible="true">
 				<name>
 					<text>Inv_41</text>
 				</name>
 			</transition>
-			<transition id="168" invisible="True">
+			<transition id="168" invisible="true">
 				<name>
 					<text>Inv_42</text>
 				</name>
 			</transition>
-			<transition id="169" invisible="True">
+			<transition id="169" invisible="true">
 				<name>
 					<text>Inv_43</text>
 				</name>
 			</transition>
-			<transition id="170" invisible="True">
+			<transition id="170" invisible="true">
 				<name>
 					<text>Inv_44</text>
 				</name>
 			</transition>
-			<transition id="171" invisible="True">
+			<transition id="171" invisible="true">
 				<name>
 					<text>Inv_45</text>
 				</name>
 			</transition>
-			<transition id="172" invisible="True">
+			<transition id="172" invisible="true">
 				<name>
 					<text>Inv_46</text>
 				</name>
 			</transition>
-			<transition id="173" invisible="True">
+			<transition id="173" invisible="true">
 				<name>
 					<text>Inv_47</text>
 				</name>
 			</transition>
-			<transition id="174" invisible="True">
+			<transition id="174" invisible="true">
 				<name>
 					<text>Inv_48</text>
 				</name>
 			</transition>
-			<transition id="175" invisible="True">
+			<transition id="175" invisible="true">
 				<name>
 					<text>Inv_49</text>
 				</name>
 			</transition>
-			<transition id="176" invisible="True">
+			<transition id="176" invisible="true">
 				<name>
 					<text>Inv_50</text>
 				</name>
 			</transition>
-			<transition id="177" invisible="True">
+			<transition id="177" invisible="true">
 				<name>
 					<text>Inv_51</text>
 				</name>
 			</transition>
-			<transition id="178" invisible="True">
+			<transition id="178" invisible="true">
 				<name>
 					<text>Inv_52</text>
 				</name>
 			</transition>
-			<transition id="179" invisible="True">
+			<transition id="179" invisible="true">
 				<name>
 					<text>Inv_53</text>
 				</name>
 			</transition>
-			<transition id="180" invisible="True">
+			<transition id="180" invisible="true">
 				<name>
 					<text>Inv_54</text>
 				</name>
 			</transition>
-			<transition id="181" invisible="True">
+			<transition id="181" invisible="true">
 				<name>
 					<text>Inv_55</text>
 				</name>
 			</transition>
-			<transition id="182" invisible="True">
+			<transition id="182" invisible="true">
 				<name>
 					<text>Inv_56</text>
 				</name>
 			</transition>
-			<transition id="183" invisible="True">
+			<transition id="183" invisible="true">
 				<name>
 					<text>Inv_57</text>
 				</name>
 			</transition>
-			<transition id="184" invisible="True">
+			<transition id="184" invisible="true">
 				<name>
 					<text>Inv_58</text>
 				</name>
 			</transition>
-			<transition id="185" invisible="True">
+			<transition id="185" invisible="true">
 				<name>
 					<text>Inv_59</text>
 				</name>
 			</transition>
-			<transition id="186" invisible="True">
+			<transition id="186" invisible="true">
 				<name>
 					<text>Inv_60</text>
 				</name>
 			</transition>
-			<transition id="187" invisible="True">
+			<transition id="187" invisible="true">
 				<name>
 					<text>Inv_61</text>
 				</name>
 			</transition>
-			<transition id="188" invisible="True">
+			<transition id="188" invisible="true">
 				<name>
 					<text>Inv_62</text>
 				</name>
 			</transition>
-			<transition id="189" invisible="True">
+			<transition id="189" invisible="true">
 				<name>
 					<text>Inv_63</text>
 				</name>
 			</transition>
-			<transition id="190" invisible="True">
+			<transition id="190" invisible="true">
 				<name>
 					<text>Inv_64</text>
 				</name>
 			</transition>
-			<transition id="191" invisible="True">
+			<transition id="191" invisible="true">
 				<name>
 					<text>Inv_65</text>
 				</name>
 			</transition>
-			<transition id="192" invisible="True">
+			<transition id="192" invisible="true">
 				<name>
 					<text>Inv_66</text>
 				</name>
 			</transition>
-			<transition id="193" invisible="True">
+			<transition id="193" invisible="true">
 				<name>
 					<text>Inv_67</text>
 				</name>
 			</transition>
-			<transition id="194" invisible="True">
+			<transition id="194" invisible="true">
 				<name>
 					<text>Inv_68</text>
 				</name>
 			</transition>
-			<transition id="195" invisible="True">
+			<transition id="195" invisible="true">
 				<name>
 					<text>Inv_69</text>
 				</name>
 			</transition>
-			<transition id="196" invisible="True">
+			<transition id="196" invisible="true">
 				<name>
 					<text>Inv_70</text>
 				</name>
 			</transition>
-			<transition id="197" invisible="True">
+			<transition id="197" invisible="true">
 				<name>
 					<text>Inv_71</text>
 				</name>
 			</transition>
-			<transition id="198" invisible="True">
+			<transition id="198" invisible="true">
 				<name>
 					<text>Inv_72</text>
 				</name>
 			</transition>
-			<transition id="199" invisible="True">
+			<transition id="199" invisible="true">
 				<name>
 					<text>Inv_73</text>
 				</name>
 			</transition>
-			<transition id="200" invisible="True">
+			<transition id="200" invisible="true">
 				<name>
 					<text>Inv_74</text>
 				</name>
 			</transition>
-			<transition id="201" invisible="True">
+			<transition id="201" invisible="true">
 				<name>
 					<text>Inv_75</text>
 				</name>
 			</transition>
-			<transition id="202" invisible="True">
+			<transition id="202" invisible="true">
 				<name>
 					<text>Inv_76</text>
 				</name>
 			</transition>
-			<transition id="203" invisible="True">
+			<transition id="203" invisible="true">
 				<name>
 					<text>Inv_77</text>
 				</name>
 			</transition>
-			<transition id="204" invisible="True">
+			<transition id="204" invisible="true">
 				<name>
 					<text>Inv_78</text>
 				</name>
 			</transition>
-			<transition id="205" invisible="True">
+			<transition id="205" invisible="true">
 				<name>
 					<text>Inv_79</text>
 				</name>
 			</transition>
-			<transition id="206" invisible="True">
+			<transition id="206" invisible="true">
 				<name>
 					<text>Inv_80</text>
 				</name>
 			</transition>
-			<transition id="207" invisible="True">
+			<transition id="207" invisible="true">
 				<name>
 					<text>Inv_81</text>
 				</name>
 			</transition>
-			<transition id="208" invisible="True">
+			<transition id="208" invisible="true">
 				<name>
 					<text>Inv_82</text>
 				</name>
 			</transition>
-			<transition id="209" invisible="True">
+			<transition id="209" invisible="true">
 				<name>
 					<text>Inv_83</text>
 				</name>
 			</transition>
-			<transition id="210" invisible="True">
+			<transition id="210" invisible="true">
 				<name>
 					<text>Inv_84</text>
 				</name>
 			</transition>
-			<transition id="211" invisible="True">
+			<transition id="211" invisible="true">
 				<name>
 					<text>Inv_85</text>
 				</name>
 			</transition>
-			<transition id="212" invisible="True">
+			<transition id="212" invisible="true">
 				<name>
 					<text>Inv_86</text>
 				</name>
 			</transition>
-			<transition id="213" invisible="True">
+			<transition id="213" invisible="true">
 				<name>
 					<text>Inv_87</text>
 				</name>
 			</transition>
-			<transition id="214" invisible="True">
+			<transition id="214" invisible="true">
 				<name>
 					<text>Inv_88</text>
 				</name>
 			</transition>
-			<transition id="215" invisible="True">
+			<transition id="215" invisible="true">
 				<name>
 					<text>Inv_89</text>
 				</name>
 			</transition>
-			<transition id="216" invisible="True">
+			<transition id="216" invisible="true">
 				<name>
 					<text>Inv_90</text>
 				</name>
 			</transition>
-			<transition id="217" invisible="True">
+			<transition id="217" invisible="true">
 				<name>
 					<text>Inv_91</text>
 				</name>
 			</transition>
-			<transition id="218" invisible="True">
+			<transition id="218" invisible="true">
 				<name>
 					<text>Inv_92</text>
 				</name>
 			</transition>
-			<transition id="219" invisible="True">
+			<transition id="219" invisible="true">
 				<name>
 					<text>Inv_93</text>
 				</name>
 			</transition>
-			<transition id="220" invisible="True">
+			<transition id="220" invisible="true">
 				<name>
 					<text>Inv_94</text>
 				</name>
 			</transition>
-			<transition id="221" invisible="True">
+			<transition id="221" invisible="true">
 				<name>
 					<text>Inv_95</text>
 				</name>
 			</transition>
-			<transition id="222" invisible="True">
+			<transition id="222" invisible="true">
 				<name>
 					<text>Inv_96</text>
 				</name>
 			</transition>
-			<transition id="223" invisible="True">
+			<transition id="223" invisible="true">
 				<name>
 					<text>Inv_97</text>
 				</name>
 			</transition>
-			<transition id="224" invisible="True">
+			<transition id="224" invisible="true">
 				<name>
 					<text>Inv_98</text>
 				</name>
 			</transition>
-			<transition id="225" invisible="True">
+			<transition id="225" invisible="true">
 				<name>
 					<text>Inv_99</text>
 				</name>
 			</transition>
-			<transition id="226" invisible="True">
+			<transition id="226" invisible="true">
 				<name>
 					<text>Inv_100</text>
 				</name>
 			</transition>
-			<transition id="227" invisible="True">
+			<transition id="227" invisible="true">
 				<name>
 					<text>Inv_101</text>
 				</name>
 			</transition>
-			<transition id="228" invisible="True">
+			<transition id="228" invisible="true">
 				<name>
 					<text>Inv_102</text>
 				</name>
 			</transition>
-			<transition id="229" invisible="True">
+			<transition id="229" invisible="true">
 				<name>
 					<text>Inv_103</text>
 				</name>
 			</transition>
-			<transition id="230" invisible="True">
+			<transition id="230" invisible="true">
 				<name>
 					<text>Inv_104</text>
 				</name>
 			</transition>
-			<transition id="231" invisible="True">
+			<transition id="231" invisible="true">
 				<name>
 					<text>Inv_105</text>
 				</name>
 			</transition>
-			<transition id="232" invisible="True">
+			<transition id="232" invisible="true">
 				<name>
 					<text>Inv_106</text>
 				</name>
 			</transition>
-			<transition id="233" invisible="True">
+			<transition id="233" invisible="true">
 				<name>
 					<text>Inv_107</text>
 				</name>
 			</transition>
-			<transition id="234" invisible="True">
+			<transition id="234" invisible="true">
 				<name>
 					<text>Inv_108</text>
 				</name>
 			</transition>
-			<transition id="235" invisible="True">
+			<transition id="235" invisible="true">
 				<name>
 					<text>Inv_109</text>
 				</name>
 			</transition>
-			<transition id="236" invisible="True">
+			<transition id="236" invisible="true">
 				<name>
 					<text>Inv_110</text>
 				</name>
 			</transition>
-			<transition id="237" invisible="True">
+			<transition id="237" invisible="true">
 				<name>
 					<text>Inv_111</text>
 				</name>
 			</transition>
-			<transition id="238" invisible="True">
+			<transition id="238" invisible="true">
 				<name>
 					<text>Inv_112</text>
 				</name>
 			</transition>
-			<transition id="239" invisible="True">
+			<transition id="239" invisible="true">
 				<name>
 					<text>Inv_113</text>
 				</name>
 			</transition>
-			<transition id="241" invisible="True">
+			<transition id="241" invisible="true">
 				<name>
 					<text>None</text>
 				</name>

@@ -78,7 +78,7 @@
 					<text>13</text>
 				</name>
 			</place>
-			<transition id="14" invisible="True">
+			<transition id="14" invisible="true">
 				<name>
 					<text>Create Fine</text>
 				</name>
@@ -87,132 +87,132 @@
 				<writeVariable>dismissal</writeVariable>
 				<writeVariable>points</writeVariable>
 			</transition>
-			<transition id="15" invisible="True" guard="(delaySend' &lt; 2160)">
+			<transition id="15" invisible="true" guard="(delaySend' &lt; 2160)">
 				<name>
 					<text>Send Fine</text>
 				</name>
 				<writeVariable>delaySend</writeVariable>
 				<writeVariable>expense</writeVariable>
 			</transition>
-			<transition id="16" invisible="True">
+			<transition id="16" invisible="true">
 				<name>
 					<text>Insert Fine Notification</text>
 				</name>
 			</transition>
-			<transition id="17" invisible="True" guard="(delayPrefecture' &lt; 1440)">
+			<transition id="17" invisible="true" guard="(delayPrefecture' &lt; 1440)">
 				<name>
 					<text>Insert Date Appeal to Prefecture</text>
 				</name>
 				<writeVariable>delayPrefecture</writeVariable>
 			</transition>
-			<transition id="18" invisible="True" guard="(totalPaymentAmount &gt;= (amount + expense))">
+			<transition id="18" invisible="true" guard="(totalPaymentAmount &gt;= (amount + expense))">
 				<name>
 					<text>Inv3</text>
 				</name>
 			</transition>
-			<transition id="19" invisible="True" guard="(dismissal == &quot;NIL&quot;)">
+			<transition id="19" invisible="true" guard="(dismissal == &quot;NIL&quot;)">
 				<name>
 					<text>Inv5</text>
 				</name>
 			</transition>
-			<transition id="20" invisible="True" guard="(dismissal == &quot;#&quot;)">
+			<transition id="20" invisible="true" guard="(dismissal == &quot;#&quot;)">
 				<name>
 					<text>Inv4</text>
 				</name>
 			</transition>
-			<transition id="21" invisible="True" guard="(delayJudge' &lt; 1440)">
+			<transition id="21" invisible="true" guard="(delayJudge' &lt; 1440)">
 				<name>
 					<text>Appeal to Judge</text>
 				</name>
 				<writeVariable>delayJudge</writeVariable>
 				<writeVariable>dismissal</writeVariable>
 			</transition>
-			<transition id="22" invisible="True" guard="(totalPaymentAmount &lt; (amount + expense))">
+			<transition id="22" invisible="true" guard="(totalPaymentAmount &lt; (amount + expense))">
 				<name>
 					<text>Send for Credit Collection</text>
 				</name>
 			</transition>
-			<transition id="23" invisible="True" guard="((dismissal != &quot;NIL&quot;) || ((points == 0) &amp;&amp; (totalPaymentAmount &gt;= amount)))">
+			<transition id="23" invisible="true" guard="((dismissal != &quot;NIL&quot;) || ((points == 0) &amp;&amp; (totalPaymentAmount &gt;= amount)))">
 				<name>
 					<text>Inv1</text>
 				</name>
 			</transition>
-			<transition id="24" invisible="True">
+			<transition id="24" invisible="true">
 				<name>
 					<text>Send Appeal to Prefecture</text>
 				</name>
 				<writeVariable>dismissal</writeVariable>
 			</transition>
-			<transition id="25" invisible="True" guard="(dismissal == &quot;NIL&quot;)">
+			<transition id="25" invisible="true" guard="(dismissal == &quot;NIL&quot;)">
 				<name>
 					<text>Receive Result Appeal from Prefecture</text>
 				</name>
 			</transition>
-			<transition id="26" invisible="True">
+			<transition id="26" invisible="true">
 				<name>
 					<text>Notify Result Appeal to Offender</text>
 				</name>
 			</transition>
-			<transition id="27" invisible="True">
+			<transition id="27" invisible="true">
 				<name>
 					<text>Payment</text>
 				</name>
 				<writeVariable>totalPaymentAmount</writeVariable>
 			</transition>
-			<transition id="28" invisible="True">
+			<transition id="28" invisible="true">
 				<name>
 					<text>Add penalty</text>
 				</name>
 				<writeVariable>amount</writeVariable>
 			</transition>
-			<transition id="29" invisible="True" guard="(totalPaymentAmount &gt;= (amount + expense))">
+			<transition id="29" invisible="true" guard="(totalPaymentAmount &gt;= (amount + expense))">
 				<name>
 					<text>Inv2</text>
 				</name>
 			</transition>
-			<transition id="30" invisible="True">
+			<transition id="30" invisible="true">
 				<name>
 					<text>Payment</text>
 				</name>
 				<writeVariable>totalPaymentAmount</writeVariable>
 			</transition>
-			<transition id="31" invisible="True">
+			<transition id="31" invisible="true">
 				<name>
 					<text>Payment</text>
 				</name>
 				<writeVariable>totalPaymentAmount</writeVariable>
 			</transition>
-			<transition id="32" invisible="True" guard="(dismissal == &quot;G&quot;)">
+			<transition id="32" invisible="true" guard="(dismissal == &quot;G&quot;)">
 				<name>
 					<text>Inv6</text>
 				</name>
 			</transition>
-			<transition id="33" invisible="True">
+			<transition id="33" invisible="true">
 				<name>
 					<text>Inv_9</text>
 				</name>
 			</transition>
-			<transition id="34" invisible="True">
+			<transition id="34" invisible="true">
 				<name>
 					<text>Inv_10</text>
 				</name>
 			</transition>
-			<transition id="35" invisible="True">
+			<transition id="35" invisible="true">
 				<name>
 					<text>Inv_11</text>
 				</name>
 			</transition>
-			<transition id="36" invisible="True">
+			<transition id="36" invisible="true">
 				<name>
 					<text>Inv_12</text>
 				</name>
 			</transition>
-			<transition id="37" invisible="True">
+			<transition id="37" invisible="true">
 				<name>
 					<text>Inv_13</text>
 				</name>
 			</transition>
-			<transition id="39" invisible="True">
+			<transition id="39" invisible="true">
 				<name>
 					<text>None</text>
 				</name>
