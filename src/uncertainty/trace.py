@@ -418,6 +418,9 @@ class UncertainTrace:
       ues.append(ue)
     return UncertainTrace(ues)
 
+  def events(self):
+    return self._events
+
   # called before encoding
   def normalize_time(self):
     # replace all times by float values for simpler treatment in encoding

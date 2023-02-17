@@ -19,7 +19,7 @@ from encoding.encoding_exhaustive import ExhaustiveEncoding
 from dpn.expr import Expr
 import uncertainty.read
 from uncertainty.encoding import UncertaintyEncoding
-from uncertainty.trace import UncertainTrace, UncertainLog
+from uncertainty.trace import UncertainTrace, UncertainLog, UncertainDataValue
 from uncertainty.uncertainize import all as uncertainize_all, extending as uncertainty_extending
 from utils import pad_to, spaces
 from options import default as default_options
@@ -541,7 +541,7 @@ def process_args(argv):
   usage = "cocomot.py <model_file> <log_file> [-p <property_string> | -s] [-x <number>]"
   opts = default_options
   try:
-    optargs, args = getopt.getopt(argv,"hjzmro:u:v:d:l:n:x:a:s:")
+    optargs, args = getopt.getopt(argv,"hjmro:u:v:d:l:n:x:a:s:z:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(1)
@@ -570,7 +570,7 @@ def process_args(argv):
     elif opt == "-a":
       opts["anti"] = int(arg)
     elif opt == "-z":
-      opts["z"] = True
+      opts["z"] = int(arg)
     elif opt == "-o":
       args = ["indet", "act", "time", "data", "mixed"]
       if not (arg in args):
@@ -607,9 +607,32 @@ if __name__ == "__main__":
     elif ps["uncertainty"]: # has_uncertainty
       cocomot_uncertain(dpn, log, ps)
     else:
-      if ps["z"]:
-        xml = dpn.hackstates(2).export_pnml()
-        print("<?xml version='1.0' encoding='UTF-8'?>")
+      if ps["z"] != None:
+        k = ps["z"]
+        vs = [ v["name"] for v in dpn.variables()]
+        base_vars = [ v for v in vs if not \
+          any( len(u) < len(v) and v.startswith(u) for u in vs )]
+        log = preprocess_log(log, dpn)
+        naive_part = NaivePartitioning([ (t,1) for t in log ]).representatives()
+        traces = []
+        for (trace, _) in naive_part:
+          t = UncertainTrace.from_certain_trace(trace)
+          for e in t.events():
+            for v in base_vars:
+              if e.has_data_variable(v):
+                val = e.data_variable(v).values()
+                kind = e.data_variable(v).kind()
+                for i in range(0,k):
+                  dval = UncertainDataValue(kind, v + str(i), val)
+                  e.set_data(v + str(i), dval)
+          traces.append(t)
+        log = UncertainLog(traces)
+        xml = log.to_xes()
+        #f = open("/home/bytekid/tools/cocomot/test.xes", "w")
+        #f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
+        #f.close()
+        #xml = dpn.hackvars(ps["z"]).export_pnml()
+        #print("<?xml version='1.0' encoding='UTF-8'?>")
         print(xml.toprettyxml())
         exit()
       cocomot(dpn, log, ps)

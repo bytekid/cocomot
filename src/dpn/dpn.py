@@ -1,7 +1,9 @@
 from sys import maxsize
 from smt.z3solver import Z3Solver
 import xml.dom.minidom
-from dpn.expr import top
+from copy import deepcopy
+
+from dpn.expr import top, Bool, Cmp, BinOp, BinCon, Var, Num
 from utils import VarType
 
 class DPN:
@@ -263,6 +265,7 @@ class DPN:
     return True
 
   def lower_bound_alignment_cost(self, trace):
+    events = [e["label"] for e in trace]
     # multiple occurrences of transitions that can occur only once in model runs
     singles = set([ t["label"] for tid in self.single_occurrence_transitions() \
       for t in self.transitions() if t["id"] == tid])
@@ -274,17 +277,20 @@ class DPN:
     solver = Z3Solver()
     subst = {}
     for v in self.variables():
-      vals = [e["valuation"][v["name"]] for e in trace if v["name"] in e["valuation"]]
-      if len(vals) == 1:
-        subst[v["name"]] = solver.real(vals[0])
-        subst[v["name"]+"'"] = solver.real(vals[0])
-    for t in self.transitions():
+      if v["type"] not in ["java.lang.String", "java.lang.Boolean"]:
+        vals = [e["valuation"][v["name"]] for e in trace if v["name"] in e["valuation"]]
+        if len(vals) == 1:
+          subst[v["name"]] = solver.real(vals[0])
+          subst[v["name"]+"'"] = solver.real(vals[0])
+    relevant_transs = [t for t in self._transitions if not "invisible" in t and \
+      t["label"] in events]
+    for t in relevant_transs:
       if "constraint" in t:
         for cmp in t["constraint"].comparisons():
           cmpsmt = cmp.toSMT(solver, subst)
           if solver.simplify(cmpsmt) == solver.false():
             bnd += 1
-            #print(cmpsmt, "not sat")
+            #print(t["label"],t["constraint"], cmpsmt, "not sat")
 
     solver.destroy()
     return bnd
@@ -320,7 +326,7 @@ class DPN:
 
     vars = []
     for v in self._variables:
-      v["type"] = "bool" if v["type"] == "bool" else VarType.to_str(v["type"])
+      #v["type"] = "bool" if v["type"] == "bool" else VarType.to_str(v["type"])
       vars.append(v)
 
     dpn = {
@@ -329,6 +335,65 @@ class DPN:
       "arcs":arcs,
       "variables": vars}
     return DPN(dpn)
+
+  def expand(self, k, g):
+    if k == 0:
+      return g
+
+    vars = dict([(v["name"], v) for v in self._variables])
+
+    def expand_cmp(c):
+      if not isinstance(c.left, Var): # and not isinstance(c.right, Var):
+        #print("do not change", c)
+        return (c, [])
+      v = str(c.left)
+      is_written = v[-1] == "'"
+      #print(c, is_written)
+      vbase = v if not is_written else v[0:-1]
+      t = vars[vbase]["type"]
+      var = lambda i: Var(vbase + str(i), True if is_written else None, type=t)
+      e = Cmp("==", c.left, var(0))
+      for i in range(1, k):
+        e = BinCon(e, "&&", Cmp("==", var(i-1), var(i)))
+      return BinCon(e, "&&", Cmp(c.op, var(k-1), c.right))
+    
+    if isinstance(g, BinCon):
+      c = self.expand(k, g.left)
+      return BinCon(c, g.op, g.right)
+    elif isinstance(g, Cmp):
+      return expand_cmp(g)
+    elif isinstance(g, Bool):
+      return g
+    print(g)
+    assert(False)
+  
+  def hackvars(self, k):
+    vars = deepcopy(self._variables)
+    trans = deepcopy(self._transitions)
+
+    for v in self._variables:
+      type = v["type"]
+      name = v["name"]
+      for i in range(0, k):
+        vars.append({"name":name + str(i), "type":type, "initialValue":0 if type != "java.lang.Bool" else False})
+
+    for t in trans:
+      if "constraint" in t:
+        #print("before", t["constraint"])
+        g = self.expand(k, t["constraint"])
+        #print("after", g, "\n")
+        #print("written", ws)
+        t["constraint"] = str(g)
+      ws = [ v+str(i) for v in t["write"] for i in range(0,k)]
+      t["write"] = t["write"] + ws if "write" in t else ws
+    
+    dpn = {
+      "places": self._places, 
+      "transitions": trans,
+      "arcs":self._arcs,
+      "variables": vars}
+    return DPN(dpn)
+       
 
   def export_pnml(self):
     doc = xml.dom.minidom.parseString("<pnml/>")
@@ -377,7 +442,7 @@ class DPN:
       if "invisible" in p and [["invisible"]]:
         xtrans.setAttribute("invisible", "True")
       if "constraint" in p:
-        xtrans.setAttribute("constraint", p["constraint"])
+        xtrans.setAttribute("guard", p["constraint"])
       return xtrans
 
     def arc_to_pnml(a):
@@ -396,7 +461,7 @@ class DPN:
       xvar.appendChild(xname)
       xtext = doc.createTextNode(v["name"])
       xname.appendChild(xtext)
-      xvar.setAttribute("type", VarType.to_java(v["type"]))
+      xvar.setAttribute("type", v["type"])
       return xvar
 
 
@@ -416,7 +481,7 @@ class DPN:
     for a in self._arcs:
       xpage.appendChild(arc_to_pnml(a))
     xvars = doc.createElement("variables")
-    xpage.appendChild(xvars)
+    xnet.appendChild(xvars)
     for v in self._variables:
       xvars.appendChild(var_to_pnml(v))
     return root
