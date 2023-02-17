@@ -607,34 +607,6 @@ if __name__ == "__main__":
     elif ps["uncertainty"]: # has_uncertainty
       cocomot_uncertain(dpn, log, ps)
     else:
-      if ps["z"] != None:
-        k = ps["z"]
-        vs = [ v["name"] for v in dpn.variables()]
-        base_vars = [ v for v in vs if not \
-          any( len(u) < len(v) and v.startswith(u) for u in vs )]
-        log = preprocess_log(log, dpn)
-        naive_part = NaivePartitioning([ (t,1) for t in log ]).representatives()
-        traces = []
-        for (trace, _) in naive_part:
-          t = UncertainTrace.from_certain_trace(trace)
-          for e in t.events():
-            for v in base_vars:
-              if e.has_data_variable(v):
-                val = e.data_variable(v).values()
-                kind = e.data_variable(v).kind()
-                for i in range(0,k):
-                  dval = UncertainDataValue(kind, v + str(i), val)
-                  e.set_data(v + str(i), dval)
-          traces.append(t)
-        log = UncertainLog(traces)
-        xml = log.to_xes()
-        #f = open("/home/bytekid/tools/cocomot/test.xes", "w")
-        #f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
-        #f.close()
-        #xml = dpn.hackvars(ps["z"]).export_pnml()
-        #print("<?xml version='1.0' encoding='UTF-8'?>")
-        print(xml.toprettyxml())
-        exit()
       cocomot(dpn, log, ps)
   YicesSolver.shutdown()
   
