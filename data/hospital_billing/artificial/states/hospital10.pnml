@@ -148,7 +148,7 @@
 					<text>t1</text>
 				</name>
 			</transition>
-			<transition id="28" invisible="true" guard="(caseType == &quot;B&quot;)">
+			<transition id="28" guard="(caseType == &quot;B&quot;)">
 				<name>
 					<text>CHANGE DIAGN</text>
 				</name>
@@ -158,7 +158,7 @@
 					<text>t4</text>
 				</name>
 			</transition>
-			<transition id="30" invisible="true" guard="(((isClosed == true) &amp;&amp; (closeCode != &quot;A&quot;)) || (isClosed != true))">
+			<transition id="30" guard="(((isClosed == true) &amp;&amp; (closeCode != &quot;A&quot;)) || (isClosed != true))">
 				<name>
 					<text>STORNO</text>
 				</name>
@@ -168,17 +168,17 @@
 					<text>t31</text>
 				</name>
 			</transition>
-			<transition id="32" invisible="true" guard="((isClosed == true) &amp;&amp; (closeCode == &quot;A&quot;))">
+			<transition id="32" guard="((isClosed == true) &amp;&amp; (closeCode == &quot;A&quot;))">
 				<name>
 					<text>STORNO</text>
 				</name>
 			</transition>
-			<transition id="33" invisible="true" guard="(isClosed == true)">
+			<transition id="33" guard="(isClosed == true)">
 				<name>
 					<text>BILLED</text>
 				</name>
 			</transition>
-			<transition id="34" invisible="true" guard="(isClosed != true)">
+			<transition id="34" guard="(isClosed != true)">
 				<name>
 					<text>REOPEN</text>
 				</name>
@@ -198,12 +198,12 @@
 					<text>t18</text>
 				</name>
 			</transition>
-			<transition id="38" invisible="true" guard="(isClosed != true)">
+			<transition id="38" guard="(isClosed != true)">
 				<name>
 					<text>DELETE</text>
 				</name>
 			</transition>
-			<transition id="39" invisible="true">
+			<transition id="39">
 				<name>
 					<text>EMPTY</text>
 				</name>
@@ -223,7 +223,7 @@
 					<text>t10</text>
 				</name>
 			</transition>
-			<transition id="43" invisible="true">
+			<transition id="43">
 				<name>
 					<text>CHANGE END</text>
 				</name>
@@ -233,7 +233,7 @@
 					<text>t25</text>
 				</name>
 			</transition>
-			<transition id="45" invisible="true">
+			<transition id="45">
 				<name>
 					<text>REJECT</text>
 				</name>
@@ -243,12 +243,12 @@
 					<text>t39</text>
 				</name>
 			</transition>
-			<transition id="47" invisible="true">
+			<transition id="47">
 				<name>
 					<text>BILLED</text>
 				</name>
 			</transition>
-			<transition id="48" invisible="true" guard="((caseType == &quot;B&quot;) || ((caseType != &quot;B&quot;) &amp;&amp; (closeCode != &quot;A&quot;)))">
+			<transition id="48" guard="((caseType == &quot;B&quot;) || ((caseType != &quot;B&quot;) &amp;&amp; (closeCode != &quot;A&quot;)))">
 				<name>
 					<text>REOPEN</text>
 				</name>
@@ -258,7 +258,7 @@
 					<text>t15</text>
 				</name>
 			</transition>
-			<transition id="50" invisible="true">
+			<transition id="50">
 				<name>
 					<text>SET STATUS</text>
 				</name>
@@ -268,17 +268,17 @@
 					<text>t30</text>
 				</name>
 			</transition>
-			<transition id="52" invisible="true">
+			<transition id="52">
 				<name>
 					<text>DELETE</text>
 				</name>
 			</transition>
-			<transition id="53" invisible="true">
+			<transition id="53">
 				<name>
 					<text>RELEASE</text>
 				</name>
 			</transition>
-			<transition id="54" invisible="true" guard="(closeCode != &quot;H&quot;)">
+			<transition id="54" guard="(closeCode != &quot;H&quot;)">
 				<name>
 					<text>REOPEN</text>
 				</name>
@@ -288,13 +288,13 @@
 					<text>skipRelease</text>
 				</name>
 			</transition>
-			<transition id="56" invisible="true" guard="(speciality != &quot;K&quot;)">
+			<transition id="56" guard="(speciality != &quot;K&quot;)">
 				<name>
 					<text>FIN</text>
 				</name>
 				<writeVariable>closeCode</writeVariable>
 			</transition>
-			<transition id="57" invisible="true">
+			<transition id="57">
 				<name>
 					<text>DELETE</text>
 				</name>
@@ -304,7 +304,7 @@
 					<text>t12</text>
 				</name>
 			</transition>
-			<transition id="59" invisible="true">
+			<transition id="59">
 				<name>
 					<text>CODE OK</text>
 				</name>
@@ -314,12 +314,12 @@
 					<text>t8</text>
 				</name>
 			</transition>
-			<transition id="61" invisible="true" guard="(((caseType != &quot;F&quot;) &amp;&amp; (caseType == &quot;C&quot;)) || (((caseType != &quot;F&quot;) &amp;&amp; (caseType != &quot;C&quot;)) &amp;&amp; (closeCode == &quot;A&quot;)))">
+			<transition id="61" guard="(((caseType != &quot;F&quot;) &amp;&amp; (caseType == &quot;C&quot;)) || (((caseType != &quot;F&quot;) &amp;&amp; (caseType != &quot;C&quot;)) &amp;&amp; (closeCode == &quot;A&quot;)))">
 				<name>
 					<text>CODE NOK</text>
 				</name>
 			</transition>
-			<transition id="62" invisible="true">
+			<transition id="62">
 				<name>
 					<text>NEW</text>
 				</name>

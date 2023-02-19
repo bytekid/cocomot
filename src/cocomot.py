@@ -617,11 +617,12 @@ if __name__ == "__main__":
           any( len(u) < len(v) and v.startswith(u) for u in vs )]
         log = preprocess_log(log, dpn, replace_strings=False)
         naive_part = NaivePartitioning([ (t,1) for t in log if len(t) < 9]).representatives()
+        interval_part = IntervalPartitioning(dpn, naive_part).representatives()
         traces = []
         shorttypes = { "java.lang.Integer": "int", "java.lang.Double": "float",
           "java.lang.Boolean": "boolean", "java.lang.String": "string"}
         vartypes = dict([ (v["name"], shorttypes[v["type"]]) for v in dpn.variables()])
-        for (trace, _) in naive_part:
+        for (trace, _) in interval_part:
           t = UncertainTrace.from_certain_trace(trace, vartypes)
           for e in t.events():
             for v in base_vars:
@@ -634,11 +635,11 @@ if __name__ == "__main__":
           traces.append(t)
         log = UncertainLog(traces)
         xml = log.to_xes()
-        f = open("/home/bytekid/tools/cocomot/test.xes", "w")
-        f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
-        f.close()
         """
-        xml = dpn.hackstates(ps["z"]).export_pnml()
+        #f = open("/home/bytekid/tools/cocomot/test.xes", "w")
+        #f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
+        #f.close()
+        xml = dpn.hackstates(k).export_pnml()
         print("<?xml version='1.0' encoding='UTF-8'?>")
         print(xml.toprettyxml())
         exit()
