@@ -228,7 +228,7 @@
 					<text>43</text>
 				</name>
 			</place>
-			<transition id="44" invisible="true">
+			<transition id="44">
 				<name>
 					<text>LacticAcid</text>
 				</name>
@@ -253,49 +253,49 @@
 					<text>t6</text>
 				</name>
 			</transition>
-			<transition id="49" invisible="true">
+			<transition id="49">
 				<name>
 					<text>ER Sepsis Triage</text>
 				</name>
-				<writeVariable>timeTriage</writeVariable>
 			</transition>
 			<transition id="50" invisible="true">
 				<name>
 					<text>t2</text>
 				</name>
 			</transition>
-			<transition id="51" invisible="true">
+			<transition id="51">
 				<name>
 					<text>Transfer NC</text>
 				</name>
 			</transition>
-			<transition id="52" invisible="true">
+			<transition id="52">
 				<name>
 					<text>ER Triage</text>
 				</name>
+				<writeVariable>timeTriage</writeVariable>
 			</transition>
 			<transition id="53" invisible="true">
 				<name>
 					<text>t13</text>
 				</name>
 			</transition>
-			<transition id="54" invisible="true" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
+			<transition id="54" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
 				<name>
 					<text>LacticAcid</text>
 				</name>
 				<writeVariable>timeLacticAcid</writeVariable>
 			</transition>
-			<transition id="55" invisible="true">
+			<transition id="55">
 				<name>
 					<text>Admission IC</text>
 				</name>
 			</transition>
-			<transition id="56" invisible="true">
+			<transition id="56">
 				<name>
 					<text>Release C</text>
 				</name>
 			</transition>
-			<transition id="57" invisible="true">
+			<transition id="57">
 				<name>
 					<text>Release B</text>
 				</name>
@@ -305,17 +305,17 @@
 					<text>t22</text>
 				</name>
 			</transition>
-			<transition id="59" invisible="true">
+			<transition id="59">
 				<name>
 					<text>Release E</text>
 				</name>
 			</transition>
-			<transition id="60" invisible="true">
+			<transition id="60">
 				<name>
 					<text>Release D</text>
 				</name>
 			</transition>
-			<transition id="61" invisible="true">
+			<transition id="61">
 				<name>
 					<text>Release A</text>
 				</name>
@@ -325,7 +325,7 @@
 					<text>t800</text>
 				</name>
 			</transition>
-			<transition id="63" invisible="true">
+			<transition id="63">
 				<name>
 					<text>Leucocytes</text>
 				</name>
@@ -335,17 +335,17 @@
 					<text>t38</text>
 				</name>
 			</transition>
-			<transition id="65" invisible="true">
+			<transition id="65">
 				<name>
 					<text>Return ER</text>
 				</name>
 			</transition>
-			<transition id="66" invisible="true">
+			<transition id="66">
 				<name>
 					<text>IV Liquid</text>
 				</name>
 			</transition>
-			<transition id="67" invisible="true" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
+			<transition id="67" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
 				<name>
 					<text>IV Antibiotics</text>
 				</name>
@@ -361,22 +361,22 @@
 					<text>t700</text>
 				</name>
 			</transition>
-			<transition id="70" invisible="true">
+			<transition id="70">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="71" invisible="true">
+			<transition id="71">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="72" invisible="true">
+			<transition id="72">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="73" invisible="true">
+			<transition id="73">
 				<name>
 					<text>Admission IC</text>
 				</name>
@@ -391,12 +391,12 @@
 					<text>t703</text>
 				</name>
 			</transition>
-			<transition id="76" invisible="true">
+			<transition id="76">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="77" invisible="true">
+			<transition id="77">
 				<name>
 					<text>Leucocytes</text>
 				</name>
@@ -406,7 +406,7 @@
 					<text>t803</text>
 				</name>
 			</transition>
-			<transition id="79" invisible="true">
+			<transition id="79">
 				<name>
 					<text>ER Registration</text>
 				</name>

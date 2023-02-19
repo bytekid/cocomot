@@ -378,7 +378,7 @@
 					<text>73</text>
 				</name>
 			</place>
-			<transition id="74" invisible="true">
+			<transition id="74">
 				<name>
 					<text>LacticAcid</text>
 				</name>
@@ -403,49 +403,49 @@
 					<text>t6</text>
 				</name>
 			</transition>
-			<transition id="79" invisible="true">
+			<transition id="79">
 				<name>
 					<text>ER Sepsis Triage</text>
 				</name>
-				<writeVariable>timeTriage</writeVariable>
 			</transition>
 			<transition id="80" invisible="true">
 				<name>
 					<text>t2</text>
 				</name>
 			</transition>
-			<transition id="81" invisible="true">
+			<transition id="81">
 				<name>
 					<text>Transfer NC</text>
 				</name>
 			</transition>
-			<transition id="82" invisible="true">
+			<transition id="82">
 				<name>
 					<text>ER Triage</text>
 				</name>
+				<writeVariable>timeTriage</writeVariable>
 			</transition>
 			<transition id="83" invisible="true">
 				<name>
 					<text>t13</text>
 				</name>
 			</transition>
-			<transition id="84" invisible="true" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
+			<transition id="84" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
 				<name>
 					<text>LacticAcid</text>
 				</name>
 				<writeVariable>timeLacticAcid</writeVariable>
 			</transition>
-			<transition id="85" invisible="true">
+			<transition id="85">
 				<name>
 					<text>Admission IC</text>
 				</name>
 			</transition>
-			<transition id="86" invisible="true">
+			<transition id="86">
 				<name>
 					<text>Release C</text>
 				</name>
 			</transition>
-			<transition id="87" invisible="true">
+			<transition id="87">
 				<name>
 					<text>Release B</text>
 				</name>
@@ -455,17 +455,17 @@
 					<text>t22</text>
 				</name>
 			</transition>
-			<transition id="89" invisible="true">
+			<transition id="89">
 				<name>
 					<text>Release E</text>
 				</name>
 			</transition>
-			<transition id="90" invisible="true">
+			<transition id="90">
 				<name>
 					<text>Release D</text>
 				</name>
 			</transition>
-			<transition id="91" invisible="true">
+			<transition id="91">
 				<name>
 					<text>Release A</text>
 				</name>
@@ -475,7 +475,7 @@
 					<text>t800</text>
 				</name>
 			</transition>
-			<transition id="93" invisible="true">
+			<transition id="93">
 				<name>
 					<text>Leucocytes</text>
 				</name>
@@ -485,17 +485,17 @@
 					<text>t38</text>
 				</name>
 			</transition>
-			<transition id="95" invisible="true">
+			<transition id="95">
 				<name>
 					<text>Return ER</text>
 				</name>
 			</transition>
-			<transition id="96" invisible="true">
+			<transition id="96">
 				<name>
 					<text>IV Liquid</text>
 				</name>
 			</transition>
-			<transition id="97" invisible="true" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
+			<transition id="97" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
 				<name>
 					<text>IV Antibiotics</text>
 				</name>
@@ -511,22 +511,22 @@
 					<text>t700</text>
 				</name>
 			</transition>
-			<transition id="100" invisible="true">
+			<transition id="100">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="101" invisible="true">
+			<transition id="101">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="102" invisible="true">
+			<transition id="102">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="103" invisible="true">
+			<transition id="103">
 				<name>
 					<text>Admission IC</text>
 				</name>
@@ -541,12 +541,12 @@
 					<text>t703</text>
 				</name>
 			</transition>
-			<transition id="106" invisible="true">
+			<transition id="106">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="107" invisible="true">
+			<transition id="107">
 				<name>
 					<text>Leucocytes</text>
 				</name>
@@ -556,7 +556,7 @@
 					<text>t803</text>
 				</name>
 			</transition>
-			<transition id="109" invisible="true">
+			<transition id="109">
 				<name>
 					<text>ER Registration</text>
 				</name>

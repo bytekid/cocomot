@@ -578,7 +578,7 @@
 					<text>113</text>
 				</name>
 			</place>
-			<transition id="114" invisible="true">
+			<transition id="114">
 				<name>
 					<text>LacticAcid</text>
 				</name>
@@ -603,49 +603,49 @@
 					<text>t6</text>
 				</name>
 			</transition>
-			<transition id="119" invisible="true">
+			<transition id="119">
 				<name>
 					<text>ER Sepsis Triage</text>
 				</name>
-				<writeVariable>timeTriage</writeVariable>
 			</transition>
 			<transition id="120" invisible="true">
 				<name>
 					<text>t2</text>
 				</name>
 			</transition>
-			<transition id="121" invisible="true">
+			<transition id="121">
 				<name>
 					<text>Transfer NC</text>
 				</name>
 			</transition>
-			<transition id="122" invisible="true">
+			<transition id="122">
 				<name>
 					<text>ER Triage</text>
 				</name>
+				<writeVariable>timeTriage</writeVariable>
 			</transition>
 			<transition id="123" invisible="true">
 				<name>
 					<text>t13</text>
 				</name>
 			</transition>
-			<transition id="124" invisible="true" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
+			<transition id="124" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
 				<name>
 					<text>LacticAcid</text>
 				</name>
 				<writeVariable>timeLacticAcid</writeVariable>
 			</transition>
-			<transition id="125" invisible="true">
+			<transition id="125">
 				<name>
 					<text>Admission IC</text>
 				</name>
 			</transition>
-			<transition id="126" invisible="true">
+			<transition id="126">
 				<name>
 					<text>Release C</text>
 				</name>
 			</transition>
-			<transition id="127" invisible="true">
+			<transition id="127">
 				<name>
 					<text>Release B</text>
 				</name>
@@ -655,17 +655,17 @@
 					<text>t22</text>
 				</name>
 			</transition>
-			<transition id="129" invisible="true">
+			<transition id="129">
 				<name>
 					<text>Release E</text>
 				</name>
 			</transition>
-			<transition id="130" invisible="true">
+			<transition id="130">
 				<name>
 					<text>Release D</text>
 				</name>
 			</transition>
-			<transition id="131" invisible="true">
+			<transition id="131">
 				<name>
 					<text>Release A</text>
 				</name>
@@ -675,7 +675,7 @@
 					<text>t800</text>
 				</name>
 			</transition>
-			<transition id="133" invisible="true">
+			<transition id="133">
 				<name>
 					<text>Leucocytes</text>
 				</name>
@@ -685,17 +685,17 @@
 					<text>t38</text>
 				</name>
 			</transition>
-			<transition id="135" invisible="true">
+			<transition id="135">
 				<name>
 					<text>Return ER</text>
 				</name>
 			</transition>
-			<transition id="136" invisible="true">
+			<transition id="136">
 				<name>
 					<text>IV Liquid</text>
 				</name>
 			</transition>
-			<transition id="137" invisible="true" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
+			<transition id="137" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
 				<name>
 					<text>IV Antibiotics</text>
 				</name>
@@ -711,22 +711,22 @@
 					<text>t700</text>
 				</name>
 			</transition>
-			<transition id="140" invisible="true">
+			<transition id="140">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="141" invisible="true">
+			<transition id="141">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="142" invisible="true">
+			<transition id="142">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="143" invisible="true">
+			<transition id="143">
 				<name>
 					<text>Admission IC</text>
 				</name>
@@ -741,12 +741,12 @@
 					<text>t703</text>
 				</name>
 			</transition>
-			<transition id="146" invisible="true">
+			<transition id="146">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="147" invisible="true">
+			<transition id="147">
 				<name>
 					<text>Leucocytes</text>
 				</name>
@@ -756,7 +756,7 @@
 					<text>t803</text>
 				</name>
 			</transition>
-			<transition id="149" invisible="true">
+			<transition id="149">
 				<name>
 					<text>ER Registration</text>
 				</name>

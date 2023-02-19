@@ -428,7 +428,7 @@
 					<text>83</text>
 				</name>
 			</place>
-			<transition id="84" invisible="true">
+			<transition id="84">
 				<name>
 					<text>LacticAcid</text>
 				</name>
@@ -453,49 +453,49 @@
 					<text>t6</text>
 				</name>
 			</transition>
-			<transition id="89" invisible="true">
+			<transition id="89">
 				<name>
 					<text>ER Sepsis Triage</text>
 				</name>
-				<writeVariable>timeTriage</writeVariable>
 			</transition>
 			<transition id="90" invisible="true">
 				<name>
 					<text>t2</text>
 				</name>
 			</transition>
-			<transition id="91" invisible="true">
+			<transition id="91">
 				<name>
 					<text>Transfer NC</text>
 				</name>
 			</transition>
-			<transition id="92" invisible="true">
+			<transition id="92">
 				<name>
 					<text>ER Triage</text>
 				</name>
+				<writeVariable>timeTriage</writeVariable>
 			</transition>
 			<transition id="93" invisible="true">
 				<name>
 					<text>t13</text>
 				</name>
 			</transition>
-			<transition id="94" invisible="true" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
+			<transition id="94" guard="(timeLacticAcid' &lt;= (timeTriage + 180))">
 				<name>
 					<text>LacticAcid</text>
 				</name>
 				<writeVariable>timeLacticAcid</writeVariable>
 			</transition>
-			<transition id="95" invisible="true">
+			<transition id="95">
 				<name>
 					<text>Admission IC</text>
 				</name>
 			</transition>
-			<transition id="96" invisible="true">
+			<transition id="96">
 				<name>
 					<text>Release C</text>
 				</name>
 			</transition>
-			<transition id="97" invisible="true">
+			<transition id="97">
 				<name>
 					<text>Release B</text>
 				</name>
@@ -505,17 +505,17 @@
 					<text>t22</text>
 				</name>
 			</transition>
-			<transition id="99" invisible="true">
+			<transition id="99">
 				<name>
 					<text>Release E</text>
 				</name>
 			</transition>
-			<transition id="100" invisible="true">
+			<transition id="100">
 				<name>
 					<text>Release D</text>
 				</name>
 			</transition>
-			<transition id="101" invisible="true">
+			<transition id="101">
 				<name>
 					<text>Release A</text>
 				</name>
@@ -525,7 +525,7 @@
 					<text>t800</text>
 				</name>
 			</transition>
-			<transition id="103" invisible="true">
+			<transition id="103">
 				<name>
 					<text>Leucocytes</text>
 				</name>
@@ -535,17 +535,17 @@
 					<text>t38</text>
 				</name>
 			</transition>
-			<transition id="105" invisible="true">
+			<transition id="105">
 				<name>
 					<text>Return ER</text>
 				</name>
 			</transition>
-			<transition id="106" invisible="true">
+			<transition id="106">
 				<name>
 					<text>IV Liquid</text>
 				</name>
 			</transition>
-			<transition id="107" invisible="true" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
+			<transition id="107" guard="(timeAntibiotics' &lt;= (timeTriage + 60))">
 				<name>
 					<text>IV Antibiotics</text>
 				</name>
@@ -561,22 +561,22 @@
 					<text>t700</text>
 				</name>
 			</transition>
-			<transition id="110" invisible="true">
+			<transition id="110">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="111" invisible="true">
+			<transition id="111">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="112" invisible="true">
+			<transition id="112">
 				<name>
 					<text>Admission NC</text>
 				</name>
 			</transition>
-			<transition id="113" invisible="true">
+			<transition id="113">
 				<name>
 					<text>Admission IC</text>
 				</name>
@@ -591,12 +591,12 @@
 					<text>t703</text>
 				</name>
 			</transition>
-			<transition id="116" invisible="true">
+			<transition id="116">
 				<name>
 					<text>CRP</text>
 				</name>
 			</transition>
-			<transition id="117" invisible="true">
+			<transition id="117">
 				<name>
 					<text>Leucocytes</text>
 				</name>
@@ -606,7 +606,7 @@
 					<text>t803</text>
 				</name>
 			</transition>
-			<transition id="119" invisible="true">
+			<transition id="119">
 				<name>
 					<text>ER Registration</text>
 				</name>
