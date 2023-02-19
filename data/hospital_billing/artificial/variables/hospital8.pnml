@@ -98,7 +98,7 @@
 					<text>t1</text>
 				</name>
 			</transition>
-			<transition id="18" invisible="true" guard="(((((((((caseType == caseType0) &amp;&amp; (caseType0 == caseType1)) &amp;&amp; (caseType1 == caseType2)) &amp;&amp; (caseType2 == caseType3)) &amp;&amp; (caseType3 == caseType4)) &amp;&amp; (caseType4 == caseType5)) &amp;&amp; (caseType5 == caseType6)) &amp;&amp; (caseType6 == caseType7)) &amp;&amp; (caseType7 == &quot;B&quot;))">
+			<transition id="18" guard="(((((((((caseType == caseType0) &amp;&amp; (caseType0 == caseType1)) &amp;&amp; (caseType1 == caseType2)) &amp;&amp; (caseType2 == caseType3)) &amp;&amp; (caseType3 == caseType4)) &amp;&amp; (caseType4 == caseType5)) &amp;&amp; (caseType5 == caseType6)) &amp;&amp; (caseType6 == caseType7)) &amp;&amp; (caseType7 == &quot;B&quot;))">
 				<name>
 					<text>CHANGE DIAGN</text>
 				</name>
@@ -108,7 +108,7 @@
 					<text>t4</text>
 				</name>
 			</transition>
-			<transition id="20" invisible="true" guard="(((((((((((isClosed == isClosed0) &amp;&amp; (isClosed0 == isClosed1)) &amp;&amp; (isClosed1 == isClosed2)) &amp;&amp; (isClosed2 == isClosed3)) &amp;&amp; (isClosed3 == isClosed4)) &amp;&amp; (isClosed4 == isClosed5)) &amp;&amp; (isClosed5 == isClosed6)) &amp;&amp; (isClosed6 == isClosed7)) &amp;&amp; (isClosed7 == true)) &amp;&amp; (closeCode != &quot;A&quot;)) || (isClosed != true))">
+			<transition id="20" guard="(((((((((((isClosed == isClosed0) &amp;&amp; (isClosed0 == isClosed1)) &amp;&amp; (isClosed1 == isClosed2)) &amp;&amp; (isClosed2 == isClosed3)) &amp;&amp; (isClosed3 == isClosed4)) &amp;&amp; (isClosed4 == isClosed5)) &amp;&amp; (isClosed5 == isClosed6)) &amp;&amp; (isClosed6 == isClosed7)) &amp;&amp; (isClosed7 == true)) &amp;&amp; (closeCode != &quot;A&quot;)) || (isClosed != true))">
 				<name>
 					<text>STORNO</text>
 				</name>
@@ -118,17 +118,17 @@
 					<text>t31</text>
 				</name>
 			</transition>
-			<transition id="22" invisible="true" guard="((((((((((isClosed == isClosed0) &amp;&amp; (isClosed0 == isClosed1)) &amp;&amp; (isClosed1 == isClosed2)) &amp;&amp; (isClosed2 == isClosed3)) &amp;&amp; (isClosed3 == isClosed4)) &amp;&amp; (isClosed4 == isClosed5)) &amp;&amp; (isClosed5 == isClosed6)) &amp;&amp; (isClosed6 == isClosed7)) &amp;&amp; (isClosed7 == true)) &amp;&amp; (closeCode == &quot;A&quot;))">
+			<transition id="22" guard="((((((((((isClosed == isClosed0) &amp;&amp; (isClosed0 == isClosed1)) &amp;&amp; (isClosed1 == isClosed2)) &amp;&amp; (isClosed2 == isClosed3)) &amp;&amp; (isClosed3 == isClosed4)) &amp;&amp; (isClosed4 == isClosed5)) &amp;&amp; (isClosed5 == isClosed6)) &amp;&amp; (isClosed6 == isClosed7)) &amp;&amp; (isClosed7 == true)) &amp;&amp; (closeCode == &quot;A&quot;))">
 				<name>
 					<text>STORNO</text>
 				</name>
 			</transition>
-			<transition id="23" invisible="true" guard="(((((((((isClosed == isClosed0) &amp;&amp; (isClosed0 == isClosed1)) &amp;&amp; (isClosed1 == isClosed2)) &amp;&amp; (isClosed2 == isClosed3)) &amp;&amp; (isClosed3 == isClosed4)) &amp;&amp; (isClosed4 == isClosed5)) &amp;&amp; (isClosed5 == isClosed6)) &amp;&amp; (isClosed6 == isClosed7)) &amp;&amp; (isClosed7 == true))">
+			<transition id="23" guard="(((((((((isClosed == isClosed0) &amp;&amp; (isClosed0 == isClosed1)) &amp;&amp; (isClosed1 == isClosed2)) &amp;&amp; (isClosed2 == isClosed3)) &amp;&amp; (isClosed3 == isClosed4)) &amp;&amp; (isClosed4 == isClosed5)) &amp;&amp; (isClosed5 == isClosed6)) &amp;&amp; (isClosed6 == isClosed7)) &amp;&amp; (isClosed7 == true))">
 				<name>
 					<text>BILLED</text>
 				</name>
 			</transition>
-			<transition id="24" invisible="true" guard="(((((((((isClosed == isClosed0) &amp;&amp; (isClosed0 == isClosed1)) &amp;&amp; (isClosed1 == isClosed2)) &amp;&amp; (isClosed2 == isClosed3)) &amp;&amp; (isClosed3 == isClosed4)) &amp;&amp; (isClosed4 == isClosed5)) &amp;&amp; (isClosed5 == isClosed6)) &amp;&amp; (isClosed6 == isClosed7)) &amp;&amp; (isClosed7 != true))">
+			<transition id="24" guard="(((((((((isClosed == isClosed0) &amp;&amp; (isClosed0 == isClosed1)) &amp;&amp; (isClosed1 == isClosed2)) &amp;&amp; (isClosed2 == isClosed3)) &amp;&amp; (isClosed3 == isClosed4)) &amp;&amp; (isClosed4 == isClosed5)) &amp;&amp; (isClosed5 == isClosed6)) &amp;&amp; (isClosed6 == isClosed7)) &amp;&amp; (isClosed7 != true))">
 				<name>
 					<text>REOPEN</text>
 				</name>
@@ -148,12 +148,12 @@
 					<text>t18</text>
 				</name>
 			</transition>
-			<transition id="28" invisible="true" guard="(((((((((isClosed == isClosed0) &amp;&amp; (isClosed0 == isClosed1)) &amp;&amp; (isClosed1 == isClosed2)) &amp;&amp; (isClosed2 == isClosed3)) &amp;&amp; (isClosed3 == isClosed4)) &amp;&amp; (isClosed4 == isClosed5)) &amp;&amp; (isClosed5 == isClosed6)) &amp;&amp; (isClosed6 == isClosed7)) &amp;&amp; (isClosed7 != true))">
+			<transition id="28" guard="(((((((((isClosed == isClosed0) &amp;&amp; (isClosed0 == isClosed1)) &amp;&amp; (isClosed1 == isClosed2)) &amp;&amp; (isClosed2 == isClosed3)) &amp;&amp; (isClosed3 == isClosed4)) &amp;&amp; (isClosed4 == isClosed5)) &amp;&amp; (isClosed5 == isClosed6)) &amp;&amp; (isClosed6 == isClosed7)) &amp;&amp; (isClosed7 != true))">
 				<name>
 					<text>DELETE</text>
 				</name>
 			</transition>
-			<transition id="29" invisible="true">
+			<transition id="29">
 				<name>
 					<text>EMPTY</text>
 				</name>
@@ -173,7 +173,7 @@
 					<text>t10</text>
 				</name>
 			</transition>
-			<transition id="33" invisible="true">
+			<transition id="33">
 				<name>
 					<text>CHANGE END</text>
 				</name>
@@ -183,7 +183,7 @@
 					<text>t25</text>
 				</name>
 			</transition>
-			<transition id="35" invisible="true">
+			<transition id="35">
 				<name>
 					<text>REJECT</text>
 				</name>
@@ -193,12 +193,12 @@
 					<text>t39</text>
 				</name>
 			</transition>
-			<transition id="37" invisible="true">
+			<transition id="37">
 				<name>
 					<text>BILLED</text>
 				</name>
 			</transition>
-			<transition id="38" invisible="true" guard="((((((((((caseType == caseType0) &amp;&amp; (caseType0 == caseType1)) &amp;&amp; (caseType1 == caseType2)) &amp;&amp; (caseType2 == caseType3)) &amp;&amp; (caseType3 == caseType4)) &amp;&amp; (caseType4 == caseType5)) &amp;&amp; (caseType5 == caseType6)) &amp;&amp; (caseType6 == caseType7)) &amp;&amp; (caseType7 == &quot;B&quot;)) || ((caseType != &quot;B&quot;) &amp;&amp; (closeCode != &quot;A&quot;)))">
+			<transition id="38" guard="((((((((((caseType == caseType0) &amp;&amp; (caseType0 == caseType1)) &amp;&amp; (caseType1 == caseType2)) &amp;&amp; (caseType2 == caseType3)) &amp;&amp; (caseType3 == caseType4)) &amp;&amp; (caseType4 == caseType5)) &amp;&amp; (caseType5 == caseType6)) &amp;&amp; (caseType6 == caseType7)) &amp;&amp; (caseType7 == &quot;B&quot;)) || ((caseType != &quot;B&quot;) &amp;&amp; (closeCode != &quot;A&quot;)))">
 				<name>
 					<text>REOPEN</text>
 				</name>
@@ -208,7 +208,7 @@
 					<text>t15</text>
 				</name>
 			</transition>
-			<transition id="40" invisible="true">
+			<transition id="40">
 				<name>
 					<text>SET STATUS</text>
 				</name>
@@ -218,17 +218,17 @@
 					<text>t30</text>
 				</name>
 			</transition>
-			<transition id="42" invisible="true">
+			<transition id="42">
 				<name>
 					<text>DELETE</text>
 				</name>
 			</transition>
-			<transition id="43" invisible="true">
+			<transition id="43">
 				<name>
 					<text>RELEASE</text>
 				</name>
 			</transition>
-			<transition id="44" invisible="true" guard="(((((((((closeCode == closeCode0) &amp;&amp; (closeCode0 == closeCode1)) &amp;&amp; (closeCode1 == closeCode2)) &amp;&amp; (closeCode2 == closeCode3)) &amp;&amp; (closeCode3 == closeCode4)) &amp;&amp; (closeCode4 == closeCode5)) &amp;&amp; (closeCode5 == closeCode6)) &amp;&amp; (closeCode6 == closeCode7)) &amp;&amp; (closeCode7 != &quot;H&quot;))">
+			<transition id="44" guard="(((((((((closeCode == closeCode0) &amp;&amp; (closeCode0 == closeCode1)) &amp;&amp; (closeCode1 == closeCode2)) &amp;&amp; (closeCode2 == closeCode3)) &amp;&amp; (closeCode3 == closeCode4)) &amp;&amp; (closeCode4 == closeCode5)) &amp;&amp; (closeCode5 == closeCode6)) &amp;&amp; (closeCode6 == closeCode7)) &amp;&amp; (closeCode7 != &quot;H&quot;))">
 				<name>
 					<text>REOPEN</text>
 				</name>
@@ -238,7 +238,7 @@
 					<text>skipRelease</text>
 				</name>
 			</transition>
-			<transition id="46" invisible="true" guard="(((((((((speciality == speciality0) &amp;&amp; (speciality0 == speciality1)) &amp;&amp; (speciality1 == speciality2)) &amp;&amp; (speciality2 == speciality3)) &amp;&amp; (speciality3 == speciality4)) &amp;&amp; (speciality4 == speciality5)) &amp;&amp; (speciality5 == speciality6)) &amp;&amp; (speciality6 == speciality7)) &amp;&amp; (speciality7 != &quot;K&quot;))">
+			<transition id="46" guard="(((((((((speciality == speciality0) &amp;&amp; (speciality0 == speciality1)) &amp;&amp; (speciality1 == speciality2)) &amp;&amp; (speciality2 == speciality3)) &amp;&amp; (speciality3 == speciality4)) &amp;&amp; (speciality4 == speciality5)) &amp;&amp; (speciality5 == speciality6)) &amp;&amp; (speciality6 == speciality7)) &amp;&amp; (speciality7 != &quot;K&quot;))">
 				<name>
 					<text>FIN</text>
 				</name>
@@ -252,7 +252,7 @@
 				<writeVariable>closeCode6</writeVariable>
 				<writeVariable>closeCode7</writeVariable>
 			</transition>
-			<transition id="47" invisible="true">
+			<transition id="47">
 				<name>
 					<text>DELETE</text>
 				</name>
@@ -262,7 +262,7 @@
 					<text>t12</text>
 				</name>
 			</transition>
-			<transition id="49" invisible="true">
+			<transition id="49">
 				<name>
 					<text>CODE OK</text>
 				</name>
@@ -272,12 +272,12 @@
 					<text>t8</text>
 				</name>
 			</transition>
-			<transition id="51" invisible="true" guard="(((((((((((caseType == caseType0) &amp;&amp; (caseType0 == caseType1)) &amp;&amp; (caseType1 == caseType2)) &amp;&amp; (caseType2 == caseType3)) &amp;&amp; (caseType3 == caseType4)) &amp;&amp; (caseType4 == caseType5)) &amp;&amp; (caseType5 == caseType6)) &amp;&amp; (caseType6 == caseType7)) &amp;&amp; (caseType7 != &quot;F&quot;)) &amp;&amp; (caseType == &quot;C&quot;)) || (((caseType != &quot;F&quot;) &amp;&amp; (caseType != &quot;C&quot;)) &amp;&amp; (closeCode == &quot;A&quot;)))">
+			<transition id="51" guard="(((((((((((caseType == caseType0) &amp;&amp; (caseType0 == caseType1)) &amp;&amp; (caseType1 == caseType2)) &amp;&amp; (caseType2 == caseType3)) &amp;&amp; (caseType3 == caseType4)) &amp;&amp; (caseType4 == caseType5)) &amp;&amp; (caseType5 == caseType6)) &amp;&amp; (caseType6 == caseType7)) &amp;&amp; (caseType7 != &quot;F&quot;)) &amp;&amp; (caseType == &quot;C&quot;)) || (((caseType != &quot;F&quot;) &amp;&amp; (caseType != &quot;C&quot;)) &amp;&amp; (closeCode == &quot;A&quot;)))">
 				<name>
 					<text>CODE NOK</text>
 				</name>
 			</transition>
-			<transition id="52" invisible="true">
+			<transition id="52">
 				<name>
 					<text>NEW</text>
 				</name>

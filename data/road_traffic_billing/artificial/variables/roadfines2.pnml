@@ -53,7 +53,7 @@
 					<text>8</text>
 				</name>
 			</place>
-			<transition id="9" invisible="true">
+			<transition id="9">
 				<name>
 					<text>Create Fine</text>
 				</name>
@@ -70,7 +70,7 @@
 				<writeVariable>points0</writeVariable>
 				<writeVariable>points1</writeVariable>
 			</transition>
-			<transition id="10" invisible="true" guard="(((delaySend' == delaySend0') &amp;&amp; (delaySend0' == delaySend1')) &amp;&amp; (delaySend1' &lt; 2160))">
+			<transition id="10" guard="(((delaySend' == delaySend0') &amp;&amp; (delaySend0' == delaySend1')) &amp;&amp; (delaySend1' &lt; 2160))">
 				<name>
 					<text>Send Fine</text>
 				</name>
@@ -81,12 +81,12 @@
 				<writeVariable>expense0</writeVariable>
 				<writeVariable>expense1</writeVariable>
 			</transition>
-			<transition id="11" invisible="true">
+			<transition id="11">
 				<name>
 					<text>Insert Fine Notification</text>
 				</name>
 			</transition>
-			<transition id="12" invisible="true" guard="(((delayPrefecture' == delayPrefecture0') &amp;&amp; (delayPrefecture0' == delayPrefecture1')) &amp;&amp; (delayPrefecture1' &lt; 1440))">
+			<transition id="12" guard="(((delayPrefecture' == delayPrefecture0') &amp;&amp; (delayPrefecture0' == delayPrefecture1')) &amp;&amp; (delayPrefecture1' &lt; 1440))">
 				<name>
 					<text>Insert Date Appeal to Prefecture</text>
 				</name>
@@ -109,7 +109,7 @@
 					<text>Inv4</text>
 				</name>
 			</transition>
-			<transition id="16" invisible="true" guard="(((delayJudge' == delayJudge0') &amp;&amp; (delayJudge0' == delayJudge1')) &amp;&amp; (delayJudge1' &lt; 1440))">
+			<transition id="16" guard="(((delayJudge' == delayJudge0') &amp;&amp; (delayJudge0' == delayJudge1')) &amp;&amp; (delayJudge1' &lt; 1440))">
 				<name>
 					<text>Appeal to Judge</text>
 				</name>
@@ -120,7 +120,7 @@
 				<writeVariable>dismissal0</writeVariable>
 				<writeVariable>dismissal1</writeVariable>
 			</transition>
-			<transition id="17" invisible="true" guard="(((totalPaymentAmount == totalPaymentAmount0) &amp;&amp; (totalPaymentAmount0 == totalPaymentAmount1)) &amp;&amp; (totalPaymentAmount1 &lt; (amount + expense)))">
+			<transition id="17" guard="(((totalPaymentAmount == totalPaymentAmount0) &amp;&amp; (totalPaymentAmount0 == totalPaymentAmount1)) &amp;&amp; (totalPaymentAmount1 &lt; (amount + expense)))">
 				<name>
 					<text>Send for Credit Collection</text>
 				</name>
@@ -130,7 +130,7 @@
 					<text>Inv1</text>
 				</name>
 			</transition>
-			<transition id="19" invisible="true">
+			<transition id="19">
 				<name>
 					<text>Send Appeal to Prefecture</text>
 				</name>
@@ -138,17 +138,17 @@
 				<writeVariable>dismissal0</writeVariable>
 				<writeVariable>dismissal1</writeVariable>
 			</transition>
-			<transition id="20" invisible="true" guard="(((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == &quot;NIL&quot;))">
+			<transition id="20" guard="(((dismissal == dismissal0) &amp;&amp; (dismissal0 == dismissal1)) &amp;&amp; (dismissal1 == &quot;NIL&quot;))">
 				<name>
 					<text>Receive Result Appeal from Prefecture</text>
 				</name>
 			</transition>
-			<transition id="21" invisible="true">
+			<transition id="21">
 				<name>
 					<text>Notify Result Appeal to Offender</text>
 				</name>
 			</transition>
-			<transition id="22" invisible="true">
+			<transition id="22">
 				<name>
 					<text>Payment</text>
 				</name>
@@ -156,7 +156,7 @@
 				<writeVariable>totalPaymentAmount0</writeVariable>
 				<writeVariable>totalPaymentAmount1</writeVariable>
 			</transition>
-			<transition id="23" invisible="true">
+			<transition id="23">
 				<name>
 					<text>Add penalty</text>
 				</name>
@@ -169,7 +169,7 @@
 					<text>Inv2</text>
 				</name>
 			</transition>
-			<transition id="25" invisible="true">
+			<transition id="25">
 				<name>
 					<text>Payment</text>
 				</name>
@@ -177,7 +177,7 @@
 				<writeVariable>totalPaymentAmount0</writeVariable>
 				<writeVariable>totalPaymentAmount1</writeVariable>
 			</transition>
-			<transition id="26" invisible="true">
+			<transition id="26">
 				<name>
 					<text>Payment</text>
 				</name>

@@ -639,7 +639,7 @@ if __name__ == "__main__":
         #f = open("/home/bytekid/tools/cocomot/test.xes", "w")
         #f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
         #f.close()
-        xml = dpn.hackstates(k).export_pnml()
+        xml = dpn.hackvars(k).export_pnml()
         print("<?xml version='1.0' encoding='UTF-8'?>")
         print(xml.toprettyxml())
         exit()

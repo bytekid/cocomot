@@ -53,7 +53,7 @@
 					<text>8</text>
 				</name>
 			</place>
-			<transition id="9" invisible="true">
+			<transition id="9">
 				<name>
 					<text>Create Fine</text>
 				</name>
@@ -62,19 +62,19 @@
 				<writeVariable>dismissal</writeVariable>
 				<writeVariable>points</writeVariable>
 			</transition>
-			<transition id="10" invisible="true" guard="(delaySend' &lt; 2160)">
+			<transition id="10" guard="(delaySend' &lt; 2160)">
 				<name>
 					<text>Send Fine</text>
 				</name>
 				<writeVariable>delaySend</writeVariable>
 				<writeVariable>expense</writeVariable>
 			</transition>
-			<transition id="11" invisible="true">
+			<transition id="11">
 				<name>
 					<text>Insert Fine Notification</text>
 				</name>
 			</transition>
-			<transition id="12" invisible="true" guard="(delayPrefecture' &lt; 1440)">
+			<transition id="12" guard="(delayPrefecture' &lt; 1440)">
 				<name>
 					<text>Insert Date Appeal to Prefecture</text>
 				</name>
@@ -95,14 +95,14 @@
 					<text>Inv4</text>
 				</name>
 			</transition>
-			<transition id="16" invisible="true" guard="(delayJudge' &lt; 1440)">
+			<transition id="16" guard="(delayJudge' &lt; 1440)">
 				<name>
 					<text>Appeal to Judge</text>
 				</name>
 				<writeVariable>delayJudge</writeVariable>
 				<writeVariable>dismissal</writeVariable>
 			</transition>
-			<transition id="17" invisible="true" guard="(totalPaymentAmount &lt; (amount + expense))">
+			<transition id="17" guard="(totalPaymentAmount &lt; (amount + expense))">
 				<name>
 					<text>Send for Credit Collection</text>
 				</name>
@@ -112,29 +112,29 @@
 					<text>Inv1</text>
 				</name>
 			</transition>
-			<transition id="19" invisible="true">
+			<transition id="19">
 				<name>
 					<text>Send Appeal to Prefecture</text>
 				</name>
 				<writeVariable>dismissal</writeVariable>
 			</transition>
-			<transition id="20" invisible="true" guard="(dismissal == &quot;NIL&quot;)">
+			<transition id="20" guard="(dismissal == &quot;NIL&quot;)">
 				<name>
 					<text>Receive Result Appeal from Prefecture</text>
 				</name>
 			</transition>
-			<transition id="21" invisible="true">
+			<transition id="21">
 				<name>
 					<text>Notify Result Appeal to Offender</text>
 				</name>
 			</transition>
-			<transition id="22" invisible="true">
+			<transition id="22">
 				<name>
 					<text>Payment</text>
 				</name>
 				<writeVariable>totalPaymentAmount</writeVariable>
 			</transition>
-			<transition id="23" invisible="true">
+			<transition id="23">
 				<name>
 					<text>Add penalty</text>
 				</name>
@@ -145,13 +145,13 @@
 					<text>Inv2</text>
 				</name>
 			</transition>
-			<transition id="25" invisible="true">
+			<transition id="25">
 				<name>
 					<text>Payment</text>
 				</name>
 				<writeVariable>totalPaymentAmount</writeVariable>
 			</transition>
-			<transition id="26" invisible="true">
+			<transition id="26">
 				<name>
 					<text>Payment</text>
 				</name>
