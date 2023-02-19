@@ -611,6 +611,7 @@ if __name__ == "__main__":
     else:
       if ps["z"] != None:
         k = ps["z"]
+        """
         vs = [ v["name"] for v in dpn.variables()]
         base_vars = [ v for v in vs if not \
           any( len(u) < len(v) and v.startswith(u) for u in vs )]
@@ -633,11 +634,12 @@ if __name__ == "__main__":
           traces.append(t)
         log = UncertainLog(traces)
         xml = log.to_xes()
-        #f = open("/home/bytekid/tools/cocomot/test.xes", "w")
-        #f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
-        #f.close()
-        #xml = dpn.hackvars(ps["z"]).export_pnml()
-        #print("<?xml version='1.0' encoding='UTF-8'?>")
+        f = open("/home/bytekid/tools/cocomot/test.xes", "w")
+        f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
+        f.close()
+        """
+        xml = dpn.hackstates(ps["z"]).export_pnml()
+        print("<?xml version='1.0' encoding='UTF-8'?>")
         print(xml.toprettyxml())
         exit()
       cocomot(dpn, log, ps)
