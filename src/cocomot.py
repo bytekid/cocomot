@@ -14,6 +14,7 @@ from smt.omsolver import OptiMathsatSolver
 from dpn.read import read_json_input, read_pnml_input
 from cluster.partitioning import NaivePartitioning, IntervalPartitioning
 from dpn.dpn import DPN
+from dpn.playout import Playout, traces_to_xes
 from encoding.encoding import Encoding
 from encoding.encoding_exhaustive import ExhaustiveEncoding
 from dpn.expr import Expr
@@ -186,6 +187,7 @@ def conformance_check_trace(encoding, trace_data, verbose):
   (index, trace, cnt) = trace_data
   t_start = time.perf_counter()
   (dist, dconstr) = encoding.edit_distance(trace)
+  dpn = encoding._dpn
   t_encode2 = time.perf_counter() - t_start
 
   encoding.solver().require([dconstr])
@@ -608,39 +610,13 @@ if __name__ == "__main__":
       conformance_check_anti(log, dpn, ps["verbose"], ps["anti"])
     elif ps["uncertainty"]: # has_uncertainty
       cocomot_uncertain(dpn, log, ps)
+    elif ps["z"] != None:
+      playout = Playout(dpn)
+      traces = playout.generate(ps["z"])
+      xml = traces_to_xes(traces)
+      print("<?xml version='1.0' encoding='UTF-8'?>")
+      print(xml.toprettyxml())
     else:
-      if ps["z"] != None:
-        k = ps["z"]
-        vs = [ v["name"] for v in dpn.variables()]
-        base_vars = [ v for v in vs if not \
-          any( len(u) < len(v) and v.startswith(u) for u in vs )]
-        log = preprocess_log(log, dpn, replace_strings=False)
-        naive_part = NaivePartitioning([ (t,1) for t in log if len(t) < 9]).representatives()
-        interval_part = IntervalPartitioning(dpn, naive_part).representatives()
-        traces = []
-        shorttypes = { "java.lang.Integer": "int", "java.lang.Double": "float",
-          "java.lang.Boolean": "boolean", "java.lang.String": "string"}
-        vartypes = dict([ (v["name"], shorttypes[v["type"]]) for v in dpn.variables()])
-        for (trace, _) in interval_part:
-          t = UncertainTrace.from_certain_trace(trace, vartypes)
-          for e in t.events():
-            for v in base_vars:
-              if e.has_data_variable(v):
-                val = e.data_variable(v).values()
-                kind = e.data_variable(v).kind()
-                for i in range(0,k):
-                  dval = UncertainDataValue(kind, v + str(i), val)
-                  e.set_data(v + str(i), dval)
-          traces.append(t)
-        log = UncertainLog(traces)
-        xml = log.to_xes()
-        #f = open("/home/bytekid/tools/cocomot/test.xes", "w")
-        #f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
-        #f.close()
-        #xml = dpn.hackstates(ps["z"]).export_pnml()
-        print("<?xml version='1.0' encoding='UTF-8'?>")
-        print(xml.toprettyxml())
-        exit()
-      cocomot(dpn, log, ps)
+        cocomot(dpn, log, ps)
   YicesSolver.shutdown()
   

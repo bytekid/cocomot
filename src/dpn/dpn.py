@@ -71,6 +71,56 @@ class DPN:
       id += 1
       break
   
+  def replace_disjunctive_guards(self):
+    ids = [p["id"] for p in self.places()] + [t["id"] for t in self.transitions()]
+    self._nextid = max(ids) + 1 # next free id
+
+    def add(t, g):
+      tnew = {
+        "id": self._nextid,
+        "label": t["label"],
+        "constraint": g,
+        "write": t["write"],
+        "idist": t["idist"],
+        "fdist": t["fdist"]
+      }
+      if "invisible" in t:
+        tnew["invisible"] = t["invisible"]
+      self._transitions.append(tnew)
+      self._arcs += [{"source": a["source"], "target": self._nextid} \
+        for a in self._arcs if a["target"] == t["id"]]
+      self._arcs += [{"target": a["target"], "source": self._nextid} \
+        for a in self._arcs if a["source"] == t["id"]]
+      self._nextid += 1
+    
+    def is_or(f):
+      return isinstance(f, BinCon) and f.op == "||"
+
+    def split(t, guard): # idx is transition index
+      #print("split", guard)
+      if is_or(guard.left):
+        split(t, guard.left)
+      else:
+        add(t, guard.left)
+        #print("add", guard.left)
+      if is_or(guard.right):
+        split(t, guard.right)
+      else:
+        add(t, guard.right)
+        #print("add", guard.right)
+
+    trans = deepcopy(self._transitions)
+    to_delete = []
+    for (i, t) in enumerate(trans):
+      # FIXME do dnf(nnf(t["guard"]))
+      if "constraint" in t and is_or(t["constraint"]):
+        to_delete.append(t["id"]) #del self._transitions[i]
+        split(t, t["constraint"])
+        self._arcs  = [ a for a in self._arcs \
+          if a["target"] != t["id"] and a["source"] != t["id"]]
+
+    self._transitions=[t for t in self._transitions if t["id"] not in to_delete]
+
   def is_silent_final_transition(self, id):
     return id in self._silent_final_transitions
   
@@ -177,9 +227,11 @@ class DPN:
   def compute_reachable(self, num_steps):
     self._reachable = []
     
-    if self.has_single_token(): 
+    if self.has_single_token():
       fdists = dict([ (t["id"], t["fdist"]) for t in self.transitions()])
       transs = dict([ (t["id"], t) for t in self._transitions ])
+      pids = [ t["id"] for t in self._places ]
+      
       (src, tgt) = ("source", "target")
       ps = [ p["id"] for p in self._places if "initial" in p ]
       for i in range(0, num_steps):

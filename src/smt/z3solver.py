@@ -157,6 +157,13 @@ class Z3Solver(Solver):
   def is_sat(self):
     return self.ctx.check() == z3.sat
 
+  def check_sat(self, constr):
+    self.push()
+    self.require(constr)
+    m = Z3Model(self.ctx) if self.ctx.check() == z3.sat else None
+    self.pop()
+    return m
+
   # maximize given expression
   def maximize(self, expr, bound_val):
     val = self.ctx.maximize(expr)

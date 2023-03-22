@@ -50,7 +50,7 @@ class Encoding:
 
     
     for i in range(1, self._step_bound + 1):
-      xis = {} # dictinary mapping data variable name to SMT variable
+      xis = {} # dictionary mapping data variable name to SMT variable
       for v in vs:
         n = v["name"]
         # optimization:

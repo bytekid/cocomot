@@ -79,7 +79,7 @@ def read_pnml_input(pnmlfile):
     n = a.getElementsByTagName('name')[0]
     nameval = n.getElementsByTagName('text')[0].firstChild.nodeValue
     ws = [w.firstChild.nodeValue for w in a.getElementsByTagName('writeVariable')]
-    t = { "id": id, "label": nameval, "write": ws, "invisible": inv}
+    t = { "id": id, "label": nameval, "write": ws, "invisible": inv }
     if guard:
       t["constraint"] = parse_expr(guard)
     dpn["transitions"].append(t)
