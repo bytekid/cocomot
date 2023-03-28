@@ -11,5 +11,6 @@ default = {
     "solver": None, # could be yices, z3, z3-inc, om, om-inc
     "uncertainty": None, # use conformance checking with uncertainty
     "verbose": 1, # verbosity of output
+    "y": None, # debugging
     "z": None # debugging
   }

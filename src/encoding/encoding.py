@@ -56,7 +56,7 @@ class Encoding:
         # optimization:
         # if no transition writing variable v is reachable in i steps, v cannot
         # be written, so take respective variable of instant i - 1
-        xis[n] = create_var(v,i) if n in varwrite[i-1] else vvars[i-1][n]
+        xis[n] = create_var(v,i)# if n in varwrite[i-1] else vvars[i-1][n]
       vvars.append(xis)
     return vvars
 

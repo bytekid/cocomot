@@ -545,7 +545,7 @@ def process_args(argv):
   usage = "cocomot.py <model_file> <log_file> [-p <property_string> | -s] [-x <number>]"
   opts = default_options
   try:
-    optargs, args = getopt.getopt(argv,"hjmro:u:v:d:l:n:x:a:s:z:")
+    optargs, args = getopt.getopt(argv,"hjmro:u:v:d:l:n:x:a:s:z:y:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(1)
@@ -575,6 +575,8 @@ def process_args(argv):
       opts["anti"] = int(arg)
     elif opt == "-z":
       opts["z"] = int(arg)
+    elif opt == "-y":
+      opts["y"] = int(arg)
     elif opt == "-o":
       args = ["indet", "act", "time", "data", "mixed"]
       if not (arg in args):
@@ -612,10 +614,28 @@ if __name__ == "__main__":
       cocomot_uncertain(dpn, log, ps)
     elif ps["z"] != None:
       playout = Playout(dpn)
-      traces = playout.generate(ps["z"])
-      xml = traces_to_xes(traces)
+      abstracttraces, _ = playout.generate(ps["z"])
+      xml = traces_to_xes(abstracttraces)
       print("<?xml version='1.0' encoding='UTF-8'?>")
       print(xml.toprettyxml())
+    elif ps["y"] != None:
+      playout = Playout(dpn)
+      abstracttraces, realtraces = playout.generate_test_set(ps["y"])
+      3
+      xml = traces_to_xes(abstracttraces)
+      f = open("training_set.xes", "w")
+      f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
+      f.close()
+      #
+      testset = [t for (t,_) in realtraces]
+      xml = traces_to_xes(testset)
+      f = open("test_set.xes", "w")
+      f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
+      #
+      testset_result = [t for (_,t) in realtraces]
+      xml = traces_to_xes(testset_result)
+      f = open("test_set_result.xes", "w")
+      f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
     else:
         cocomot(dpn, log, ps)
   YicesSolver.shutdown()

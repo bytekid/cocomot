@@ -1,4 +1,5 @@
 from sys import maxsize
+from random import randint
 
 from dpn.expr import Num, Var
 
@@ -10,6 +11,8 @@ class Interval:
     self.high_open = h_is_open
 
   def __eq__(self,other):
+    if other == None:
+      return False
     if self.low == other.low and self.low_open == other.low_open and\
        self.high == other.high and self.high_open == other.high_open:
       return True
@@ -28,11 +31,22 @@ class Interval:
     ub = self.high > n if self.high_open else self.high >= n 
     return lb and ub
 
+  def random(self):
+    lb = max(int(self.low), 0)
+    ub = min(int(self.high), 1000)
+    return randint(lb, ub)
+
   def intersects(self, ival):
     if (self.low == ival.high and (self.low_open or ival.high_open)) or \
       (self.high == ival.low and (self.high_open or ival.low_open)):
       return False
     return self.mem(ival.low) or ival.mem(self.low)
+
+  def is_subset(self, ival): # self is subset of other
+    return (self.low > ival.low or 
+      (self.low == ival.low and (self.low_open or not ival.low_open))) and \
+      (self.high < ival.high or 
+      (self.high == ival.high and (self.high_open or not ival.high_open)))
 
   def split(self, ival):
     if not self.intersects(ival):
@@ -58,6 +72,23 @@ class Interval:
       (intersect, ival2, self2) = ival.split(self)
       return (intersect, self2, ival2)
 
+def intersect_all(y, ivals): # assumes ivals intersection-free
+  if len(ivals) == 0:
+    return set({})
+  else:
+    x = ivals.pop() # ivals is changed
+  if not y.intersects(x):
+    return intersect_all(y, ivals)
+  else:
+    (xy, _, yrest) = x.split(y)
+    if len(yrest) == 0 or len(ivals) > 0:
+      return xy # no need to split rest of ivals
+    else:
+      while len(yrest) > 0 and len(ivals) > 0:
+        z = yrest.pop()
+        ivals =  intersect_all(z, ivals)
+      return ivals.union(xy)
+
 def add_split(y, ivals): # assumes ivals intersection-free
   if len(ivals) == 0:
     return { y }
@@ -76,7 +107,7 @@ def add_split(y, ivals): # assumes ivals intersection-free
       return ivals.union(xy).union(xrest)
 
 
-def cmp_interval(c):
+def cmp_interval_space(c): # gives interval of complement
   if isinstance(c.left, Var):
     assert(isinstance(c.right, Num))
     b = float(c.right.num)
@@ -94,6 +125,32 @@ def cmp_interval(c):
     ival = Interval(b, True, maxsize, True)
   return (var, ival)
 
+
+def cmp_intervals(c):
+  if isinstance(c.left, Var):
+    assert(isinstance(c.right, Num))
+    b = float(c.right.num)
+    var = c.left.basename()
+  else:
+    assert(isinstance(c.left, Num) and isinstance(c.right, Var))
+    b = float(c.left.num)
+    var = c.right.basename()
+  minsize = - maxsize - 1
+
+  if c.op == "==":
+    return [(var, Interval(b, False, b, False))]
+  elif c.op == "!=":
+    return [(var, Interval(minsize, True, b, True)), \
+      (var, Interval( b, True, maxsize, True))]
+  else:
+    strict = c.op == "<" or c.op == ">"
+    if ((c.op == ">=" or c.op == ">") and isinstance(c.left, Var)) or \
+      ((c.op == "<=" or c.op == "<") and isinstance(c.right, Var)): # lower bnd
+      return [(var, Interval(b, strict, maxsize, True) )]
+    else: # upper bound
+      return [(var, Interval(minsize, True, b, strict) )]
+  assert(False)
+
 def is_interval_cmp(c):
   return (isinstance(c.left, Var) and isinstance(c.right, Num)) or \
     (isinstance(c.right, Var) and isinstance(c.left, Num)) #FIXME
@@ -110,7 +167,7 @@ def comparison_intervals(dpn):
     if not is_interval_cmp(c):
       vs = [ v for v in vs if not v in c.vars() ]
 
-  cmp_ivals = [cmp_interval(c) for c in cmps if is_interval_cmp(c) \
+  cmp_ivals = [cmp_interval_space(c) for c in cmps if is_interval_cmp(c) \
     and c.vars().issubset(set(vs)) ]
   var_intervals = {}
   for vname in vs:
