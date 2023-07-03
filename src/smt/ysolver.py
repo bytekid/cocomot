@@ -163,6 +163,14 @@ class YicesSolver(Solver):
     status = self.ctx.check_context(timeout=self._timeout)
     return status == Status.SAT
 
+  def check_sat(self, x):
+    self.push()
+    self.require([x])
+    status = self.ctx.check_context(timeout=self._timeout)
+    m = YicesModel(self.ctx) if status == Status.SAT else None
+    self.pop()
+    return m
+
   # minimize given expression
   def minimize(self, expr, max_val, start = 0):
     self.push()

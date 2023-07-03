@@ -11,10 +11,10 @@ The script is written for python3, and requires currently the following:
 
 ### Basic calls
 Example calls are as follows:  
- `$ python3 src/cocomot.py data/sat_paper/sat_paper_fig2.pnml data/sat_paper/sat_paper_fig2.xes`  
+ `$ python3 src/cocomot.py -d data/sat_paper/sat_paper_fig2.pnml -l data/sat_paper/sat_paper_fig2.xes`  
 For verbose output (i.e., to obtain the alignment), add option `-v`:  
 
- `$ python3 src/cocomot.py data/hospital_billing/Facturatie-Figure_15_6.pnml data/hospital_billing/trace20.xes -v`
+ `$ python3 src/cocomot.py -d data/hospital_billing/Facturatie-Figure_15_6.pnml -l data/hospital_billing/trace20.xes -v`
 
 In order to process a log in parallel, you can also add an argument specifying
 the number of processes to be used (`-n`):  

@@ -620,8 +620,12 @@ if __name__ == "__main__":
       print(xml.toprettyxml())
     elif ps["y"] != None:
       playout = Playout(dpn)
-      abstracttraces, realtraces = playout.generate_test_set(ps["y"])
-      3
+      log = preprocess_log(log, dpn)
+      naive_part = NaivePartitioning([ (t,1) for t in log ])
+      interval_part = IntervalPartitioning(dpn, naive_part.representatives())
+      log = [t for (t, _) in interval_part.partitions]
+      abstracttraces, realtraces = playout.generate_test_set(ps["y"], log)
+      #
       xml = traces_to_xes(abstracttraces)
       f = open("training_set.xes", "w")
       f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
