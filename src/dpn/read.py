@@ -66,9 +66,11 @@ def read_pnml_input(pnmlfile):
     src = a.getAttribute('source')
     tgt = a.getAttribute('target')
     id = a.getAttribute('id')
-    # arctype = a.getElementsByTagName('arctype')[0]
-    # t = arctype.getElementsByTagName('text')[0].firstChild.nodeValue
-    dpn["arcs"].append({ "source": src, "target": tgt, "id": id })
+    arc = { "source": src, "target": tgt, "id": id}
+    insc = a.getAttribute('inscription')
+    if insc:
+      arc["inscription"] = insc
+    dpn["arcs"].append(arc)
   
   # transitions
   for a in dom.getElementsByTagName('transition'):
