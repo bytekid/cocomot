@@ -90,6 +90,9 @@ def read_pnml_input(pnmlfile):
   for a in dom.getElementsByTagName('page')[0].getElementsByTagName('place'):
     id = a.getAttribute('id')
     p = { "id": id }
+    color = a.getAttribute('color')
+    if color:
+      p["color"] = color
     name = a.getElementsByTagName('name')
     if name:
       p["name"] = name[0].getElementsByTagName('text')[0].firstChild.nodeValue

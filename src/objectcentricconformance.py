@@ -35,13 +35,14 @@ def create_encoding(solver, trace, net):
   encoding = Encoding(solver, net, trace)
   # encoding parts
   t_start = time.perf_counter()
+  encoding.create_variables()
   f_initial = encoding.initial_state()
-  f_object_types = encoding.object_types()
+  f_trans = encoding.transition_range()
+  f_obj_types = encoding.object_types()
   f_tokens = encoding.token_game()
   f_fresh = encoding.freshness()
   f_final = encoding.final_state()
-  encoding.prepare_edit_distance()
-  solver.require([f_initial, f_object_types, f_tokens, f_fresh, f_final])
+  solver.require([f_initial, f_trans, f_obj_types, f_tokens, f_fresh, f_final])
   t_encode1 = time.perf_counter() - t_start
   return (encoding, t_encode1)
 
