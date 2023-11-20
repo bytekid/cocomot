@@ -7,6 +7,7 @@ from objectcentric.read import ocel as read_ocel
 from objectcentric.encoding import Encoding
 from dpn.read import read_pnml_input
 from smt.ysolver import YicesSolver
+from smt.cvc5solver import CVC5Solver
 
 def print_trace_distance(trace, t_encode2, t_solve, distance):
   print("distance %d" % distance)
@@ -48,7 +49,7 @@ def create_encoding(solver, trace, net):
 
 
 def process(net, log, verbose):
-  solver = YicesSolver()
+  solver = CVC5Solver() # YicesSolver()
   (encoding, t_enc1) = create_encoding(solver, log, net)
   conformance_check(encoding, log, verbose)
 

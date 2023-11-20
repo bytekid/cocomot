@@ -33,10 +33,14 @@ class OPI(DPN):
       break
 
   def objects_by_type(self, trace):
+    # return for every type a list of tuples containing object name and id
+    # (id is unique among all objects)
     objs = trace.get_objects()
     objs_by_type = dict([ (typ,[]) for typ in objs.values()])
+    id = 0
     for (o,t) in objs.items():
-      objs_by_type[t].append(o)
+      objs_by_type[t].append((o, id))
+      id += 1
     return objs_by_type
 
   def tokens_by_color(self, trace):
@@ -44,7 +48,7 @@ class OPI(DPN):
     colors = set([ p["color"] for p in self._places ])
     tokens_by_color = {}
     for color in colors:
-      prod = itertools.product(*[objs_by_type[typ] for typ in color])
+      prod = itertools.product(*[objs_by_type[typ][0] for typ in color])
       tokens_by_color[color] = list(prod)
     #print(tokens_by_color)
     return tokens_by_color
@@ -69,3 +73,24 @@ class OPI(DPN):
       max_obj = max(max_obj, obj_count)
     print("maximum number of objects used by transition:", max_obj)
     return max_obj
+
+  def object_params_of_transition(self, trans, trace):
+    # returns tuples (name, indexed_name, needed, type)
+    objs_by_type = self.objects_by_type(trace)
+    inarcs = [ a for a in self._arcs if a["target"] == trans["id"]]
+    inscset = set([])
+    tobjects = []
+    for a in inarcs:
+      for o in a["inscription"].split(","):
+        oname = o[0:o.rfind(":")]
+        otype = o[o.rfind(":")+1:]
+        if oname in inscset:
+          continue
+        if "LIST" in otype:
+          basetype = otype[0:otype.rfind(" LIST")]
+          for i in range(0, len(objs_by_type[basetype])):
+            tobjects.append((oname, oname+str(i), False, basetype))
+        else:
+          tobjects.append((oname, oname, True, otype))
+        inscset.add(oname)
+    return tobjects
