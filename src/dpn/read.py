@@ -67,9 +67,14 @@ def read_pnml_input(pnmlfile):
     tgt = a.getAttribute('target')
     id = a.getAttribute('id')
     arc = { "source": src, "target": tgt, "id": id}
-    insc = a.getAttribute('inscription')
-    if insc:
-      arc["inscription"] = insc
+    inscs = a.getAttribute('inscription')
+    if inscs:
+      split_insc = []
+      for insc in inscs.split(","):
+        name = insc[:insc.find(":")]
+        typ = insc[insc.find(":")+1:]
+        split_insc.append((name, typ))
+        arc["inscription"] = tuple(split_insc)
     dpn["arcs"].append(arc)
   
   # transitions
@@ -92,7 +97,7 @@ def read_pnml_input(pnmlfile):
     p = { "id": id }
     color = a.getAttribute('color')
     if color:
-      p["color"] = color
+      p["color"] =  tuple(color.split(","))
     name = a.getElementsByTagName('name')
     if name:
       p["name"] = name[0].getElementsByTagName('text')[0].firstChild.nodeValue

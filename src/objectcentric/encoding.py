@@ -6,6 +6,11 @@ class Encoding():
     self._step_bound = net.step_bound(trace)
     #self._object_bound = net.object_bound(trace)
     net.compute_reachable(self._step_bound)
+    self._objects_by_type = self._net.objects_by_type(self._trace)
+    oids = [ (n, id) for os in self._objects_by_type.values() for (n, id) in os]
+    self._ids_by_object_name = dict(oids)
+    self._object_name_by_id = dict([(id,n) for (n, id) in oids])
+    self._tokens_by_color = self._net.tokens_by_color(self._trace)
 
   def get_solver(self):
     return self._solver
@@ -18,14 +23,74 @@ class Encoding():
     mvars0 = [v for vs in self._marking_vars[0].values() for v in vs.values()]
     # FIXME fixed to empty marking
     return s.land([s.neg(v) for v in mvars0])
-    
 
   def final_state(self):
-    return self._solver.true()
+    # FIXME how to specify final marking?
+    # currently we only require that places marked as final have some token
+    last_marking = self._marking_vars[self._step_bound]
+    constraints = []
+    for p in self._net._places:
+      tokens_in_place = []
+      for t in self._tokens_by_color[p["color"]]:
+        token_placed = last_marking[p["id"]][t] if "final" in p and p["final"] \
+          else self._solver.neg(last_marking[p["id"]][t])
+        tokens_in_place.append(token_placed)
+      constraints.append(self._solver.lor(tokens_in_place))
+    return self._solver.land(constraints)
 
   def token_game(self):
-    return self._solver.true()
+    s = self._solver
+    tvars = self._transition_vars
+    ovars = self._object_vars
+    mvars = self._marking_vars
 
+    def is_fired_token(p, t, tok, j, incoming):
+      #print("\nIS FIRED TOKEN:", t["label"], p["id"], tok, incoming)
+      obj_params = self._net.object_inscriptions_of_transition(t, self._trace)
+      params = [x for x in obj_params if x["place"] == p["id"] and \
+        x["incoming"] == incoming]
+      #print(" ", params)
+      eqs = []
+      inscription = next(a["inscription"] for a in self._net._arcs \
+        if (incoming and a["source"] == p["id"] and a["target"] == t["id"]) or \
+          (not incoming and a["target"] == p["id"] and a["source"] == t["id"]))
+      params_for_insc = []
+      for (pname, _) in inscription:
+        params_for_insc.append([x for x in params if x["name"] == pname])
+      #print(" for insc ", params_for_insc)
+      for (obj, params) in zip(tok, params_for_insc):
+        objid = self._ids_by_object_name[obj]
+        inst2token = [ s.eq(ovars[j][p["index"]], s.num(objid)) for p in params]
+        eqs.append(s.lor(inst2token))
+        #print(" ", s.land(eqs))
+      return s.land(eqs)
+
+    def trans_j_enabled(t, j):
+      constraints = []
+      for p in self._net.pre(t):
+        for tok in self._tokens_by_color[p["color"]]:
+          marked = mvars[j-1][p["id"]][tok]
+          is_fired = is_fired_token(p, t, tok, j, True)
+          constraints.append(s.implies(is_fired, marked))
+      return s.land(constraints)
+
+    def trans_j_produced(t, j):
+      constraints = []
+      for p in self._net.post(t):
+        for tok in self._tokens_by_color[p["color"]]:
+          marked = mvars[j][p["id"]][tok]
+          is_fired = is_fired_token(p, t, tok, j, False)
+          constraints.append(s.implies(is_fired, marked))
+      return s.land(constraints)
+
+    cstr = [s.implies(s.eq(tvars[j], s.num(t["id"])), \
+        s.land([trans_j_enabled(t, j), trans_j_produced(t, j)])) \
+      for j in range(0, self._step_bound) \
+      for t in self._net._transitions]
+    return s.land(cstr)
+
+
+  # ensure that transitions use objects of correct type
   def object_types(self):
     s = self._solver
     tvars = self._transition_vars
@@ -35,12 +100,13 @@ class Encoding():
       obj_params = self._net.object_params_of_transition(t, self._trace)
       obj_conj = []
       objs_by_type = self._net.objects_by_type(self._trace)
-      for (k, (param_name, _, needed, ptype)) in enumerate(obj_params):
+      for param in obj_params:
+        pidx = param["index"]
         # kth object parameter of transition t
-        param_disj = [ s.eq(ovars[j][k], s.num(id)) \
-          for (obj_name, id) in objs_by_type[ptype]]
-        if not needed:
-          param_disj.append(s.eq(ovars[j][k], s.num(0)))
+        param_disj = [ s.eq(ovars[j][pidx], s.num(id)) \
+          for (obj_name, id) in objs_by_type[param["type"]]]
+        if not param["needed"]:
+          param_disj.append(s.eq(ovars[j][pidx], s.num(0)))
         obj_conj.append(s.lor(param_disj))
       return s.land(obj_conj)
 
@@ -48,9 +114,44 @@ class Encoding():
       for j in range(0, self._step_bound) \
       for t in self._net._transitions]
     return s.land(cstr)
+  
 
+  # ensure that objects substituted for nu inscriptions do not occur in marking
   def freshness(self):
-    return self._solver.true()
+    s = self._solver
+    tvars = self._transition_vars
+    ovars = self._object_vars
+    mvars = self._marking_vars
+
+    def not_in_marking(oid, j):
+      # object with id k is not in marking at time j
+      oname = self._object_name_by_id[oid]
+      constraints = []
+      mvarsj = mvars[j]
+      for p in self._net._places:
+        tokens = [ t for t in self._tokens_by_color[p["color"]] if oname in t ]
+        for t in tokens:
+          constraints.append(s.neg(mvarsj[p["id"]][t]))
+      return self._solver.land(constraints)
+
+    def nutrans_constraint(t, j):
+      obj_params = self._net.object_params_of_transition(t, self._trace)
+      constraints = []
+      for param in obj_params:
+        k = param["index"]
+        # kth object parameter of transition t
+        if not "nu" in param["name"]:
+          continue
+        imps = [s.implies(s.eq(ovars[j][k], s.num(id)), not_in_marking(k,j-1)) \
+          for (obj_name, id) in self._objects_by_type[param["type"]]]
+        constraints += imps
+      return s.land(constraints)
+
+    nutrans = self._net.nu_transitions()
+    cstr = [s.implies(s.eq(tvars[j], s.num(t["id"])), nutrans_constraint(t,j)) \
+      for j in range(0, self._step_bound) \
+      for t in nutrans ]
+    return s.land(cstr)
 
   # all transition variables trans_vars[i] have as value a transition id that is
   # reachable in i steps in the net
@@ -66,7 +167,7 @@ class Encoding():
     return s.land(rng_constr) # + tau_constr)
 
   def create_marking_variables(self):
-    tokens = self._net.tokens_by_color(self._trace)
+    tokens = self._tokens_by_color
     self._marking_vars = []
     for i in range(0, self._step_bound + 1):
       mvarsi = {}
@@ -77,7 +178,6 @@ class Encoding():
           mvarsp[token] = self._solver.boolvar(name)
         mvarsi[p["id"]] = mvarsp
       self._marking_vars.append(mvarsi)
-    #print(self._token_vars)
 
   def create_transition_variables(self):
     name = lambda i: "T" + str(i)

@@ -10,8 +10,6 @@ class OPI(DPN):
 
   def __init__(self, opi_as_array):
     super().__init__(opi_as_array)
-    for p in self._places:
-      p["color"] = tuple(p["color"].split(","))
 
   def step_bound(self, trace):
     return len(trace) + self.shortest_accepted()
@@ -32,25 +30,24 @@ class OPI(DPN):
       id += 1
       break
 
-  def objects_by_type(self, trace):
+  def objects_by_type(self, trace, with_ids = True):
     # return for every type a list of tuples containing object name and id
     # (id is unique among all objects)
     objs = trace.get_objects()
     objs_by_type = dict([ (typ,[]) for typ in objs.values()])
     id = 0
     for (o,t) in objs.items():
-      objs_by_type[t].append((o, id))
+      objs_by_type[t].append((o, id) if with_ids else o)
       id += 1
     return objs_by_type
 
   def tokens_by_color(self, trace):
-    objs_by_type = self.objects_by_type(trace)
+    objs_by_type = self.objects_by_type(trace, with_ids = False)
     colors = set([ p["color"] for p in self._places ])
     tokens_by_color = {}
     for color in colors:
-      prod = itertools.product(*[objs_by_type[typ][0] for typ in color])
+      prod = itertools.product(*[ objs_by_type[typ] for typ in color ])
       tokens_by_color[color] = list(prod)
-    #print(tokens_by_color)
     return tokens_by_color
 
   # compute maximum number of objects involved in a transition firing
@@ -60,11 +57,10 @@ class OPI(DPN):
       id = t["id"]
       inscs = []
       for a in [a for a in self._arcs if a["source"] == id or a["target"] ==id]:
-        inscs += a["inscription"].split(",")
+        inscs += a["inscription"]
       obj_count = 0
       objs_by_type = self.objects_by_type(trace)
-      for insc in set(inscs):
-        typ = insc[insc.find(":")+1:]
+      for (name, typ) in set(inscs):
         if typ in objs_by_type: # simple inscription
           obj_count += 1
         else:
@@ -74,23 +70,61 @@ class OPI(DPN):
     print("maximum number of objects used by transition:", max_obj)
     return max_obj
 
-  def object_params_of_transition(self, trans, trace):
-    # returns tuples (name, indexed_name, needed, type)
+  def object_inscriptions_of_transition(self, trans, trace):
+    # returns tuples (index, name, needed, type, in, place)
     objs_by_type = self.objects_by_type(trace)
-    inarcs = [ a for a in self._arcs if a["target"] == trans["id"]]
-    inscset = set([])
-    tobjects = []
-    for a in inarcs:
-      for o in a["inscription"].split(","):
-        oname = o[0:o.rfind(":")]
-        otype = o[o.rfind(":")+1:]
-        if oname in inscset:
-          continue
+    arcs = [ a for a in self._arcs if a["target"] == trans["id"] or \
+      a["source"] == trans["id"] ]
+    params = []
+    indices = {}
+    for a in arcs:
+      place, is_in = (a["source"], True) if a["target"] == trans["id"] else \
+        (a["target"], False)
+      for (oname, otype) in a["inscription"]:
         if "LIST" in otype:
           basetype = otype[0:otype.rfind(" LIST")]
           for i in range(0, len(objs_by_type[basetype])):
-            tobjects.append((oname, oname+str(i), False, basetype))
+            xname = oname+str(i)
+            if not xname in indices:
+              indices[xname] = len(indices)
+            index = indices[xname]
+            params.append({"name":oname, "xname": xname, "needed":False, \
+              "type":basetype, "incoming": is_in, "place": place,"index":index})
         else:
-          tobjects.append((oname, oname, True, otype))
-        inscset.add(oname)
-    return tobjects
+          if not oname in indices:
+            indices[oname] = len(indices)
+          index = indices[oname]
+          params.append({"name":oname,"xname":oname,"needed":True,"type":otype,\
+            "incoming": is_in, "place": place, "index": index})
+    #print("INSCRIPTION", trans["label"], params)
+    return params
+
+  def object_params_of_transition(self, trans, trace):
+    inscset = set([])
+    params = []
+    index = 0
+    for p in self.object_inscriptions_of_transition(trans, trace):
+      if p["name"] in inscset: # add every parameter only once
+        continue
+      params.append({"name":p["name"], "needed":p["needed"], "type":p["type"], \
+        "index": p["index"] })
+      inscset.add(p["name"])
+    return params
+
+  def nu_transitions(self):
+    nutrans = []
+    for t in self._transitions:
+      aout = [a for a in self._arcs if a["source"] == t["id"]]
+      nuinscs = [o for a in aout for (o,_) in a["inscription"] if "nu" in o]
+      assert(len(nuinscs) <= 1)
+      if len(nuinscs) != 0:
+        nutrans.append(t)
+    return nutrans
+
+  def pre(self, trans):
+    ids = [a["source"] for a in self._arcs if a["target"] == trans["id"]]
+    return [ p for p in self._places if p["id"] in ids ]
+
+  def post(self, trans):
+    ids = [a["target"] for a in self._arcs if a["source"] == trans["id"]]
+    return [ p for p in self._places if p["id"] in ids ]
