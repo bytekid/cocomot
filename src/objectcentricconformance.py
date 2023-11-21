@@ -21,7 +21,8 @@ def conformance_check(encoding, trace, verbose):
 
   model = encoding.get_solver().minimize(dist, encoding.get_step_bound())
   t_solve = encoding.get_solver().t_solve
-  if model == None: # timeout
+  if model == None: # timeout or bug
+    print("no model found")
     return (None, None, t_encode2, t_solve)
 
   distance = model.eval_int(dist)
