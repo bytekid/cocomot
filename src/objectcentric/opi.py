@@ -12,16 +12,18 @@ class OPI(DPN):
     super().__init__(opi_as_array)
 
   def step_bound(self, trace):
-    return len(trace) + self.shortest_accepted()
+    return 4 # len(trace) + self.shortest_accepted()
 
   #def object_bound(self, trace):
   #  return len(trace.get_objects())
 
   def add_silent_finals(self, map):
+    return
+    
     id = len(map) + 1
     for p in self.final_places():
       insc = [a["inscription"] for a in self._arcs if a["target"] == p["id"]][0]
-      t = {"id": id, "invisible": True, "label": None }
+      t = {"id": id, "invisible": True, "label": "silent final"+str(id) }
       self._transitions.append(t)
       self._silent_final_transitions.append(t["id"])
       self._arcs.append({"source": p["id"], "target": id, "inscription": insc})

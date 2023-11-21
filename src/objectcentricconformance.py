@@ -17,6 +17,7 @@ def conformance_check(encoding, trace, verbose):
   (dist, dconstr) = encoding.edit_distance()
   t_encode2 = time.perf_counter() - t_start
 
+  encoding.get_solver().require([encoding.cache_constraints()])
   encoding.get_solver().require([dconstr])
 
   model = encoding.get_solver().minimize(dist, encoding.get_step_bound())
@@ -26,7 +27,7 @@ def conformance_check(encoding, trace, verbose):
     return (None, None, t_encode2, t_solve)
 
   distance = model.eval_int(dist)
-  alignment_decoded = encoding.decode_alignment(trace, model)
+  alignment_decoded = encoding.decode_alignment(model)
   print_trace_distance(trace, t_encode2, t_solve, distance)
 
   model.destroy()
@@ -44,7 +45,7 @@ def create_encoding(solver, trace, net):
   f_tokens = encoding.token_game()
   f_fresh = encoding.freshness()
   f_final = encoding.final_state()
-  solver.require([f_initial, f_trans, f_obj_types, f_tokens, f_fresh, f_final])
+  solver.require([f_initial, f_trans, f_obj_types, f_fresh, f_tokens,]) # f_final])
   t_encode1 = time.perf_counter() - t_start
   return (encoding, t_encode1)
 

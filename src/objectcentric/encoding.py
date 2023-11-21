@@ -11,6 +11,8 @@ class Encoding():
     self._ids_by_object_name = dict(oids)
     self._object_name_by_id = dict([(id,n) for (n, id) in oids])
     self._tokens_by_color = self._net.tokens_by_color(self._trace)
+    # cache encoding parts
+    self._consumed_token_cache = {}
 
   def get_solver(self):
     return self._solver
@@ -38,52 +40,65 @@ class Encoding():
       constraints.append(self._solver.lor(tokens_in_place))
     return self._solver.land(constraints)
 
+
+  def is_fired_token(self, p, t, tok, j, incoming):
+    s = self._solver
+    ovars = self._object_vars
+    #print("\nIS FIRED TOKEN:", t["label"], p["id"], tok, incoming)
+    obj_params = self._net.object_inscriptions_of_transition(t, self._trace)
+    params = [x for x in obj_params if x["place"] == p["id"] and \
+      x["incoming"] == incoming]
+    #print(" ", params)
+    eqs = []
+    inscription = next(a["inscription"] for a in self._net._arcs \
+      if (incoming and a["source"] == p["id"] and a["target"] == t["id"]) or \
+        (not incoming and a["target"] == p["id"] and a["source"] == t["id"]))
+    params_for_insc = []
+    for (pname, _) in inscription:
+      params_for_insc.append([x for x in params if x["name"] == pname])
+    #print(" for insc ", params_for_insc)
+    for (obj, params) in zip(tok, params_for_insc):
+      objid = self._ids_by_object_name[obj]
+      inst2token = [ s.eq(ovars[j][p["index"]], s.num(objid)) for p in params]
+      eqs.append(s.lor(inst2token))
+      #print(" ", s.land(eqs))
+    return s.land(eqs)
+
+  def is_consumed_token(self, p, t, tok, j):
+    keytuple = (p["id"], t["id"], tok, j)
+    if keytuple in self._consumed_token_cache:
+      return self._consumed_token_cache[keytuple][0]
+    
+    expr = self.is_fired_token(p, t, tok, j, True)
+    index = len(self._consumed_token_cache)
+    var = self._solver.boolvar("cons_token" + str(index))
+    self._consumed_token_cache[keytuple] = (var, expr)
+    return var
+
   def token_game(self):
     s = self._solver
-    tvars = self._transition_vars
-    ovars = self._object_vars
     mvars = self._marking_vars
 
-    def is_fired_token(p, t, tok, j, incoming):
-      #print("\nIS FIRED TOKEN:", t["label"], p["id"], tok, incoming)
-      obj_params = self._net.object_inscriptions_of_transition(t, self._trace)
-      params = [x for x in obj_params if x["place"] == p["id"] and \
-        x["incoming"] == incoming]
-      #print(" ", params)
-      eqs = []
-      inscription = next(a["inscription"] for a in self._net._arcs \
-        if (incoming and a["source"] == p["id"] and a["target"] == t["id"]) or \
-          (not incoming and a["target"] == p["id"] and a["source"] == t["id"]))
-      params_for_insc = []
-      for (pname, _) in inscription:
-        params_for_insc.append([x for x in params if x["name"] == pname])
-      #print(" for insc ", params_for_insc)
-      for (obj, params) in zip(tok, params_for_insc):
-        objid = self._ids_by_object_name[obj]
-        inst2token = [ s.eq(ovars[j][p["index"]], s.num(objid)) for p in params]
-        eqs.append(s.lor(inst2token))
-        #print(" ", s.land(eqs))
-      return s.land(eqs)
+    def is_produced_token(p, t, tok, j):
+      return self.is_fired_token(p, t, tok, j, False)
 
     def trans_j_enabled(t, j):
-      constraints = []
+      cnstr = []
       for p in self._net.pre(t):
         for tok in self._tokens_by_color[p["color"]]:
-          marked = mvars[j-1][p["id"]][tok]
-          is_fired = is_fired_token(p, t, tok, j, True)
-          constraints.append(s.implies(is_fired, marked))
-      return s.land(constraints)
+          marked = mvars[j][p["id"]][tok]
+          cnstr.append(s.implies(self.is_consumed_token(p, t, tok, j), marked))
+      return s.land(cnstr)
 
     def trans_j_produced(t, j):
-      constraints = []
+      cnstr = []
       for p in self._net.post(t):
         for tok in self._tokens_by_color[p["color"]]:
-          marked = mvars[j][p["id"]][tok]
-          is_fired = is_fired_token(p, t, tok, j, False)
-          constraints.append(s.implies(is_fired, marked))
-      return s.land(constraints)
+          marked = mvars[j+1][p["id"]][tok]
+          cnstr.append(s.implies(is_produced_token(p, t, tok, j), marked))
+      return s.land(cnstr)
 
-    cstr = [s.implies(s.eq(tvars[j], s.num(t["id"])), \
+    cstr = [s.implies(s.eq(self._transition_vars[j], s.num(t["id"])), \
         s.land([trans_j_enabled(t, j), trans_j_produced(t, j)])) \
       for j in range(0, self._step_bound) \
       for t in self._net._transitions]
@@ -142,15 +157,15 @@ class Encoding():
         # kth object parameter of transition t
         if not "nu" in param["name"]:
           continue
-        imps = [s.implies(s.eq(ovars[j][k], s.num(id)), not_in_marking(k,j-1)) \
+        # marking j is before transition j
+        imps = [s.implies(s.eq(ovars[j][k], s.num(id)), not_in_marking(id,j)) \
           for (obj_name, id) in self._objects_by_type[param["type"]]]
         constraints += imps
       return s.land(constraints)
 
-    nutrans = self._net.nu_transitions()
     cstr = [s.implies(s.eq(tvars[j], s.num(t["id"])), nutrans_constraint(t,j)) \
       for j in range(0, self._step_bound) \
-      for t in nutrans ]
+      for t in self._net.nu_transitions() ]
     return s.land(cstr)
 
   # all transition variables trans_vars[i] have as value a transition id that is
@@ -165,6 +180,11 @@ class Encoding():
 
     rng_constr = [rng(i, v) for (i, v) in enumerate(tvs)]
     return s.land(rng_constr) # + tau_constr)
+
+  def cache_constraints(self):
+    s = self._solver
+    cnstr = [ s.iff(v,e) for (v,e) in self._consumed_token_cache.values() ]
+    return s.land(cnstr)
 
   def create_marking_variables(self):
     tokens = self._tokens_by_color
@@ -209,5 +229,26 @@ class Encoding():
   def edit_distance(self):
     return (self._solver.num(0), self._solver.true())
 
-  def decode_alignment(self, trace, model):
-    print("decode")
+  def decode_marking(self, model, j):
+    mvars = self._marking_vars[j]
+    mstr = ""
+    for p in self._net._places:
+      pstr = ""
+      for t in self._tokens_by_color[p["color"]]:
+        if model.eval_bool(mvars[p["id"]][t]):
+         pstr += (", " if len(pstr) > 0 else "") + str(t)
+      mstr += ("%d: [%s] " % (p["id"], pstr))
+    print("MARKING %d: %s" % (j, mstr))
+
+  def decode_alignment(self, model):
+    s = self._solver
+    tvars = self._transition_vars
+    ovars = self._object_vars
+    print("DECODE")
+    print("run:")
+    self.decode_marking(model, 0)
+    for j in range(0, self._step_bound):
+      val = model.eval_int(tvars[j])
+      trans = next(t for t in self._net._transitions if t["id"] == val)
+      print(" ", trans["label"])
+      self.decode_marking(model, j+1)
