@@ -12,14 +12,12 @@ class OPI(DPN):
     super().__init__(opi_as_array)
 
   def step_bound(self, trace):
-    return 4 # len(trace) + self.shortest_accepted()
+    return 12 # len(trace) + self.shortest_accepted()
 
   #def object_bound(self, trace):
   #  return len(trace.get_objects())
 
   def add_silent_finals(self, map):
-    return
-    
     id = len(map) + 1
     for p in self.final_places():
       insc = [a["inscription"] for a in self._arcs if a["target"] == p["id"]][0]
@@ -130,3 +128,11 @@ class OPI(DPN):
   def post(self, trans):
     ids = [a["target"] for a in self._arcs if a["source"] == trans["id"]]
     return [ p for p in self._places if p["id"] in ids ]
+
+  def post_trans(self, place):
+    ids = [a["target"] for a in self._arcs if a["source"] == place["id"]]
+    return [ t for t in self._transitions if t["id"] in ids ]
+
+  def pre_trans(self, place):
+    ids = [a["source"] for a in self._arcs if a["target"] == place["id"]]
+    return [ t for t in self._transitions if t["id"] in ids ]

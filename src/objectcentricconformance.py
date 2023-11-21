@@ -42,10 +42,11 @@ def create_encoding(solver, trace, net):
   f_initial = encoding.initial_state()
   f_trans = encoding.transition_range()
   f_obj_types = encoding.object_types()
-  f_tokens = encoding.token_game()
+  f_moving = encoding.moving_tokens()
+  f_remaining = encoding.remaining_tokens()
   f_fresh = encoding.freshness()
   f_final = encoding.final_state()
-  solver.require([f_initial, f_trans, f_obj_types, f_fresh, f_tokens,]) # f_final])
+  solver.require([f_initial, f_trans, f_obj_types, f_fresh, f_moving, f_remaining, f_final])
   t_encode1 = time.perf_counter() - t_start
   return (encoding, t_encode1)
 

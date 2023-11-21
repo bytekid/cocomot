@@ -10,9 +10,11 @@ class Encoding():
     oids = [ (n, id) for os in self._objects_by_type.values() for (n, id) in os]
     self._ids_by_object_name = dict(oids)
     self._object_name_by_id = dict([(id,n) for (n, id) in oids])
+    print("OBJECT IDS", self._object_name_by_id)
     self._tokens_by_color = self._net.tokens_by_color(self._trace)
     # cache encoding parts
     self._consumed_token_cache = {}
+    self._produced_token_cache = {}
 
   def get_solver(self):
     return self._solver
@@ -44,7 +46,7 @@ class Encoding():
   def is_fired_token(self, p, t, tok, j, incoming):
     s = self._solver
     ovars = self._object_vars
-    #print("\nIS FIRED TOKEN:", t["label"], p["id"], tok, incoming)
+    # print("\nIS %s TOKEN:" % ("CONSUMED" if incoming else "PRODUCED"), "place", p["id"], t["label"], "instant", j, tok)
     obj_params = self._net.object_inscriptions_of_transition(t, self._trace)
     params = [x for x in obj_params if x["place"] == p["id"] and \
       x["incoming"] == incoming]
@@ -61,10 +63,12 @@ class Encoding():
       objid = self._ids_by_object_name[obj]
       inst2token = [ s.eq(ovars[j][p["index"]], s.num(objid)) for p in params]
       eqs.append(s.lor(inst2token))
-      #print(" ", s.land(eqs))
+    # print(" ", s.land(eqs))
     return s.land(eqs)
 
   def is_consumed_token(self, p, t, tok, j):
+    #return self.is_fired_token(p, t, tok, j, True)
+
     keytuple = (p["id"], t["id"], tok, j)
     if keytuple in self._consumed_token_cache:
       return self._consumed_token_cache[keytuple][0]
@@ -75,18 +79,29 @@ class Encoding():
     self._consumed_token_cache[keytuple] = (var, expr)
     return var
 
-  def token_game(self):
+  def is_produced_token(self, p, t, tok, j):
+    #return self.is_fired_token(p, t, tok, j, False)
+
+    keytuple = (p["id"], t["id"], tok, j)
+    if keytuple in self._produced_token_cache:
+      return self._produced_token_cache[keytuple][0]
+    
+    expr = self.is_fired_token(p, t, tok, j, False)
+    index = len(self._produced_token_cache)
+    var = self._solver.boolvar("prod_token" + str(index))
+    self._produced_token_cache[keytuple] = (var, expr)
+    return var
+
+  def moving_tokens(self):
     s = self._solver
     mvars = self._marking_vars
 
-    def is_produced_token(p, t, tok, j):
-      return self.is_fired_token(p, t, tok, j, False)
-
-    def trans_j_enabled(t, j):
+    def trans_j_consumed(t, j):
       cnstr = []
       for p in self._net.pre(t):
         for tok in self._tokens_by_color[p["color"]]:
-          marked = mvars[j][p["id"]][tok]
+          pid = p["id"]
+          marked = s.land([mvars[j][pid][tok], s.neg(mvars[j+1][pid][tok])])
           cnstr.append(s.implies(self.is_consumed_token(p, t, tok, j), marked))
       return s.land(cnstr)
 
@@ -95,14 +110,39 @@ class Encoding():
       for p in self._net.post(t):
         for tok in self._tokens_by_color[p["color"]]:
           marked = mvars[j+1][p["id"]][tok]
-          cnstr.append(s.implies(is_produced_token(p, t, tok, j), marked))
+          cnstr.append(s.implies(self.is_produced_token(p, t, tok, j), marked))
       return s.land(cnstr)
 
     cstr = [s.implies(s.eq(self._transition_vars[j], s.num(t["id"])), \
-        s.land([trans_j_enabled(t, j), trans_j_produced(t, j)])) \
+        s.land([trans_j_consumed(t, j), trans_j_produced(t, j)])) \
       for j in range(0, self._step_bound) \
       for t in self._net._transitions]
     return s.land(cstr)
+
+  def remaining_tokens(self):
+    s = self._solver
+    tvars = self._transition_vars
+    mvars = self._marking_vars
+
+    def moved_token(p, tok, j):
+      consumed_by = lambda t: self.is_consumed_token(p,t,tok,j)
+      produced_by = lambda t: self.is_produced_token(p,t,tok,j)
+      is_trans = lambda t: s.eq(tvars[j],s.num(t["id"]))
+      consumed = [ s.land([consumed_by(t), is_trans(t)]) \
+        for t in self._net.post_trans(p)]
+      produced = [ s.land([produced_by(t), is_trans(t)]) \
+        for t in self._net.pre_trans(p)]
+      return s.lor(consumed + produced) 
+
+    cnstr = []
+    for j in range(0, self._step_bound):
+      for p in self._net._places:
+        pid = p["id"]
+        for tok in self._tokens_by_color[p["color"]]:
+          moved = moved_token(p, tok, j)
+          marking_stays = s.iff(mvars[j][pid][tok], mvars[j+1][pid][tok])
+          cnstr.append(s.lor([moved, marking_stays]))
+    return s.land(cnstr)
 
 
   # ensure that transitions use objects of correct type
@@ -110,6 +150,7 @@ class Encoding():
     s = self._solver
     tvars = self._transition_vars
     ovars = self._object_vars
+    max_objs = self._net.get_max_objects_per_transition(self._trace)
 
     def trans_j_constraint(t, j):
       obj_params = self._net.object_params_of_transition(t, self._trace)
@@ -123,6 +164,8 @@ class Encoding():
         if not param["needed"]:
           param_disj.append(s.eq(ovars[j][pidx], s.num(0)))
         obj_conj.append(s.lor(param_disj))
+      for pidx in range(len(obj_params), max_objs): # unused object indices
+        obj_conj.append(s.eq(ovars[j][pidx], s.num(-1)))
       return s.land(obj_conj)
 
     cstr = [s.implies(s.eq(tvars[j], s.num(t["id"])), trans_j_constraint(t,j)) \
@@ -184,7 +227,18 @@ class Encoding():
   def cache_constraints(self):
     s = self._solver
     cnstr = [ s.iff(v,e) for (v,e) in self._consumed_token_cache.values() ]
-    return s.land(cnstr)
+    cnstr += [ s.iff(v,e) for (v,e) in self._produced_token_cache.values() ]
+
+    # debugging
+    debug = []
+    mvars = self._marking_vars
+    token1 = tuple(["order1"])
+    token2 = tuple(["order2"])
+    #debug.append(mvars[1][0][token1])
+    #debug.append(mvars[2][0][token1])
+    # debug.append(mvars[2][0][token2])
+
+    return s.land(cnstr + debug)
 
   def create_marking_variables(self):
     tokens = self._tokens_by_color
@@ -244,11 +298,25 @@ class Encoding():
     s = self._solver
     tvars = self._transition_vars
     ovars = self._object_vars
+    max_objs_per_trans = self._net.get_max_objects_per_transition(self._trace)
     print("DECODE")
-    print("run:")
     self.decode_marking(model, 0)
     for j in range(0, self._step_bound):
       val = model.eval_int(tvars[j])
       trans = next(t for t in self._net._transitions if t["id"] == val)
-      print(" ", trans["label"])
+      objs = [(model.eval_int(ovars[j][k]), ovars[j][k]) for k in range(0, max_objs_per_trans)]
+      objs = [(self._object_name_by_id[id]) for (id, v) in objs if id in self._object_name_by_id]
+      print(" ", trans["label"], objs)
+      
+      #place = next(p for p in self._net._places if p["id"] == 0)
+      #token1 = tuple(["order1"])
+      #token2 = tuple(["order2"])
+      #print("prod token1", model.eval_bool(self.is_produced_token(place, trans, token1,j)))
+      #print("prod token2", model.eval_bool(self.is_produced_token(place, trans, token2,j)))
+
       self.decode_marking(model, j+1)
+    
+    #mvars = self._marking_vars
+    #print("mvars[1][0][order1]", model.eval_bool(mvars[1][0][token1]))
+    #print("mvars[1][0][order1]", model.eval_bool(mvars[2][0][token1]))
+    #print("mvars[1][0][order2]", model.eval_bool(mvars[2][0][token2]))
