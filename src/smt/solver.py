@@ -65,6 +65,13 @@ class Solver:
   def iff(self, a, b):
     pass
 
+  def xor3(self, a, b, c):
+    return self.lor([
+      self.land([a, self.neg(b), self.neg(c)]),
+      self.land([b, self.neg(a), self.neg(c)]),
+      self.land([c, self.neg(a), self.neg(b)])
+    ])
+
   # equality of arithmetic terms
   @abstractmethod
   def eq(self, a, b):

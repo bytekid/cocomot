@@ -27,7 +27,7 @@ def conformance_check(encoding, trace, verbose):
     return (None, None, t_encode2, t_solve)
 
   distance = model.eval_int(dist)
-  alignment_decoded = encoding.decode_alignment(model)
+  alignment_decoded = encoding.decode(model)
   print_trace_distance(trace, t_encode2, t_solve, distance)
 
   model.destroy()

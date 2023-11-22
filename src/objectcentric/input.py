@@ -16,6 +16,12 @@ class Trace:
   def __len__(self):
     return len(self._events)
 
+  def __getitem__(self, index):
+    if not isinstance(index, int):
+      raise Exception("Trace indexing supports only integer indices")
+    return self._events[index]
+    
+
 
 class Log:
   def __init__(self, events, ordering, objects):
