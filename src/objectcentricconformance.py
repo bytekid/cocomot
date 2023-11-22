@@ -8,6 +8,7 @@ from objectcentric.encoding import Encoding
 from dpn.read import read_pnml_input
 from smt.ysolver import YicesSolver
 from smt.cvc5solver import CVC5Solver
+from smt.z3solver import Z3Solver
 
 def print_trace_distance(trace, t_encode2, t_solve, distance):
   print("distance %d" % distance)
@@ -52,9 +53,10 @@ def create_encoding(solver, trace, net):
 
 
 def process(net, log, verbose):
-  solver = CVC5Solver() # YicesSolver()
+  solver = Z3Solver() # YicesSolver() # 
   (encoding, t_enc1) = create_encoding(solver, log, net)
-  conformance_check(encoding, log, verbose)
+  (dist, alignment, t_enc2, t_solve) = conformance_check(encoding, log, verbose)
+  print("encoding time: %.2f, solving time %.2f" % (t_enc1 + t_enc2, t_solve))
 
 if __name__ == "__main__":
   ps = process_args(sys.argv[1:])

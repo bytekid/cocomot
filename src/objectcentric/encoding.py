@@ -12,8 +12,8 @@ class Encoding():
     oids = [ (n, id) for os in self._objects_by_type.values() for (n, id) in os]
     self._ids_by_object_name = dict(oids)
     self._object_name_by_id = dict([(id,n) for (n, id) in oids])
-    print("OBJECT IDS", self._object_name_by_id)
     self._tokens_by_color = self._net.tokens_by_color(self._trace)
+    self._max_objs_per_trans = self._net.get_max_objects_per_transition(trace)
     # cache encoding parts
     self._consumed_token_cache = {}
     self._produced_token_cache = {}
@@ -152,7 +152,7 @@ class Encoding():
     s = self._solver
     tvars = self._transition_vars
     ovars = self._object_vars
-    max_objs = self._net.get_max_objects_per_transition(self._trace)
+    max_objs = self._max_objs_per_trans
 
     def trans_j_constraint(t, j):
       obj_params = self._net.object_params_of_transition(t, self._trace)
@@ -261,7 +261,7 @@ class Encoding():
     self._transition_vars = vs
 
   def create_object_variables(self):
-    max_objs_per_trans = self._net.get_max_objects_per_transition(self._trace)
+    max_objs_per_trans = self._max_objs_per_trans
     name = lambda i,k: "O" + str(i) + "_" + str(k)
     vs = [[self._solver.intvar(name(j,k)) for k in range(0,max_objs_per_trans)]\
       for j in range(0, self._step_bound) ]
@@ -275,10 +275,14 @@ class Encoding():
     self._distance_vars = [[var(i,j) \
       for j in range(0, trace_len + 1)] for i in range(0, self._step_bound + 1)]
 
-  def move_vars(self, trace_len, pre):
+  def move_vars(self, trace_len):
     s = self._solver
-    var = lambda i, j: s.boolvar("move" + pre + str(i) + "_" + str(j))
+    var = lambda i, j: s.intvar("move" + str(i) + "_" + str(j))
     return [[var(i,j) \
+      for j in range(0, trace_len+1)] for i in range(0, self._step_bound+1)]
+
+  def move_varsx(self, trace_len, k, pre):
+    return [[self._solver.eq(self._vs_move[i][j], self._solver.num(k)) \
       for j in range(0, trace_len+1)] for i in range(0, self._step_bound+1)]
 
   def create_variables(self):
@@ -286,18 +290,11 @@ class Encoding():
     self.create_transition_variables()
     self.create_object_variables()
     self.create_distance_variables()
-    self._vs_log_move = self.move_vars(len(self._trace), "l")
-    self._vs_mod_move = self.move_vars(len(self._trace), "m")
-    self._vs_sync_move = self.move_vars(len(self._trace), "s")
-
-  # auxiliary for edit distance encoding below:
-  # returns pairs (is_t, penalty expression) for all transitions t
-  def sync_step(self, trace, i, j):
-    s = self._solver
-    max_objs_per_trans = self._net.get_max_objects_per_transition(self._trace)
-    ovars = self._object_vars[i]
-
-
+    self._vs_move = self.move_vars(len(self._trace))
+    self._vs_log_move = self.move_varsx(len(self._trace), 2, "l")
+    self._vs_mod_move = self.move_varsx(len(self._trace), 1, "m")
+    self._vs_sync_move = self.move_varsx(len(self._trace), 0, "s")
+  
   def edit_distance(self):
     dist = self._distance_vars
     vs_log = self._vs_log_move
@@ -309,7 +306,7 @@ class Encoding():
     zero, one = s.num(0), s.num(1)
     vs_trans = self._transition_vars
     #trans_dict = dict([(t["id"], t) for t in dpn.transitions()])
-    max_objs_per_trans = self._net.get_max_objects_per_transition(trace)
+    max_objs_per_trans = self._max_objs_per_trans
     constr = []
 
     def is_silent(i): # transition i is silent
@@ -334,13 +331,13 @@ class Encoding():
       # FIXME independent from i
       trace_objs = [s.num(self._ids_by_object_name[o]) \
         for o in trace[j]["objects"]]
-      used = lambda id: s.lor([s.eq(v,s.num(id)) for v in self._object_vars[i]])
+      used = lambda id: s.lor([s.eq(v,id) for v in self._object_vars[i]])
       tused = [ s.ite(used(oid), one, zero) for oid in trace_objs ]
       num_tused = reduce(lambda acc, u: s.plus(acc, u), tused, zero)
       num_tunused = s.minus(s.num(len(trace_objs)), num_tused)
       return s.plus(num_tunused, s.minus(num_objs_used(i), num_tused))
     
-    def sync_step(i, j):
+    def sync_step(i, j):                            # object_diff(t,i,j)) \
       return [ (s.eq(vs_trans[i], s.num(t["id"])), object_diff(t,i,j)) \
         for t in self._net.reachable(i) \
         if "label" in t and t["label"] == trace[j]["activity"] ]
@@ -354,18 +351,18 @@ class Encoding():
     non_neg =[s.ge(dist[i][j],zero) for i in range(0,n+1) for j in range(0,m+1)]
     # 2. if the ith transition is not silent, dist[i+1][0] = dist[i][0] + ocost
     #    where wcost is the writing cost of the ith transition in the model
-    base_model = [ s.ge(dist[i+1][0], s.plus(dist[i][0], modcosts[i])) \
+    base_model = [ s.eq(dist[i+1][0], s.plus(dist[i][0], modcosts[i])) \
       for i in range(0,n)]
     # 3. dist[0][j+1] = (j + 1)
     base_log = [ s.eq(dist[0][j+1], s.num(logcostup2(j))) for j in range(0, m) ]
     # 4. if the ith step in the model and the jth step in the log have the
     #    the same label,  dist[i+1][j+1] >= dist[i][j] + penalty, where
     #    penalty accounts for the data mismatch (possibly 0)
-    sync_constr = [ s.implies(is_t, s.ge(dist[i+1][j+1], \
-          (s.plus(penalty, dist[i][j]) if has_penalty else dist[i][j]) )) \
+    sync_constr = [ s.implies(is_t, s.eq(dist[i+1][j+1], \
+          s.plus(penalty, dist[i][j]) )) \
         for i in range(0,n) for j in range(0,m) \
-        for (is_t, (penalty, has_penalty)) in sync_step(i, j)]
-    sync_constr += [ s.implies(vs_sync[i][j], \
+        for (is_t, penalty) in sync_step(i, j)]
+    sync_constr += [ s.implies(vs_sync[i+1][j+1], \
       s.lor([ is_t for (is_t, _) in sync_step(i, j)])) \
         for i in range(0,n) for j in range(0,m) ]
 
@@ -376,14 +373,16 @@ class Encoding():
       for j in range(0,m):
         # side constraints on log step (vertical move in matrix)
         log_step = s.implies(vs_log[i+1][j+1], \
-          s.ge(dist[i+1][j+1], s.plus(dist[i+1][j], s.num(logcost(j)))))
+          s.eq(dist[i+1][j+1], s.plus(dist[i+1][j], s.num(logcost(j)))))
         constr.append(log_step)
         # side constraints on model step (horizontal move in matrix)
         mod_step = s.implies(vs_mod[i+1][j+1], \
-          s.ge(dist[i+1][j+1], s.plus(dist[i][j+1], modcosts[i])))
+          s.eq(dist[i+1][j+1], s.plus(dist[i][j+1], modcosts[i])))
         constr.append(mod_step)
-        step_kinds = s.xor3(vs_sync[i+1][j+1],vs_log[i+1][j+1],vs_mod[i+1][j+1])
-        constr.append(step_kinds)
+        #step_kinds = s.xor3(vs_sync[i+1][j+1],vs_log[i+1][j+1],vs_mod[i+1][j+1])
+        #constr.append(step_kinds)
+        v_move = self._vs_move[i+1][j+1]
+        constr.append(s.land([s.ge(v_move, zero), s.le(v_move, s.num(2))]))
 
     # symmetry breaking: enforce log steps before model steps
     # do not enforce at border: would be unsound
@@ -407,67 +406,66 @@ class Encoding():
       mstr += ("%d: [%s] " % (p["id"], pstr))
     print("MARKING %d: %s" % (j, mstr))
 
-  def decode_alignment(self, trace, model):
-    m = len(trace)
-    vs_dist = self._vs_dist
-    transs = dict([ (t["id"], t) for t in self._dpn.transitions() ])
-    run_length_dec = self.decode_run_length(model)
-    distance = model.eval_int(vs_dist[run_length_dec][len(trace)])
-    run = self.decode_process_run(model, run_length_dec)
-    (markings, transitions, valuations) = run
-    run_length = len(transitions)
-    #self.print_distance_matrix(model)
+  def print_distance_matrix(self, model):
+    vs_dist = self._distance_vars
+    print("\nDISTANCES:")
+    for j in range(0, len(vs_dist[0])):
+      d = ""
+      for i in range(0, len(vs_dist)):
+        s = str(model.eval_int(vs_dist[i][j]))
+        d = d + " " + (s if len(s) == 2 else (" "+s))
+      print(d)
+    vs_move = self._vs_move
+    print("\nMOVE TYPES:")
+    for j in range(0, len(vs_move[0])):
+      d = ""
+      for i in range(0, len(vs_move)):
+        val = model.eval_int(vs_move[i][j])
+        if val == 0:
+          assert(model.eval_bool(self._vs_sync_move[i][j]))
+        s = str(val)
+        d = d + " " + (s if len(s) == 2 else (" "+s))
+      print(d)
 
-    i = run_length # self._step_bound # n
-    j = len(trace) # m
-    alignment = [] # array mapping instant to one of {"log", "model","parallel"}
-    while i > 0 or j > 0:
-      dist = model.eval_int(vs_dist[i][j])
-      if j == 0 or (i > 0 and model.eval_bool(self._silents[i-1])):
-        if not self._dpn.is_silent_final_transition(transitions[i-1][0]):
-          alignment.append("model")
+  def decode_alignment(self, model):
+    vs_sync = self._vs_sync_move
+    vs_mod = self._vs_mod_move
+
+    step_type = lambda i, j: "model" if model.eval_bool(vs_mod[i][j]) else "sync" if model.eval_bool(vs_sync[i][j]) else "log"
+
+    i = self._step_bound # n
+    j = len(self._trace) # m
+    alignment = [] # array mapping instant to one of {"log", "model","sync"}
+    while i >= 0 and j >= 0 and (i > 0 or j > 0):
+      print(i,j)
+      step = step_type(i,j)
+      if step == "model":
+        alignment.append("model")
         i -= 1
-      elif i == 0:
+      elif step == "log":
         alignment.append("log")
         j -= 1
-      elif transitions[i-1][1] == trace[j-1]["label"]:
-        alignment.append("parallel")
+      else:
+        alignment.append("sync")
         i -= 1
         j -= 1
-      else:
-        dist_log = model.eval_int(vs_dist[i][j-1]) + 1
-        tmodel = transs[transitions[i-1][0]]
-        dist_model = model.eval_int(vs_dist[i-1][j]) + len(tmodel["write"]) + 1
-        # assert(dist == dist_log or dist == dist_model)
-        if dist == dist_log:
-          alignment.append("log")
-          j -= 1
-        else:
-          alignment.append("model")
-          i -= 1
     alignment.reverse()
-    return {
-      "run": {
-        "transitions": transitions,
-        "markings":    markings, 
-        "valuations":  valuations
-      },
-      "alignment":   alignment,
-      "cost":        distance
-    }
+    return alignment
 
   def decode(self, model):
     s = self._solver
     tvars = self._transition_vars
     ovars = self._object_vars
-    max_objs_per_trans = self._net.get_max_objects_per_transition(self._trace)
+    max_objs_per_trans = self._max_objs_per_trans
     print("DECODE")
     self.decode_marking(model, 0)
     for j in range(0, self._step_bound):
       val = model.eval_int(tvars[j])
       trans = next(t for t in self._net._transitions if t["id"] == val)
-      objs = [(model.eval_int(ovars[j][k]), ovars[j][k]) for k in range(0, max_objs_per_trans)]
-      objs = [(self._object_name_by_id[id]) for (id, v) in objs if id in self._object_name_by_id]
+      objs = [(model.eval_int(ovars[j][k]), ovars[j][k]) \
+        for k in range(0, max_objs_per_trans)]
+      objs = [(self._object_name_by_id[id]) \
+        for (id, v) in objs if id in self._object_name_by_id]
       print(" ", trans["label"], objs)
       
       #place = next(p for p in self._net._places if p["id"] == 0)
@@ -478,6 +476,9 @@ class Encoding():
 
       self.decode_marking(model, j+1)
     
+    alignment = self.decode_alignment(model)
+    print(alignment)
+    self.print_distance_matrix(model)
     #mvars = self._marking_vars
     #print("mvars[1][0][order1]", model.eval_bool(mvars[1][0][token1]))
     #print("mvars[1][0][order1]", model.eval_bool(mvars[2][0][token1]))

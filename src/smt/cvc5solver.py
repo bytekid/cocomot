@@ -45,8 +45,8 @@ class CVC5Solver(Solver):
   # integer constants
   def num(self, n):
     # FIXME
-    #return self._solver.mkInteger(n)
-    return self._solver.mkReal(n)
+    return self._solver.mkInteger(n)
+    #return self._solver.mkReal(n)
   
   # real constants
   def real(self, n):
@@ -66,8 +66,8 @@ class CVC5Solver(Solver):
   def intconst(self, n):
     intSort = self._solver.getIntegerSort()
     # FIXME
-    #return self._solver.mkConst(intSort, n)
-    return self._solver.mkConst(realSort, n)
+    return self._solver.mkConst(intSort, n)
+    #return self._solver.mkConst(realSort, n)
   
   # real variable with name
   def realconst(self, n):
@@ -83,9 +83,9 @@ class CVC5Solver(Solver):
   def intvar(self, n):
     intSort = self._solver.getIntegerSort()
     # FIXME
-    #return self._solver.mkConst(intSort, n)
-    realSort = self._solver.getRealSort()
-    return self._solver.mkConst(realSort, n)
+    return self._solver.mkConst(intSort, n)
+    #realSort = self._solver.getRealSort()
+    #return self._solver.mkConst(realSort, n)
   
   # real variable with name (might be used for quantification)
   def realvar(self, n):
@@ -107,7 +107,7 @@ class CVC5Solver(Solver):
   # logical disjunction
   def lor(self, l):
     if len(l) == 0:
-      return self.true().notTerm()
+      return self.neg(self.true())
     elif len(l) == 1:
       return l[0]
     return self._solver.mkTerm(Kind.OR, *l)
