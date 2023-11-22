@@ -41,7 +41,10 @@ class Encoding():
         token_placed = last_marking[p["id"]][t] if "final" in p and p["final"] \
           else self._solver.neg(last_marking[p["id"]][t])
         tokens_in_place.append(token_placed)
-      constraints.append(self._solver.lor(tokens_in_place))
+      if "final" in p and p["final"]:
+        constraints.append(self._solver.lor(tokens_in_place))
+      else:
+        constraints.append(self._solver.land(tokens_in_place))
     return self._solver.land(constraints)
 
 
@@ -353,8 +356,10 @@ class Encoding():
     #    where wcost is the writing cost of the ith transition in the model
     base_model = [ s.eq(dist[i+1][0], s.plus(dist[i][0], modcosts[i])) \
       for i in range(0,n)]
+    base_model += [ vs_mod[i+1][0] for i in range(0,n)]
     # 3. dist[0][j+1] = (j + 1)
     base_log = [ s.eq(dist[0][j+1], s.num(logcostup2(j))) for j in range(0, m) ]
+    base_log += [ vs_log[0][j+1] for j in range(0,m)]
     # 4. if the ith step in the model and the jth step in the log have the
     #    the same label,  dist[i+1][j+1] >= dist[i][j] + penalty, where
     #    penalty accounts for the data mismatch (possibly 0)
@@ -437,7 +442,6 @@ class Encoding():
     j = len(self._trace) # m
     alignment = [] # array mapping instant to one of {"log", "model","sync"}
     while i >= 0 and j >= 0 and (i > 0 or j > 0):
-      print(i,j)
       step = step_type(i,j)
       if step == "model":
         alignment.append("model")
@@ -464,9 +468,9 @@ class Encoding():
       trans = next(t for t in self._net._transitions if t["id"] == val)
       objs = [(model.eval_int(ovars[j][k]), ovars[j][k]) \
         for k in range(0, max_objs_per_trans)]
-      objs = [(self._object_name_by_id[id]) \
+      objns = [(self._object_name_by_id[id]) \
         for (id, v) in objs if id in self._object_name_by_id]
-      print(" ", trans["label"], objs)
+      print(" ", trans["label"], objns)
       
       #place = next(p for p in self._net._places if p["id"] == 0)
       #token1 = tuple(["order1"])
