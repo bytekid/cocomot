@@ -53,7 +53,7 @@ def create_encoding(solver, trace, net):
 
 
 def process(net, log, verbose):
-  solver = Z3Solver() # YicesSolver() # 
+  solver = YicesSolver() # Z3Solver() #  
   (encoding, t_enc1) = create_encoding(solver, log, net)
   (dist, alignment, t_enc2, t_solve) = conformance_check(encoding, log, verbose)
   print("encoding time: %.2f, solving time %.2f" % (t_enc1 + t_enc2, t_solve))
