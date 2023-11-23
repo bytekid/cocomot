@@ -12,10 +12,7 @@ class OPI(DPN):
     super().__init__(opi_as_array)
 
   def step_bound(self, trace):
-    return 12 # len(trace) + self.shortest_accepted()
-
-  #def object_bound(self, trace):
-  #  return len(trace.get_objects())
+    return  len(trace) + 5 # self.shortest_accepted()
 
   def add_silent_finals(self, map):
     id = len(map) + 1
@@ -30,11 +27,14 @@ class OPI(DPN):
       id += 1
       break
 
+  def get_types(self):
+    return set([ t for p in  self._places for t in p["color"]])
+
   def objects_by_type(self, trace, with_ids = True):
     # return for every type a list of tuples containing object name and id
     # (id is unique among all objects)
     objs = trace.get_objects()
-    objs_by_type = dict([ (typ,[]) for typ in objs.values()])
+    objs_by_type = dict([ (typ,[]) for typ in self.get_types()])
     id = 0
     for (o,t) in objs.items():
       objs_by_type[t].append((o, id) if with_ids else o)
@@ -104,11 +104,11 @@ class OPI(DPN):
     params = []
     index = 0
     for p in self.object_inscriptions_of_transition(trans, trace):
-      if p["name"] in inscset: # add every parameter only once
+      if p["xname"] in inscset: # add every parameter only once
         continue
       params.append({"name":p["name"], "needed":p["needed"], "type":p["type"], \
         "index": p["index"] })
-      inscset.add(p["name"])
+      inscset.add(p["xname"])
     return params
 
   def nu_transitions(self):

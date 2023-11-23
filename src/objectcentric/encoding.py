@@ -41,9 +41,9 @@ class Encoding():
         token_placed = last_marking[p["id"]][t] if "final" in p and p["final"] \
           else self._solver.neg(last_marking[p["id"]][t])
         tokens_in_place.append(token_placed)
-      if "final" in p and p["final"]:
+      if "final" in p and p["final"]: # final places contaon some token
         constraints.append(self._solver.lor(tokens_in_place))
-      else:
+      else: # non-final places contain no token
         constraints.append(self._solver.land(tokens_in_place))
     return self._solver.land(constraints)
 
@@ -51,11 +51,9 @@ class Encoding():
   def is_fired_token(self, p, t, tok, j, incoming):
     s = self._solver
     ovars = self._object_vars
-    # print("\nIS %s TOKEN:" % ("CONSUMED" if incoming else "PRODUCED"), "place", p["id"], t["label"], "instant", j, tok)
     obj_params = self._net.object_inscriptions_of_transition(t, self._trace)
     params = [x for x in obj_params if x["place"] == p["id"] and \
       x["incoming"] == incoming]
-    #print(" ", params)
     eqs = []
     inscription = next(a["inscription"] for a in self._net._arcs \
       if (incoming and a["source"] == p["id"] and a["target"] == t["id"]) or \
@@ -63,17 +61,13 @@ class Encoding():
     params_for_insc = []
     for (pname, _) in inscription:
       params_for_insc.append([x for x in params if x["name"] == pname])
-    #print(" for insc ", params_for_insc)
     for (obj, params) in zip(tok, params_for_insc):
       objid = self._ids_by_object_name[obj]
       inst2token = [ s.eq(ovars[j][p["index"]], s.num(objid)) for p in params]
       eqs.append(s.lor(inst2token))
-    # print(" ", s.land(eqs))
     return s.land(eqs)
 
   def is_consumed_token(self, p, t, tok, j):
-    #return self.is_fired_token(p, t, tok, j, True)
-
     keytuple = (p["id"], t["id"], tok, j)
     if keytuple in self._consumed_token_cache:
       return self._consumed_token_cache[keytuple][0]
@@ -85,8 +79,6 @@ class Encoding():
     return var
 
   def is_produced_token(self, p, t, tok, j):
-    #return self.is_fired_token(p, t, tok, j, False)
-
     keytuple = (p["id"], t["id"], tok, j)
     if keytuple in self._produced_token_cache:
       return self._produced_token_cache[keytuple][0]
@@ -105,8 +97,10 @@ class Encoding():
       cnstr = []
       for p in self._net.pre(t):
         for tok in self._tokens_by_color[p["color"]]:
-          pid = p["id"]
-          marked = s.land([mvars[j][pid][tok], s.neg(mvars[j+1][pid][tok])])
+          pid = p["id"] # the source
+          is_self_loop = pid in [ p["id"] for p in self._net.post(t)]
+          marked = s.land([mvars[j][pid][tok], s.neg(mvars[j+1][pid][tok])]) \
+            if not is_self_loop else mvars[j][pid][tok]
           cnstr.append(s.implies(self.is_consumed_token(p, t, tok, j), marked))
       return s.land(cnstr)
 
@@ -158,6 +152,7 @@ class Encoding():
     max_objs = self._max_objs_per_trans
 
     def trans_j_constraint(t, j):
+      #print(t["label"])
       obj_params = self._net.object_params_of_transition(t, self._trace)
       obj_conj = []
       objs_by_type = self._net.objects_by_type(self._trace)
@@ -237,11 +232,10 @@ class Encoding():
     # debugging
     debug = []
     mvars = self._marking_vars
-    token1 = tuple(["order1"])
-    token2 = tuple(["order2"])
+    token1 = tuple(["GIFT1"])
+    token2 = tuple(["GIFT2"])
     #debug.append(mvars[1][0][token1])
-    #debug.append(mvars[2][0][token1])
-    # debug.append(mvars[2][0][token2])
+    #debug.append(s.neg(mvars[1][0][token2]))
 
     return s.land(cnstr + debug)
 
@@ -442,17 +436,17 @@ class Encoding():
     j = len(self._trace) # m
     alignment = [] # array mapping instant to one of {"log", "model","sync"}
     while i >= 0 and j >= 0 and (i > 0 or j > 0):
+      cost_current = model.eval_int(self._distance_vars[i][j])
       step = step_type(i,j)
       if step == "model":
-        alignment.append("model")
         i -= 1
       elif step == "log":
-        alignment.append("log")
         j -= 1
       else:
-        alignment.append("sync")
         i -= 1
         j -= 1
+      cost_step = cost_current - model.eval_int(self._distance_vars[i][j])
+      alignment.append((step, cost_step))
     alignment.reverse()
     return alignment
 
@@ -482,8 +476,4 @@ class Encoding():
     
     alignment = self.decode_alignment(model)
     print(alignment)
-    self.print_distance_matrix(model)
-    #mvars = self._marking_vars
-    #print("mvars[1][0][order1]", model.eval_bool(mvars[1][0][token1]))
-    #print("mvars[1][0][order1]", model.eval_bool(mvars[2][0][token1]))
-    #print("mvars[1][0][order2]", model.eval_bool(mvars[2][0][token2]))
+    #self.print_distance_matrix(model)

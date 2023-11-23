@@ -47,13 +47,14 @@ def create_encoding(solver, trace, net):
   f_remaining = encoding.remaining_tokens()
   f_fresh = encoding.freshness()
   f_final = encoding.final_state()
-  solver.require([f_initial, f_trans, f_obj_types, f_fresh, f_moving, f_remaining, f_final])
+  solver.require([f_initial, f_trans, f_obj_types, f_fresh, f_moving, \
+    f_remaining, f_final])
   t_encode1 = time.perf_counter() - t_start
   return (encoding, t_encode1)
 
 
 def process(net, log, verbose):
-  solver = YicesSolver() # Z3Solver() #  
+  solver = Z3Solver() #  YicesSolver() # 
   (encoding, t_enc1) = create_encoding(solver, log, net)
   (dist, alignment, t_enc2, t_solve) = conformance_check(encoding, log, verbose)
   print("encoding time: %.2f, solving time %.2f" % (t_enc1 + t_enc2, t_solve))
