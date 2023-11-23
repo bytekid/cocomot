@@ -54,10 +54,16 @@ def create_encoding(solver, trace, net):
 
 
 def process(net, log, verbose):
-  solver = Z3Solver() #  YicesSolver() # 
-  (encoding, t_enc1) = create_encoding(solver, log, net)
-  (dist, alignment, t_enc2, t_solve) = conformance_check(encoding, log, verbose)
-  print("encoding time: %.2f, solving time %.2f" % (t_enc1 + t_enc2, t_solve))
+  solver = Z3Solver() #  YicesSolver() #
+  traces = log.split_into_traces()
+  print("%d traces" % len(traces))
+  for (i,trace) in enumerate(traces):
+    print("TRACE %d (#events %d, #objects %d)" % (i, len(trace), \
+      len(trace.get_objects())))
+    (encoding, t_enc1) = create_encoding(solver, trace, net)
+    (dist, alignment,t_enc2,t_solve) = conformance_check(encoding, log, verbose)
+    print("encoding time: %.2f, solving time %.2f" % (t_enc1 + t_enc2, t_solve))
+    break
 
 if __name__ == "__main__":
   ps = process_args(sys.argv[1:])

@@ -8,12 +8,14 @@ class Encoding():
     self._step_bound = net.step_bound(trace)
     #self._object_bound = net.object_bound(trace)
     net.compute_reachable(self._step_bound)
-    self._objects_by_type = self._net.objects_by_type(self._trace)
+    self._objects = trace.get_objects()
+    self._objects_by_type = self._net.objects_by_type(self._objects)
     oids = [ (n, id) for os in self._objects_by_type.values() for (n, id) in os]
     self._ids_by_object_name = dict(oids)
     self._object_name_by_id = dict([(id,n) for (n, id) in oids])
-    self._tokens_by_color = self._net.tokens_by_color(self._trace)
-    self._max_objs_per_trans = self._net.get_max_objects_per_transition(trace)
+    self._tokens_by_color = self._net.tokens_by_color(self._objects)
+    self._max_objs_per_trans = \
+      self._net.get_max_objects_per_transition(self._objects)
     # cache encoding parts
     self._consumed_token_cache = {}
     self._produced_token_cache = {}
@@ -51,7 +53,7 @@ class Encoding():
   def is_fired_token(self, p, t, tok, j, incoming):
     s = self._solver
     ovars = self._object_vars
-    obj_params = self._net.object_inscriptions_of_transition(t, self._trace)
+    obj_params = self._net.object_inscriptions_of_transition(t, self._objects)
     params = [x for x in obj_params if x["place"] == p["id"] and \
       x["incoming"] == incoming]
     eqs = []
@@ -153,9 +155,9 @@ class Encoding():
 
     def trans_j_constraint(t, j):
       #print(t["label"])
-      obj_params = self._net.object_params_of_transition(t, self._trace)
+      obj_params = self._net.object_params_of_transition(t, self._objects)
       obj_conj = []
-      objs_by_type = self._net.objects_by_type(self._trace)
+      objs_by_type = self._net.objects_by_type(self._objects)
       for param in obj_params:
         pidx = param["index"]
         # kth object parameter of transition t
@@ -193,7 +195,7 @@ class Encoding():
       return self._solver.land(constraints)
 
     def nutrans_constraint(t, j):
-      obj_params = self._net.object_params_of_transition(t, self._trace)
+      obj_params = self._net.object_params_of_transition(t, self._objects)
       constraints = []
       for param in obj_params:
         k = param["index"]
@@ -321,13 +323,14 @@ class Encoding():
     modcosts = [s.intvar("mcosti"+str(i)) for i in range(0,n) ]
     constr += [ s.eq(v, modcost(i)) for (i,v) in enumerate(modcosts) ]
 
-    logcost = lambda j: len(trace[j]["objects"])
-    logcostup2 = lambda j: sum([len(trace[j]["objects"]) for k in range(0,j+1)])
+    logcost = lambda j: len(trace[j].get_objects())
+    logcostup2 = lambda j: sum([len(trace[j].get_objects()) \
+      for k in range(0,j+1)])
 
     def object_diff(t,i,j):
       # FIXME independent from i
       trace_objs = [s.num(self._ids_by_object_name[o]) \
-        for o in trace[j]["objects"]]
+        for o in trace[j].get_objects()]
       used = lambda id: s.lor([s.eq(v,id) for v in self._object_vars[i]])
       tused = [ s.ite(used(oid), one, zero) for oid in trace_objs ]
       num_tused = reduce(lambda acc, u: s.plus(acc, u), tused, zero)
@@ -337,7 +340,7 @@ class Encoding():
     def sync_step(i, j):                            # object_diff(t,i,j)) \
       return [ (s.eq(vs_trans[i], s.num(t["id"])), object_diff(t,i,j)) \
         for t in self._net.reachable(i) \
-        if "label" in t and t["label"] == trace[j]["activity"] ]
+        if "label" in t and t["label"] == trace[j].get_activity() ]
 
     # dist[i][j] represents the edit distance of transition sequence up to
     # including i, and the log up to including j

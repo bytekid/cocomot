@@ -30,10 +30,9 @@ class OPI(DPN):
   def get_types(self):
     return set([ t for p in  self._places for t in p["color"]])
 
-  def objects_by_type(self, trace, with_ids = True):
+  def objects_by_type(self, objs, with_ids = True):
     # return for every type a list of tuples containing object name and id
     # (id is unique among all objects)
-    objs = trace.get_objects()
     objs_by_type = dict([ (typ,[]) for typ in self.get_types()])
     id = 0
     for (o,t) in objs.items():
@@ -41,8 +40,8 @@ class OPI(DPN):
       id += 1
     return objs_by_type
 
-  def tokens_by_color(self, trace):
-    objs_by_type = self.objects_by_type(trace, with_ids = False)
+  def tokens_by_color(self, objs):
+    objs_by_type = self.objects_by_type(objs, with_ids = False)
     colors = set([ p["color"] for p in self._places ])
     tokens_by_color = {}
     for color in colors:
@@ -51,7 +50,7 @@ class OPI(DPN):
     return tokens_by_color
 
   # compute maximum number of objects involved in a transition firing
-  def get_max_objects_per_transition(self, trace):
+  def get_max_objects_per_transition(self, objs):
     max_obj = 0
     for t in self._transitions:
       id = t["id"]
@@ -59,7 +58,7 @@ class OPI(DPN):
       for a in [a for a in self._arcs if a["source"] == id or a["target"] ==id]:
         inscs += a["inscription"]
       obj_count = 0
-      objs_by_type = self.objects_by_type(trace)
+      objs_by_type = self.objects_by_type(objs)
       for (name, typ) in set(inscs):
         if typ in objs_by_type: # simple inscription
           obj_count += 1
@@ -70,9 +69,9 @@ class OPI(DPN):
     print("maximum number of objects used by transition:", max_obj)
     return max_obj
 
-  def object_inscriptions_of_transition(self, trans, trace):
+  def object_inscriptions_of_transition(self, trans, objs):
     # returns tuples (index, name, needed, type, in, place)
-    objs_by_type = self.objects_by_type(trace)
+    objs_by_type = self.objects_by_type(objs)
     arcs = [ a for a in self._arcs if a["target"] == trans["id"] or \
       a["source"] == trans["id"] ]
     params = []
@@ -99,11 +98,11 @@ class OPI(DPN):
     #print("INSCRIPTION", trans["label"], params)
     return params
 
-  def object_params_of_transition(self, trans, trace):
+  def object_params_of_transition(self, trans, objs):
     inscset = set([])
     params = []
     index = 0
-    for p in self.object_inscriptions_of_transition(trans, trace):
+    for p in self.object_inscriptions_of_transition(trans, objs):
       if p["xname"] in inscset: # add every parameter only once
         continue
       params.append({"name":p["name"], "needed":p["needed"], "type":p["type"], \

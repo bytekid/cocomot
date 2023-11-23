@@ -1,6 +1,6 @@
 import json
 
-from objectcentric.input import Trace, Log
+from objectcentric.input import Trace, Log, Event
 
 def ocel(jsonfile):
   file = open(jsonfile, "r")
@@ -15,11 +15,11 @@ def ocel(jsonfile):
     act = e["ocel:activity"]
     time = e["ocel:timestamp"]
     objs = e["ocel:omap"]
-    event = {"activity": act, "timestamp": time, "objects": objs, "id": id}
+    event = Event(int(id), act, time, objs)
     events.append(event)
     # FIXME what is ocel:vmap?
   objects = {}
   for (name, data) in content["ocel:objects"].items():
     objects[name] = data["ocel:type"]
-  return Trace(events, ordering, objects) # FIXME
+  return Log(events, ordering, objects)
 
