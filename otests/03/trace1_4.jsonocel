@@ -1,0 +1,67 @@
+{
+"ocel:global-log": {
+"ocel:attribute-names": [],
+"ocel:object-types": [
+"GIFT"
+],
+"ocel:version": [
+"1.0"
+],
+"ocel:ordering": [
+"timestamp"
+]
+},
+"ocel:events": {
+"0": {
+"ocel:activity": "Receive Material",
+"ocel:timestamp": "2021-03-01T09:00:00+01:00",
+"ocel:omap": [
+"GIFT1",
+"GIFT2"
+],
+"ocel:vmap": {}
+},
+"1": {
+"ocel:activity": "Premium Packaging",
+"ocel:timestamp": "2021-03-04T09:00:00+01:00",
+"ocel:omap": [
+"GIFT1"
+],
+"ocel:vmap": {}
+},
+"2": {
+"ocel:activity": "Standard Packaging",
+"ocel:timestamp": "2021-03-05T09:00:00+01:00",
+"ocel:omap": [
+"GIFT2"
+],
+"ocel:vmap": {}
+},
+"3": {
+"ocel:activity": "Premium Ribbon",
+"ocel:timestamp": "2021-03-08T09:00:00+01:00",
+"ocel:omap": [
+"GIFT2"
+],
+"ocel:vmap": {}
+},
+"4": {
+"ocel:activity": "Standard Ribbon",
+"ocel:timestamp": "2021-03-11T09:00:00+01:00",
+"ocel:omap": [
+"GIFT1"
+],
+"ocel:vmap": {}
+}
+},
+"ocel:objects": {
+"GIFT1": {
+"ocel:type": "GIFT",
+"ocel:ovmap": {}
+},
+"GIFT2": {
+"ocel:type": "GIFT",
+"ocel:ovmap": {}
+}
+}
+}

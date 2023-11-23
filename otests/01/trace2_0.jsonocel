@@ -1,0 +1,46 @@
+{
+    "ocel:global-log": {
+    "ocel:attribute-names": [],
+    "ocel:object-types": [
+      "ITEM", "ORDER"
+    ],
+    "ocel:version": [
+    "1.0"
+    ],
+    "ocel:ordering": [
+    "timestamp"
+    ]
+    },
+    "ocel:events": {
+    "0": {
+    "ocel:activity": "place order",
+    "ocel:timestamp": "2022-12-05T10:51:41+00:00",
+    "ocel:omap": [
+    "order1"
+    ],
+    "ocel:vmap": {}
+    },
+    "1": {
+    "ocel:activity": "payment",
+    "ocel:timestamp": "2022-12-07T10:51:41+00:00",
+    "ocel:omap": [
+    "order1"
+    ],
+    "ocel:vmap": {}
+    },
+    "2": {
+    "ocel:activity": "ship",
+    "ocel:timestamp": "2022-12-11T10:51:41+00:00",
+    "ocel:omap": [
+    "order1"
+    ],
+    "ocel:vmap": {}
+    }
+        },
+    "ocel:objects": {
+      "order1": {
+        "ocel:type": "ORDER",
+        "ocel:ovmap": {}
+      }
+    }
+    }
