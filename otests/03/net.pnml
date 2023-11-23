@@ -2,7 +2,7 @@
 	<net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
 		<page id="page1">
 			<name>
-				<text>Nue-Net</text>
+				<text>Nue-Net (from ER 2023)</text>
 			</name>
 			<place id="0" color="GIFT">
 				<name>

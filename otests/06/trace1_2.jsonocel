@@ -1,0 +1,83 @@
+{
+"ocel:global-log": {
+"ocel:attribute-names": [],
+"ocel:object-types": [
+"O"
+],
+"ocel:version": [
+"1.0"
+],
+"ocel:ordering": [
+"timestamp"
+]
+},
+"ocel:events": {
+"0": {
+"ocel:activity": "r",
+"ocel:timestamp": "2021-03-01T09:00:00+01:00",
+"ocel:omap": [
+"O1",
+"O2"
+],
+"ocel:vmap": {}
+},
+"1": {
+"ocel:activity": "p",
+"ocel:timestamp": "2021-03-04T09:00:00+01:00",
+"ocel:omap": [
+"O1"
+],
+"ocel:vmap": {}
+},
+"2": {
+"ocel:activity": "a",
+"ocel:timestamp": "2021-03-05T09:00:00+01:00",
+"ocel:omap": [
+"O2"
+],
+"ocel:vmap": {}
+},
+"3": {
+"ocel:activity": "s",
+"ocel:timestamp": "2021-03-08T09:00:00+01:00",
+"ocel:omap": [
+"O2"
+],
+"ocel:vmap": {}
+},
+"4": {
+"ocel:activity": "p",
+"ocel:timestamp": "2021-03-11T09:00:00+01:00",
+"ocel:omap": [
+"O1"
+],
+"ocel:vmap": {}
+},
+  "5": {
+"ocel:activity": "a",
+"ocel:timestamp": "2021-03-12T09:00:00+01:00",
+"ocel:omap": [
+"O1"
+],
+"ocel:vmap": {}
+},
+  "6": {
+"ocel:activity": "s",
+"ocel:timestamp": "2021-03-13T09:00:00+01:00",
+"ocel:omap": [
+"O1"
+],
+"ocel:vmap": {}
+}
+},
+"ocel:objects": {
+"O1": {
+"ocel:type": "O",
+"ocel:ovmap": {}
+},
+"O2": {
+"ocel:type": "O",
+"ocel:ovmap": {}
+}
+}
+}
