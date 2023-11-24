@@ -32,10 +32,8 @@ class Encoding():
     # FIXME fixed to empty marking
     return s.land([s.neg(v) for v in mvars0])
 
-  def final_state(self):
-    # FIXME how to specify final marking?
-    # currently we only require that places marked as final have some token
-    last_marking = self._marking_vars[self._step_bound]
+  def final_state_after_step(self, j):
+    last_marking = self._marking_vars[j]
     constraints = []
     for p in self._net._places:
       tokens_in_place = []
@@ -49,7 +47,14 @@ class Encoding():
         constraints.append(self._solver.land(tokens_in_place))
     return self._solver.land(constraints)
 
-
+  def final_state(self):
+    # FIXME how to specify final marking?
+    # currently we only require that places marked as final have some token
+    s = self._solver
+    run_length = lambda j: s.eq(self._run_length_var, s.num(j))
+    return s.lor([ s.land([run_length(j), self.final_state_after_step(j)]) \
+      for j in range(0,self._step_bound)])
+  
   def is_fired_token(self, p, t, tok, j, incoming):
     s = self._solver
     ovars = self._object_vars
@@ -208,7 +213,9 @@ class Encoding():
         constraints += imps
       return s.land(constraints)
 
-    cstr = [s.implies(s.eq(tvars[j], s.num(t["id"])), nutrans_constraint(t,j)) \
+    cstr = [s.implies(
+      s.land([s.eq(tvars[j], s.num(t["id"])), s.le(s.num(j), self._run_length_var)]),
+      nutrans_constraint(t,j)) \
       for j in range(0, self._step_bound) \
       for t in self._net.nu_transitions() ]
     return s.land(cstr)
@@ -293,6 +300,7 @@ class Encoding():
     self._vs_log_move = self.move_varsx(len(self._trace), 2, "l")
     self._vs_mod_move = self.move_varsx(len(self._trace), 1, "m")
     self._vs_sync_move = self.move_varsx(len(self._trace), 0, "s")
+    self._run_length_var = self._solver.intvar("run_length")
   
   def edit_distance(self):
     dist = self._distance_vars
@@ -459,8 +467,10 @@ class Encoding():
     ovars = self._object_vars
     max_objs_per_trans = self._max_objs_per_trans
     print("DECODE")
+    run_length = model.eval_int(self._run_length_var)
+    print("run length ", run_length, self._step_bound)
     self.decode_marking(model, 0)
-    for j in range(0, self._step_bound):
+    for j in range(0, run_length):
       val = model.eval_int(tvars[j])
       trans = next(t for t in self._net._transitions if t["id"] == val)
       objs = [(model.eval_int(ovars[j][k]), ovars[j][k]) \

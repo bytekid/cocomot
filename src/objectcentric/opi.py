@@ -12,9 +12,17 @@ class OPI(DPN):
     super().__init__(opi_as_array)
 
   def step_bound(self, trace):
-    return  len(trace) + 5 # self.shortest_accepted()
+    return  len(trace) + len(trace.get_objects()) # self.shortest_accepted()
 
+  # The following function is called in the super constructor.
+  # it is used for the 1st way to deal with an unknown length of the model run,
+  # adding a silent final transition that is executed an arbitrary number of
+  # times. However, it seems to reduce the runtime to at least 20% if instead
+  # the finality constraint in the last instant is replaced by a finality 
+  # constraint that is a disjunction over all instants.
+  # Thus this function does currently nothing.
   def add_silent_finals(self, map):
+    '''
     id = len(map) + 1
     for p in self.final_places():
       insc = [a["inscription"] for a in self._arcs if a["target"] == p["id"]][0]
@@ -25,7 +33,7 @@ class OPI(DPN):
       self._arcs.append({"target": p["id"], "source": id, "inscription": insc})
       map[id] = t
       id += 1
-      break
+    '''
 
   def get_types(self):
     return set([ t for p in  self._places for t in p["color"]])
