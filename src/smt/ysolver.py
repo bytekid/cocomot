@@ -191,13 +191,12 @@ class YicesSolver(Solver):
         return None
       elif status == Status.SAT:
         upper = mid
-        m = YicesModel(self.ctx) if upper-lower < 0.01 else None
+        m = YicesModel(self.ctx) if upper-lower < 1 else None
         to_pop += 1
       else:
         lower = mid + 1
         m = None
         self.pop()
-      self.t_solve += time.perf_counter() - t_start
     for i in range(0, to_pop):
       self.pop()
     return m

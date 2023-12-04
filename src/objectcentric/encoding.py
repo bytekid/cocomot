@@ -9,7 +9,6 @@ class Encoding():
     self._objects_by_type = self._net.objects_by_type(self._objects)
     net.compute_reachable(trace)
     self._step_bound = net.step_bound(trace)
-    #self._object_bound = net.object_bound(trace)
     oids = [ (n, id) for os in self._objects_by_type.values() for (n, id) in os]
     self._ids_by_object_name = dict(oids)
     self._object_name_by_id = dict([(id,n) for (n, id) in oids])
@@ -29,24 +28,24 @@ class Encoding():
   def initial_state(self):
     s = self._solver
     mvars0 = [v for vs in self._marking_vars[0].values() for v in vs.values()]
-    # FIXME fixed to empty marking
+    # FIXME for now fixed to empty marking
     return s.land([s.neg(v) for v in mvars0])
 
   def final_state_after_step(self, j):
     last_marking = self._marking_vars[j]
     constraints = []
+    s = self._solver
     for p in self._net._places:
       p_is_final = bool("final" in p and p["final"])
       tokens_in_place = []
       for t in self._tokens_by_color[p["color"]]:
-        token_placed = last_marking[p["id"]][t] if p_is_final \
-          else self._solver.neg(last_marking[p["id"]][t])
-        tokens_in_place.append(token_placed)
+        tok_placed = last_marking[p["id"]][t]
+        tokens_in_place.append(tok_placed if p_is_final else s.neg(tok_placed))
       if p_is_final: # final places contain some token
-        constraints.append(self._solver.lor(tokens_in_place))
+        constraints.append(s.lor(tokens_in_place))
       else: # non-final places contain no token
-        constraints.append(self._solver.land(tokens_in_place))
-    return self._solver.land(constraints)
+        constraints.append(s.land(tokens_in_place))
+    return s.land(constraints)
 
   def final_state(self):
     # FIXME how to specify final marking?
@@ -56,6 +55,10 @@ class Encoding():
     return s.lor([ s.land([run_length(j), self.final_state_after_step(j)]) \
       for j in range(0,self._step_bound+1)])
   
+  # Returns formula expressing whether token tok is involved in the firing of
+  # transition t at step j, where the token is
+  # - consumed from place p if incoming is True, and
+  # - produced in place p if incoming is False
   def is_fired_token(self, p, t, tok, j, incoming):
     s = self._solver
     ovars = self._object_vars
@@ -69,12 +72,15 @@ class Encoding():
     params_for_insc = []
     for (pname, _) in inscription:
       params_for_insc.append([x for x in params if x["name"] == pname])
+    # loop over pairs of token element and parameter name
     for (obj, params) in zip(tok, params_for_insc):
       objid = self._ids_by_object_name[obj]
       inst2token = [ s.eq(ovars[j][p["index"]], s.num(objid)) for p in params]
       eqs.append(s.lor(inst2token))
     return s.land(eqs)
 
+  # Returns formula expressing whether token tok is consumed from place p in the
+  # firing of transition t at step j. Formula is cached.
   def is_consumed_token(self, p, t, tok, j):
     keytuple = (p["id"], t["id"], tok, j)
     if keytuple in self._consumed_token_cache:
@@ -86,6 +92,8 @@ class Encoding():
     self._consumed_token_cache[keytuple] = (var, expr)
     return var
 
+  # Returns formula expressing whether token tok is produced in place p in the
+  # firing of transition t at step j. Formula is cached.
   def is_produced_token(self, p, t, tok, j):
     keytuple = (p["id"], t["id"], tok, j)
     if keytuple in self._produced_token_cache:
@@ -178,7 +186,7 @@ class Encoding():
 
     cstr = [s.implies(s.eq(tvars[j], s.num(t["id"])), trans_j_constraint(t,j)) \
       for j in range(0, self._step_bound) \
-      for t in self._net._transitions]
+      for t in self._net._transitions] # FIXME reachable does not suffice, why?
     return s.land(cstr)
   
 
@@ -436,7 +444,7 @@ class Encoding():
         if model.eval_bool(mvars[p["id"]][t]):
          pstr += (", " if len(pstr) > 0 else "") + str(t)
       mstr += ("%d: [%s] " % (p["id"], pstr))
-    print("MARKING %d: %s" % (j, mstr))
+    return ("MARKING %d: %s\n" % (j, mstr))
 
   def print_distance_matrix(self, model):
     vs_dist = self._distance_vars
@@ -488,10 +496,10 @@ class Encoding():
     tvars = self._transition_vars
     ovars = self._object_vars
     max_objs_per_trans = self._max_objs_per_trans
-    print("DECODE")
-    run_length = self._step_bound # model.eval_int(self._run_length_var)
-    print("run length ", run_length, self._step_bound)
-    self.decode_marking(model, 0)
+    out = "DECODE\n"
+    run_length = model.eval_int(self._run_length_var)
+    out += ("run length %d (bound %d)\n" % (run_length, self._step_bound))
+    out += self.decode_marking(model, 0)
     for j in range(0, run_length):
       val = model.eval_int(tvars[j])
       trans = next(t for t in self._net._transitions if t["id"] == val)
@@ -499,16 +507,9 @@ class Encoding():
         for k in range(0, max_objs_per_trans)]
       objns = [(self._object_name_by_id[id]) \
         for (id, v) in objs if id in self._object_name_by_id]
-      print(" ", trans["label"], objns)
-      
-      #place = next(p for p in self._net._places if p["id"] == 0)
-      #token1 = tuple(["order1"])
-      #token2 = tuple(["order2"])
-      #print("prod token1", model.eval_bool(self.is_produced_token(place, trans, token1,j)))
-      #print("prod token2", model.eval_bool(self.is_produced_token(place, trans, token2,j)))
-
-      self.decode_marking(model, j+1)
+      out += " " + trans["label"] + str(objns) + "\n"
+      out += self.decode_marking(model, j+1)
     
     alignment = self.decode_alignment(model)
-    print(alignment)
-    #self.print_distance_matrix(model)
+    out += str(alignment) + "\n"
+    return out

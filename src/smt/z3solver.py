@@ -175,9 +175,9 @@ class Z3Solver(Solver):
 
 
   # minimize given expression
-  def minimize(self, e, bound):
-    return self.minimize_inc(e, bound) if self._incremental \
-      else self.minimize_builtin(e, bound) 
+  def minimize(self, e, max):
+    return self.minimize_inc(e, max) if self._incremental \
+      else self.minimize_builtin(e, max) 
 
   # minimize given expression
   def minimize_builtin(self, expr, max_val):

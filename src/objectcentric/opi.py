@@ -15,10 +15,10 @@ class OPI(DPN):
 
   def step_bound(self, trace):
     if not self._step_bound:
-      objs_silent = self.objects_created_by_silent_transitions()
-      b = int(len(objs_silent)) + max(self.shortest_accepted(), len(trace))
+      objs_silent = len(self.objects_created_by_silent_transitions())
+      b = int(objs_silent) + max(self.shortest_accepted(), len(trace))
       self._step_bound = b
-      print("step bound:", b, "silent objs:", objs_silent)
+      #print("step bound:", b, "silent objs:", objs_silent)
     return self._step_bound
 
   # The following function is called in the super constructor.
@@ -89,7 +89,7 @@ class OPI(DPN):
           typ = typ[0:typ.rfind(" LIST")] 
           obj_count += len(objs_by_type[typ])
       max_obj = max(max_obj, obj_count)
-    print("maximum number of objects used by transition:", max_obj)
+    #print("maximum number of objects used by transition:", max_obj)
     return max_obj
 
   def objects_created_by_silent_transitions(self):
@@ -170,6 +170,7 @@ class OPI(DPN):
     num_steps = self.step_bound(trace)
     (src, tgt) = ("source", "target")
     transs = dict([ (t["id"], t) for t in self._transitions ])
+    all_trans = set(list(transs.keys())) # all transition ids
     idists = dict([ (t["id"], t["idist"]) for t in self.transitions()])
     fdists = dict([ (t["id"], t["fdist"]) for t in self.transitions()])
     self._reachable = []
@@ -177,12 +178,13 @@ class OPI(DPN):
     ps = [ p["id"] for p in self._places if "initial" in p ]
     states = [ (set(ps),[]) ] # pairs of current marking and transition history
     reachable_markings = []
+    all_reachable = False
     for i in range(0, num_steps):
       statesx = []
-      # everything reachable in i-1 steps is also reachable in i steps,
-      # at least with enough objects
-      # FIXME make more precise
-      self._reachable.append([])
+      self._reachable.append([] if i == 0 else self._reachable[i-1])
+      if all_reachable:
+        continue
+
       remaining = num_steps - i
       for (marking, steps) in states:
         for t in self._transitions:
@@ -195,8 +197,11 @@ class OPI(DPN):
           if not markingx in reachable_markings:
             statesx.append((markingx, steps + [tid]))
           #print("add marking", markingx)
-          if not transs[tid] in self._reachable[i]: # and fdists[tid] < remaining:
+          if not transs[tid] in self._reachable[i]:
             self._reachable[i].append(transs[tid])
+            if set([t["id"]  for t in self._reachable[i]]) == all_trans:
+              all_reachable = True
+              break
         reachable_markings.append(marking)
       states = statesx
 
@@ -213,3 +218,4 @@ class OPI(DPN):
 
   def reset(self):
     self._step_bound = None
+    self._objects = None

@@ -1,6 +1,7 @@
 from cocomot import process_args
 import sys
 import time
+import os
 
 from objectcentric.opi import OPI
 from objectcentric.read import ocel as read_ocel
@@ -10,8 +11,13 @@ from smt.ysolver import YicesSolver
 from smt.cvc5solver import CVC5Solver
 from smt.z3solver import Z3Solver
 
-def print_trace_distance(trace, t_encode2, t_solve, distance):
-  print("distance %d" % distance)
+def file_for_trace(trace):
+  return "out/" + trace.smallest_object() + ".txt"
+
+def save_result(trace, content):
+  f = open(file_for_trace(trace), "w")
+  f.write(content)
+  f.close()
 
 def conformance_check(encoding, trace, verbose):
   t_start = time.perf_counter()
@@ -29,21 +35,16 @@ def conformance_check(encoding, trace, verbose):
     return (None, None, t_encode2, t_solve)
 
   distance = model.eval_int(dist)
-  alignment_decoded = encoding.decode(model)
-  print_trace_distance(trace, t_encode2, t_solve, distance)
+  out = encoding.decode(model)
+  out += "distance %d\n" % distance
 
   model.destroy()
-  return (distance, alignment_decoded, t_encode2, t_solve)
+  return (distance, t_encode2, t_solve, out)
 
 
 def create_encoding(solver, trace, net):
   net.reset()
   encoding = Encoding(solver, net, trace)
-  # encoding parts
-  #for t in net._transitions:
-  #  print(t)
-  #for t in net._places:
-  #  print(t)
   t_start = time.perf_counter()
   encoding.create_variables()
   f_initial = encoding.initial_state()
@@ -60,21 +61,31 @@ def create_encoding(solver, trace, net):
 
 
 def process(net, log, verbose):
-  solver = YicesSolver() # Z3Solver() #  YicesSolver() #
+  solver = YicesSolver() #Z3Solver() #  
   traces = list(log.split_into_traces())
   print("%d traces" % len(traces))
-  traces.sort(key=lambda t: len(t))
-  #for (i,trace) in enumerate(traces[:157]):
-  #for (i,trace) in enumerate([t for t in traces if "Offer_901718301" in t.get_objects() ]): # A
-  for (i,trace) in enumerate([t for t in traces if "Offer_1760956501" in t.get_objects() ]): # B, sb 12: 392.72 without nu, 320 with nu, dist 9
+  traces.sort(key=lambda t: (len(t), len(t.get_objects()), t.smallest_object()))
+  #for (i,trace) in enumerate(traces[:500]):
+  for (i,trace) in enumerate([t for t in traces if "Application_898874076" in t.get_objects() ]): # A
+  #for (i,trace) in enumerate([t for t in traces if "Offer_1760956501" in t.get_objects() ]): # B, sb 12: 392.72 without nu, 320 with nu, dist 9
+    #if os.path.exists(file_for_trace(trace)):
+    #  continue
+    
+    t_start = time.perf_counter()
+    print("work on %d" % i)
     solver.push()
-    print("TRACE %d (#events %d, #objects %d)" % (i, len(trace), \
-      len(trace.get_objects())))
-    print("trace", trace)
+    out = "TRACE %d (#events %d, #objects %d)\n" % (i, len(trace), \
+      len(trace.get_objects()))
+    out += "trace" + str(trace) + "\n"
     (encoding, t_enc1) = create_encoding(solver, trace, net)
-    (dist, alignment,t_enc2,t_solve) = conformance_check(encoding, log, verbose)
-    print("encoding time: %.2f, solving time %.2f" % (t_enc1 + t_enc2, t_solve))
+    (dist,t_enc2, t_solve, dec_out) = conformance_check(encoding, log, verbose)
+    out += dec_out
+    out += "encoding time: %.2f, solving time %.2f, total time %.2f\n" % \
+      (t_enc1 + t_enc2, t_solve, time.perf_counter() - t_start)
+    print(out)
+    save_result(trace, out)
     solver.pop()
+    solver.reset()
 
 if __name__ == "__main__":
   ps = process_args(sys.argv[1:])

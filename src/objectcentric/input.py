@@ -35,6 +35,9 @@ class Trace:
   def get_objects(self):
     return self._objects
 
+  def smallest_object(self):
+    return sorted(list(self._objects))[0] if len(self._objects) > 0 else None
+
   def get_events(self):
     return self._events
 
