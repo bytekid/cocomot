@@ -65,7 +65,7 @@ def process(net, log, verbose):
   traces = list(log.split_into_traces())
   print("%d traces" % len(traces))
   traces.sort(key=lambda t: (len(t), len(t.get_objects()), t.smallest_object()))
-  for (i,trace) in enumerate(traces[699:700]):
+  for (i,trace) in enumerate(traces[:300]):
   #for (i,trace) in enumerate([t for t in traces if "Application_299646442" in t.get_objects() ]): # A
     if os.path.exists(file_for_trace(trace)):
       continue
