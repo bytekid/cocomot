@@ -383,16 +383,16 @@ class Encoding():
     non_neg =[s.ge(dist[i][j],zero) for i in range(0,n+1) for j in range(0,m+1)]
     # 2. if the ith transition is not silent, dist[i+1][0] = dist[i][0] + ocost
     #    where wcost is the writing cost of the ith transition in the model
-    base_model = [ s.eq(dist[i+1][0], s.plus(dist[i][0], modcosts[i])) \
+    base_model = [ s.ge(dist[i+1][0], s.plus(dist[i][0], modcosts[i])) \
       for i in range(0,n)]
     base_model += [ vs_mod[i+1][0] for i in range(0,n)]
     # 3. dist[0][j+1] = (j + 1)
-    base_log = [ s.eq(dist[0][j+1], s.num(logcostup2(j))) for j in range(0, m) ]
+    base_log = [ s.ge(dist[0][j+1], s.num(logcostup2(j))) for j in range(0, m) ]
     base_log += [ vs_log[0][j+1] for j in range(0,m)]
     # 4. if the ith step in the model and the jth step in the log have the
     #    the same label,  dist[i+1][j+1] >= dist[i][j] + penalty, where
     #    penalty accounts for the data mismatch (possibly 0)
-    sync_constr = [ s.implies(is_t, s.eq(dist[i+1][j+1], \
+    sync_constr = [ s.implies(is_t, s.ge(dist[i+1][j+1], \
           s.plus(penalty, dist[i][j]) )) \
         for i in range(0,n) for j in range(0,m) \
         for (is_t, penalty) in sync_step(i, j)]
@@ -407,11 +407,11 @@ class Encoding():
       for j in range(0,m):
         # side constraints on log step (vertical move in matrix)
         log_step = s.implies(vs_log[i+1][j+1], \
-          s.eq(dist[i+1][j+1], s.plus(dist[i+1][j], s.num(logcost(j)))))
+          s.ge(dist[i+1][j+1], s.plus(dist[i+1][j], s.num(logcost(j)))))
         constr.append(log_step)
         # side constraints on model step (horizontal move in matrix)
         mod_step = s.implies(vs_mod[i+1][j+1], \
-          s.eq(dist[i+1][j+1], s.plus(dist[i][j+1], modcosts[i])))
+          s.ge(dist[i+1][j+1], s.plus(dist[i][j+1], modcosts[i])))
         constr.append(mod_step)
         v_move = self._vs_move[i+1][j+1]
         constr.append(s.land([s.ge(v_move, zero), s.le(v_move, s.num(2))]))

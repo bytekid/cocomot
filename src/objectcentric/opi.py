@@ -16,7 +16,7 @@ class OPI(DPN):
   def step_bound(self, trace):
     if not self._step_bound:
       objs_silent = self.objects_created_by_silent_transitions()
-      b = 12 # int(len(objs_silent)) + max(self.shortest_accepted(), len(trace))
+      b = int(len(objs_silent)) + max(self.shortest_accepted(), len(trace))
       self._step_bound = b
       print("step bound:", b, "silent objs:", objs_silent)
     return self._step_bound
