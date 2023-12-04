@@ -208,6 +208,15 @@ class Encoding():
           constraints.append(s.neg(mvarsj[p["id"]][t]))
       return self._solver.land(constraints)
 
+    # variables for not_in_marking expressions, which are used multiple times
+    not_marked = [[s.boolvar("not_marked_%d_%d" % (j, oid)) \
+      for oid in self._object_name_by_id.keys()] \
+      for j in range(0, self._step_bound)]
+    # use implies instead of iff as variable is only used positively
+    not_marked_constr = [ s.implies(not_marked[j][oid],not_in_marking(oid, j)) \
+      for oid in self._object_name_by_id.keys() \
+      for j in range(0, self._step_bound) ]
+
     def nutrans_constraint(t, j):
       obj_params = self._net.object_params_of_transition(t, self._objects)
       constraints = []
@@ -217,17 +226,18 @@ class Encoding():
         if not "nu" in param["name"]:
           continue
         # marking j is before transition j
-        imps = [s.implies(s.eq(ovars[j][k], s.num(id)), not_in_marking(id,j)) \
+        imps = [s.implies(s.eq(ovars[j][k], s.num(id)), not_marked[j][id]) \
           for (obj_name, id) in self._objects_by_type[param["type"]]]
         constraints += imps
       return s.land(constraints)
 
+    run_length_le = lambda j: s.le(s.num(j), self._run_length_var)
     cstr = [s.implies(
-      s.land([s.eq(tvars[j], s.num(t["id"])), s.le(s.num(j), self._run_length_var)]),
+      s.land([s.eq(tvars[j], s.num(t["id"])), run_length_le(j)]),
       nutrans_constraint(t,j)) \
       for j in range(0, self._step_bound) \
       for t in self._net.nu_transitions() ]
-    return s.land(cstr)
+    return s.land(cstr + not_marked_constr)
 
   # all transition variables trans_vars[i] have as value a transition id that is
   # reachable in i steps in the net

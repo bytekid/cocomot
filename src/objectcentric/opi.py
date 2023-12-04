@@ -23,8 +23,8 @@ class OPI(DPN):
 
   # The following function is called in the super constructor.
   # it is used for the 1st way to deal with an unknown length of the model run,
-  # adding a silent final transition that is executed an arbitrary number of
-  # times. However, it seems to reduce the runtime to at least 20% if instead
+  # i.e. adding a silent final transition that is executed an arbitrary number 
+  # of times. However, it seems to reduce the runtime to at least 20% if instead
   # the finality constraint in the last instant is replaced by a finality 
   # constraint that is a disjunction over all instants.
   # Thus this function does currently nothing.
