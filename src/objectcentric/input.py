@@ -1,3 +1,5 @@
+from functools import reduce 
+
 class Event:
   def __init__(self, id, activity, time, objects):
     self._id = id
@@ -19,6 +21,9 @@ class Event:
 
   def get_id(self):
     return self._id
+
+  def __str__(self):
+    return "(" + str(self._id) + ": " + self._activity + " {" + reduce(lambda acc, e: acc + str(e) + ",", self._objects, "") + "} )"
 
 
 class Trace:
@@ -55,6 +60,9 @@ class Trace:
     for o in self._objects:
       obj_dict[o] = objtypes[o]
     self._objects = obj_dict
+  
+  def __str__(self):
+    return reduce(lambda acc, e: acc + str(e) + ",", self._events, "")
 
 class Log:
   def __init__(self, events, ordering, objects):

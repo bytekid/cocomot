@@ -21,7 +21,8 @@ def conformance_check(encoding, trace, verbose):
   encoding.get_solver().require([encoding.cache_constraints()])
   encoding.get_solver().require([dconstr])
 
-  model = encoding.get_solver().minimize(dist, encoding.get_step_bound())
+  model = encoding.get_solver().minimize(dist, max=encoding.get_step_bound())
+  #model = encoding.get_solver().check_sat(encoding.get_solver().true())
   t_solve = encoding.get_solver().t_solve
   if model == None: # timeout or bug
     print("no model found")
@@ -36,8 +37,13 @@ def conformance_check(encoding, trace, verbose):
 
 
 def create_encoding(solver, trace, net):
+  net.reset()
   encoding = Encoding(solver, net, trace)
   # encoding parts
+  #for t in net._transitions:
+  #  print(t)
+  #for t in net._places:
+  #  print(t)
   t_start = time.perf_counter()
   encoding.create_variables()
   f_initial = encoding.initial_state()
@@ -54,17 +60,21 @@ def create_encoding(solver, trace, net):
 
 
 def process(net, log, verbose):
-  solver = Z3Solver() #  YicesSolver() #
-  traces = log.split_into_traces()
+  solver = YicesSolver() # Z3Solver() #  YicesSolver() #
+  traces = list(log.split_into_traces())
   print("%d traces" % len(traces))
-  for (i,trace) in enumerate(traces):
+  traces.sort(key=lambda t: len(t))
+  #for (i,trace) in enumerate(traces[:157]):
+  #for (i,trace) in enumerate([t for t in traces if "Offer_901718301" in t.get_objects() ]): # A
+  for (i,trace) in enumerate([t for t in traces if "Offer_1760956501" in t.get_objects() ]): # B, sb 12: 392.72 without nu, 320 with nu, dist 9
+    solver.push()
     print("TRACE %d (#events %d, #objects %d)" % (i, len(trace), \
       len(trace.get_objects())))
-    #print("objects", trace.get_objects().keys())
+    print("trace", trace)
     (encoding, t_enc1) = create_encoding(solver, trace, net)
     (dist, alignment,t_enc2,t_solve) = conformance_check(encoding, log, verbose)
     print("encoding time: %.2f, solving time %.2f" % (t_enc1 + t_enc2, t_solve))
-    break
+    solver.pop()
 
 if __name__ == "__main__":
   ps = process_args(sys.argv[1:])

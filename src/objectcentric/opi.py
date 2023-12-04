@@ -10,9 +10,16 @@ class OPI(DPN):
 
   def __init__(self, opi_as_array):
     super().__init__(opi_as_array)
+    self._step_bound = None
+    self._objects = None
 
   def step_bound(self, trace):
-    return  len(trace) + len(trace.get_objects()) # self.shortest_accepted()
+    if not self._step_bound:
+      objs_silent = self.objects_created_by_silent_transitions()
+      b = 12 # int(len(objs_silent)) + max(self.shortest_accepted(), len(trace))
+      self._step_bound = b
+      print("step bound:", b, "silent objs:", objs_silent)
+    return self._step_bound
 
   # The following function is called in the super constructor.
   # it is used for the 1st way to deal with an unknown length of the model run,
@@ -22,6 +29,7 @@ class OPI(DPN):
   # constraint that is a disjunction over all instants.
   # Thus this function does currently nothing.
   def add_silent_finals(self, map):
+    pass
     '''
     id = len(map) + 1
     for p in self.final_places():
@@ -35,17 +43,24 @@ class OPI(DPN):
       id += 1
     '''
 
-  def get_types(self):
-    return set([ t for p in  self._places for t in p["color"]])
+  def get_types(self, objs):
+    place_types = [ t for p in  self._places for t in p["color"]]
+    obj_types = [ t for (o,t) in objs.items() ]
+    return set(place_types + obj_types)
 
   def objects_by_type(self, objs, with_ids = True):
+    if self._objects and with_ids:
+      return self._objects
+    
     # return for every type a list of tuples containing object name and id
     # (id is unique among all objects)
-    objs_by_type = dict([ (typ,[]) for typ in self.get_types()])
+    objs_by_type = dict([ (typ,[]) for typ in self.get_types(objs)])
     id = 0
     for (o,t) in objs.items():
       objs_by_type[t].append((o, id) if with_ids else o)
       id += 1
+    if with_ids:
+      self._objects = objs_by_type
     return objs_by_type
 
   def tokens_by_color(self, objs):
@@ -76,6 +91,13 @@ class OPI(DPN):
       max_obj = max(max_obj, obj_count)
     print("maximum number of objects used by transition:", max_obj)
     return max_obj
+
+  def objects_created_by_silent_transitions(self):
+    nus = [ t for t in self.nu_transitions() if t["invisible"] ]
+    nuids =  [ t["id"] for t in nus ]
+    pids = [a["target"] for id in nuids for a in self._arcs if a["source"]==id]
+    types = [ t for p in self._places for t in p["color"] if p["id"] in pids ]
+    return set([ o for t in types for o in self._objects[t]])
 
   def object_inscriptions_of_transition(self, trans, objs):
     # returns tuples (index, name, needed, type, in, place)
@@ -143,3 +165,51 @@ class OPI(DPN):
   def pre_trans(self, place):
     ids = [a["source"] for a in self._arcs if a["target"] == place["id"]]
     return [ t for t in self._transitions if t["id"] in ids ]
+
+  def compute_reachable(self, trace):
+    num_steps = self.step_bound(trace)
+    (src, tgt) = ("source", "target")
+    transs = dict([ (t["id"], t) for t in self._transitions ])
+    idists = dict([ (t["id"], t["idist"]) for t in self.transitions()])
+    fdists = dict([ (t["id"], t["fdist"]) for t in self.transitions()])
+    self._reachable = []
+
+    ps = [ p["id"] for p in self._places if "initial" in p ]
+    states = [ (set(ps),[]) ] # pairs of current marking and transition history
+    reachable_markings = []
+    for i in range(0, num_steps):
+      statesx = []
+      # everything reachable in i-1 steps is also reachable in i steps,
+      # at least with enough objects
+      # FIXME make more precise
+      self._reachable.append([])
+      remaining = num_steps - i
+      for (marking, steps) in states:
+        for t in self._transitions:
+          tid = t["id"]
+          pre_t = [ a[src] for a in self._arcs if a[tgt] == tid]
+          post_t = [ a[tgt] for a in self._arcs if a[src] == tid]
+          if not set(pre_t).issubset(marking):
+            continue # this transition is not enabled, skip
+          markingx = marking.difference(pre_t).union(post_t)
+          if not markingx in reachable_markings:
+            statesx.append((markingx, steps + [tid]))
+          #print("add marking", markingx)
+          if not transs[tid] in self._reachable[i]: # and fdists[tid] < remaining:
+            self._reachable[i].append(transs[tid])
+        reachable_markings.append(marking)
+      states = statesx
+
+    # postprocessing for symmetry breaking: 
+    # require silent nu transitions to occur in beginning, i.e., exclude later
+    nuids =  [ t["id"] for t in self.nu_transitions() if t["invisible"] ]
+    for i in range(len(self.objects_created_by_silent_transitions()),num_steps):
+      self._reachable[i] = [t for t in self._reachable[i] if t["id"] not in nuids ]
+      #print("reachable in ", i)
+      #print([ [ t["label"] for t in self._transitions if t["id"]==tr["id"] ] for tr in self._reachable[i] ])
+
+  def reachable(self, i):
+    return self._reachable[i]
+
+  def reset(self):
+    self._step_bound = None

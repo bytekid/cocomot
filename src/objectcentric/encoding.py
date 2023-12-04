@@ -5,11 +5,11 @@ class Encoding():
     self._solver = solver
     self._net = net
     self._trace = trace
-    self._step_bound = net.step_bound(trace)
-    #self._object_bound = net.object_bound(trace)
-    net.compute_reachable(self._step_bound)
     self._objects = trace.get_objects()
     self._objects_by_type = self._net.objects_by_type(self._objects)
+    net.compute_reachable(trace)
+    self._step_bound = net.step_bound(trace)
+    #self._object_bound = net.object_bound(trace)
     oids = [ (n, id) for os in self._objects_by_type.values() for (n, id) in os]
     self._ids_by_object_name = dict(oids)
     self._object_name_by_id = dict([(id,n) for (n, id) in oids])
@@ -36,12 +36,13 @@ class Encoding():
     last_marking = self._marking_vars[j]
     constraints = []
     for p in self._net._places:
+      p_is_final = bool("final" in p and p["final"])
       tokens_in_place = []
       for t in self._tokens_by_color[p["color"]]:
-        token_placed = last_marking[p["id"]][t] if "final" in p and p["final"] \
+        token_placed = last_marking[p["id"]][t] if p_is_final \
           else self._solver.neg(last_marking[p["id"]][t])
         tokens_in_place.append(token_placed)
-      if "final" in p and p["final"]: # final places contaon some token
+      if p_is_final: # final places contain some token
         constraints.append(self._solver.lor(tokens_in_place))
       else: # non-final places contain no token
         constraints.append(self._solver.land(tokens_in_place))
@@ -53,7 +54,7 @@ class Encoding():
     s = self._solver
     run_length = lambda j: s.eq(self._run_length_var, s.num(j))
     return s.lor([ s.land([run_length(j), self.final_state_after_step(j)]) \
-      for j in range(0,self._step_bound)])
+      for j in range(0,self._step_bound+1)])
   
   def is_fired_token(self, p, t, tok, j, incoming):
     s = self._solver
@@ -240,11 +241,22 @@ class Encoding():
 
     # debugging
     debug = []
+    '''
     mvars = self._marking_vars
+    tvars = self._transition_vars
     token1 = tuple(["GIFT1"])
     token2 = tuple(["GIFT2"])
-    #debug.append(mvars[1][0][token1])
+    debug.append(s.eq(tvars[0], s.num(16)))
+    debug.append(s.eq(tvars[1], s.num(17)))
+    debug.append(s.eq(tvars[2], s.num(8)))
+    debug.append(s.eq(tvars[3], s.num(10)))
+    debug.append(s.eq(tvars[4], s.num(9)))
+    debug.append(s.eq(tvars[5], s.num(12)))
+    debug.append(s.eq(tvars[6], s.num(11)))
+    debug.append(s.eq(tvars[7], s.num(13)))
     #debug.append(s.neg(mvars[1][0][token2]))
+    #debug.append(s.eq(self._run_length_var, s.num(self._step_bound)))
+    '''
 
     return s.land(cnstr + debug)
 
@@ -323,6 +335,18 @@ class Encoding():
     silents2 = [ is_silent(i) for i in range(0,n) ]
     self._silents = [s.boolvar("silent"+str(i)) for i in range(0,n) ]
     constr += [ s.iff(v,e) for (v,e) in zip(self._silents, silents2)]
+
+    # force silent nu transitions to occur in beginning
+    def is_nu(i): # transition i has outgoing nu inscription
+      has_nu = lambda tid: any("nu" in a["inscription"] \
+        for a in self._net._arcs if a["source"] == tid)
+      return s.lor([ s.eq(vs_trans[i], s.num(t["id"])) \
+        for t in self._net.reachable(i) if has_nu(t["id"]) and t["invisible"]])
+    nu_count = len(self._net.objects_created_by_silent_transitions())
+    nus2 = [ is_nu(i) for i in range(0, nu_count) ]
+    nuvars = [s.boolvar("is_nu"+str(i)) for i in range(0,nu_count) ]
+    constr += [ s.iff(v,e) for (v,e) in zip(nuvars, nus2)]
+    constr += [ s.implies(nuvars[i], nuvars[i-1]) for i in range(1, nu_count) ]
     
     # cost for model step: number of objects used
     num_objs_used = lambda i: reduce(lambda acc, v: \
@@ -389,8 +413,6 @@ class Encoding():
         mod_step = s.implies(vs_mod[i+1][j+1], \
           s.eq(dist[i+1][j+1], s.plus(dist[i][j+1], modcosts[i])))
         constr.append(mod_step)
-        #step_kinds = s.xor3(vs_sync[i+1][j+1],vs_log[i+1][j+1],vs_mod[i+1][j+1])
-        #constr.append(step_kinds)
         v_move = self._vs_move[i+1][j+1]
         constr.append(s.land([s.ge(v_move, zero), s.le(v_move, s.num(2))]))
 
@@ -467,7 +489,7 @@ class Encoding():
     ovars = self._object_vars
     max_objs_per_trans = self._max_objs_per_trans
     print("DECODE")
-    run_length = model.eval_int(self._run_length_var)
+    run_length = self._step_bound # model.eval_int(self._run_length_var)
     print("run length ", run_length, self._step_bound)
     self.decode_marking(model, 0)
     for j in range(0, run_length):

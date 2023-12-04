@@ -17,6 +17,7 @@ class Z3Solver(Solver):
     set_param('model.completion', True)
     self.ctx.set("timeout", 600000) # timeout in milliseconds
     self.cnt = 0
+    self.t_solve = 0
 
   def to_string(self, e):
     return str(e)

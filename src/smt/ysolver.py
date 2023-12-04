@@ -129,8 +129,51 @@ class YicesSolver(Solver):
   def require(self, formulas):
     self.ctx.assert_formulas(formulas)
 
-  # minimize given expression, with guessed initial value
-  def minimize_binsearch(self, expr, max=100):
+  def is_sat(self):
+    status = self.ctx.check_context(timeout=self._timeout)
+    return status == Status.SAT
+
+  def check_sat(self, x):
+    self.push()
+    self.require([x])
+    status = self.ctx.check_context(timeout=self._timeout)
+    m = YicesModel(self.ctx) if status == Status.SAT else None
+    self.pop()
+    return m
+
+  # minimize given expression
+  def minimize_linear(self, expr, max, start = 0):
+    self.push()
+    val = start
+    self.ctx.assert_formulas([self.eq(expr, self.num(val))])
+    t_start = time.perf_counter()
+    status = self.ctx.check_context(timeout=self._timeout)
+    if status == Status.UNKNOWN:
+      return None
+    m = YicesModel(self.ctx) if status == Status.SAT else None
+    self.pop()
+    self.t_solve = time.perf_counter() - t_start
+    while status != Status.SAT and val <= max:
+      #self.require([self.ge(expr, self.num(val))])
+      self.push()
+      val += 1
+      self.require([self.eq(expr, self.num(val))])
+      t_start = time.perf_counter()
+      timeout = self._timeout - self.t_solve
+      if timeout <= 0:
+        print("timeout exhausted")
+        return None
+      status = self.ctx.check_context(timeout=timeout)
+      if status == Status.UNKNOWN:
+        return None
+
+      m = YicesModel(self.ctx) if status == Status.SAT else None
+      self.pop()
+      self.t_solve += time.perf_counter() - t_start
+    return None if val > max_val else m
+
+  # minimize given expression via binary search, with guessed initial value
+  def minimize(self, expr, max=100):
     upper = max
     lower = 0
     to_pop = 0
@@ -158,49 +201,6 @@ class YicesSolver(Solver):
     for i in range(0, to_pop):
       self.pop()
     return m
-
-  def is_sat(self):
-    status = self.ctx.check_context(timeout=self._timeout)
-    return status == Status.SAT
-
-  def check_sat(self, x):
-    self.push()
-    self.require([x])
-    status = self.ctx.check_context(timeout=self._timeout)
-    m = YicesModel(self.ctx) if status == Status.SAT else None
-    self.pop()
-    return m
-
-  # minimize given expression
-  def minimize(self, expr, max_val, start = 0):
-    self.push()
-    val = start
-    self.ctx.assert_formulas([self.eq(expr, self.num(val))])
-    t_start = time.perf_counter()
-    status = self.ctx.check_context(timeout=self._timeout)
-    if status == Status.UNKNOWN:
-      return None
-    m = YicesModel(self.ctx) if status == Status.SAT else None
-    self.pop()
-    self.t_solve = time.perf_counter() - t_start
-    while status != Status.SAT and val <= max_val:
-      #self.require([self.ge(expr, self.num(val))])
-      self.push()
-      val += 1
-      self.require([self.eq(expr, self.num(val))])
-      t_start = time.perf_counter()
-      timeout = self._timeout - self.t_solve
-      if timeout <= 0:
-        print("timeout exhausted")
-        return None
-      status = self.ctx.check_context(timeout=timeout)
-      if status == Status.UNKNOWN:
-        return None
-
-      m = YicesModel(self.ctx) if status == Status.SAT else None
-      self.pop()
-      self.t_solve += time.perf_counter() - t_start
-    return None if val > max_val else m
 
   # second version of minimize: use unsatisfiable core (does not seem faster)
   def minimize_core(self, expr, max_val):
