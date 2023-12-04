@@ -377,18 +377,19 @@ class Encoding():
     logcostup2 = lambda j: sum([len(trace[j].get_objects()) \
       for k in range(0,j+1)])
 
-    def object_diff(t,i,j):
+    def object_diff(i,j): # i is position in transition sequence, j in trace 
       # FIXME independent from i
       trace_objs = [s.num(self._ids_by_object_name[o]) \
         for o in trace[j].get_objects()]
       used = lambda id: s.lor([s.eq(v,id) for v in self._object_vars[i]])
-      tused = [ s.ite(used(oid), one, zero) for oid in trace_objs ]
-      num_tused = reduce(lambda acc, u: s.plus(acc, u), tused, zero)
+      traceused = [ s.ite(used(oid), one, zero) for oid in trace_objs ]
+      # num_tused is number of objects in trace[j] that are used in transition i
+      num_tused = reduce(lambda acc, u: s.plus(acc, u), traceused, zero)
       num_tunused = s.minus(s.num(len(trace_objs)), num_tused)
       return s.plus(num_tunused, s.minus(num_objs_used(i), num_tused))
     
-    def sync_step(i, j):                            # object_diff(t,i,j)) \
-      return [ (s.eq(vs_trans[i], s.num(t["id"])), object_diff(t,i,j)) \
+    def sync_step(i, j):
+      return [ (s.eq(vs_trans[i], s.num(t["id"])), object_diff(i,j)) \
         for t in self._net.reachable(i) \
         if "label" in t and t["label"] == trace[j].get_activity() ]
 

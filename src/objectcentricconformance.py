@@ -65,16 +65,17 @@ def process(net, log, verbose):
   traces = list(log.split_into_traces())
   print("%d traces" % len(traces))
   traces.sort(key=lambda t: (len(t), len(t.get_objects()), t.smallest_object()))
-  #for (i,trace) in enumerate(traces[:500]):
-  for (i,trace) in enumerate([t for t in traces if "Application_299646442" in t.get_objects() ]): # A
-    #if os.path.exists(file_for_trace(trace)):
-    #  continue
+  for (i,trace) in enumerate(traces[699:700]):
+  #for (i,trace) in enumerate([t for t in traces if "Application_299646442" in t.get_objects() ]): # A
+    if os.path.exists(file_for_trace(trace)):
+      continue
     
     t_start = time.perf_counter()
     print("work on %d" % i)
     solver.push()
     out = "TRACE %d (#events %d, #objects %d)\n" % (i, len(trace), \
       len(trace.get_objects()))
+    print(out)
     out += "trace" + str(trace) + "\n"
     (encoding, t_enc1) = create_encoding(solver, trace, net)
     (dist,t_enc2, t_solve, dec_out) = conformance_check(encoding, log, verbose)
