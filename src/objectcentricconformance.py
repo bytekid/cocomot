@@ -12,20 +12,12 @@ from smt.cvc5solver import CVC5Solver
 from smt.z3solver import Z3Solver
 
 default_options = {
-    "anti": None,   # use anti-alignments
-    "json": False,  # output alignments as json
     "log": None,    # log file to be used
-    "many": None,   # use multi-alignments
     "model": None,  # model input (DPN) 
-    "multi": None,  # use multi-alignments
+    "skip existing": True,  # keep results
+    "object": None,
     "numprocs": 1,  # number of processsors to use in parallel
-    "obfuscate": None, # make given log uncertain
-    "realizations": False, # compute realizations of uncertain log
-    "solver": None, # could be yices, z3, z3-inc, om, om-inc
-    "uncertainty": None, # use conformance checking with uncertainty
     "verbose": 1, # verbosity of output
-    "y": None, # debugging
-    "z": None # debugging
   }
 
 def file_for_trace(trace):
@@ -77,14 +69,15 @@ def create_encoding(solver, trace, net):
   return (encoding, t_encode1)
 
 
-def process(net, log, verbose):
-  solver = YicesSolver() #Z3Solver() #  
+def process(net, log, verbose, object = None, skip_existing = True):
+  solver = YicesSolver() #
   traces = list(log.split_into_traces())
   print("%d traces" % len(traces))
   traces.sort(key=lambda t: (len(t), len(t.get_objects()), t.smallest_object()))
-  for (i,trace) in enumerate(traces[:400]):
-  #for (i,trace) in enumerate([t for t in traces if "Application_299646442" in t.get_objects() ]): # A
-    if os.path.exists(file_for_trace(trace)):
+  trace_selection = traces[:500] if object == None else \
+    [t for t in traces if object in t.get_objects() ]
+  for (i,trace) in enumerate(trace_selection): # A
+    if skip_existing and os.path.exists(file_for_trace(trace)):
       continue
     
     t_start = time.perf_counter()
@@ -106,10 +99,10 @@ def process(net, log, verbose):
 
 
 def process_args(argv):
-  usage = "cocomot.py <model_file> <log_file> [-p <property_string> | -s] [-x <number>]"
+  usage = "cocomot.py <model_file> <log_file> [-o <object> | -s] [-x]"
   opts = default_options
   try:
-    optargs, args = getopt.getopt(argv,"hjmro:u:v:d:l:n:x:a:s:z:y:")
+    optargs, args = getopt.getopt(argv,"hxo:v:d:l:n:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(1)
@@ -122,37 +115,9 @@ def process_args(argv):
     elif opt == "-l":
       opts["log"] = arg
     elif opt == "-x":
-      opts["many"] = int(arg)
-    elif opt == "-u":
-      if arg not in ["like", "real"]:
-        print(usage)
-        sys.exit(1)
-      opts["uncertainty"] = arg
-    elif opt == "-m":
-      opts["multi"] = True
-    elif opt == "-r":
-      opts["realizations"] = True
-    elif opt == "-j":
-      opts["json"] = True
-      opts["verbose"] = 0
-    elif opt == "-a":
-      opts["anti"] = int(arg)
-    elif opt == "-z":
-      opts["z"] = int(arg)
-    elif opt == "-y":
-      opts["y"] = int(arg)
+      opts["skip existing"] = False
     elif opt == "-o":
-      args = ["indet", "act", "time", "data", "mixed"]
-      if not (arg in args):
-        print ("arguments supported for -o are ", args)
-        sys.exit(1)
-      opts["obfuscate"] = arg
-    elif opt == "-s":
-      args = ["yices", "optimathsat", "optimathsat-inc", "z3", "z3-inc"]
-      if not (arg in args):
-        print ("arguments supported for -s are ", args)
-        sys.exit(1)
-      opts["solver"] = arg
+      opts["object"] = arg
     elif opt == "-v":
       opts["verbose"] = int(arg)
     elif opt == "-n":
@@ -163,6 +128,6 @@ if __name__ == "__main__":
   ps = process_args(sys.argv[1:])
   net = OPI(read_pnml_input(ps["model"]))
   log = read_ocel(ps["log"])
-  process(net, log, ps["verbose"])
+  process(net, log, ps["verbose"], object=ps["object"], skip_existing=ps["skip existing"])
 
   

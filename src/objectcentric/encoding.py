@@ -166,28 +166,34 @@ class Encoding():
     tvars = self._transition_vars
     ovars = self._object_vars
     max_objs = self._max_objs_per_trans
-
-    def trans_j_constraint(t, j):
-      #print(t["label"])
-      obj_params = self._net.object_params_of_transition(t, self._objects)
-      obj_conj = []
-      objs_by_type = self._net.objects_by_type(self._objects)
-      for param in obj_params:
-        pidx = param["index"]
-        # kth object parameter of transition t
-        param_disj = [ s.eq(ovars[j][pidx], s.num(id)) \
+    cache_cstr = []
+    obj_disj_cache = {}
+    objs_by_type = self._net.objects_by_type(self._objects)
+    
+    def cache_obj_disj(param, j):
+      key = (j, param["type"], param["needed"], param["index"])
+      if not key in obj_disj_cache:
+        param_disj = [ s.eq(ovars[j][param["index"]], s.num(id)) \
           for (obj_name, id) in objs_by_type[param["type"]]]
         if not param["needed"]:
-          param_disj.append(s.eq(ovars[j][pidx], s.num(-1)))
-        obj_conj.append(s.lor(param_disj))
+          param_disj.append(s.eq(ovars[j][param["index"]], s.num(-1)))
+        #return s.lor(param_disj)
+        ojvar = s.boolvar("obj_cache_%d" % (len(obj_disj_cache)))
+        obj_disj_cache[key] = ojvar
+        cache_cstr.append(s.implies(ojvar, s.lor(param_disj)))
+      return obj_disj_cache[key]
+
+    def trans_j_constraint(t, j):
+      obj_params = self._net.object_params_of_transition(t, self._objects)
+      obj_conj = [ cache_obj_disj(param, j) for param in obj_params ]
       for pidx in range(len(obj_params), max_objs): # unused object indices
         obj_conj.append(s.eq(ovars[j][pidx], s.num(-1)))
       return s.land(obj_conj)
-
+    
     cstr = [s.implies(s.eq(tvars[j], s.num(t["id"])), trans_j_constraint(t,j)) \
       for j in range(0, self._step_bound) \
       for t in self._net._transitions] # FIXME reachable does not suffice, why?
-    return s.land(cstr)
+    return s.land(cstr+cache_cstr)
   
 
   # ensure that objects substituted for nu inscriptions do not occur in marking
@@ -387,9 +393,14 @@ class Encoding():
       num_tused = reduce(lambda acc, u: s.plus(acc, u), traceused, zero)
       num_tunused = s.minus(s.num(len(trace_objs)), num_tused)
       return s.plus(num_tunused, s.minus(num_objs_used(i), num_tused))
+
+    odiffvars = [ [ s.intvar("objdiff%d_%d" % (i,j)) \
+        for j in range(0,m)] for i in range(0,n) ]
+    constr += [ s.eq(odiffvars[i][j], object_diff(i,j)) \
+      for j in range(0,m) for i in range(0,n)]
     
     def sync_step(i, j):
-      return [ (s.eq(vs_trans[i], s.num(t["id"])), object_diff(i,j)) \
+      return [ (s.eq(vs_trans[i], s.num(t["id"])), odiffvars[i][j]) \
         for t in self._net.reachable(i) \
         if "label" in t and t["label"] == trace[j].get_activity() ]
 
