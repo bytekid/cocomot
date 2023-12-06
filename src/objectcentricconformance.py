@@ -8,7 +8,7 @@ from objectcentric.read import ocel as read_ocel
 from objectcentric.encoding import Encoding
 from dpn.read import read_pnml_input
 from smt.ysolver import YicesSolver
-from smt.cvc5solver import CVC5Solver
+#from smt.cvc5solver import CVC5Solver
 from smt.z3solver import Z3Solver
 
 default_options = {
