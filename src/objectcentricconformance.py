@@ -79,7 +79,7 @@ def process(net, log, verbose, object = None, skip_existing = True, z=None):
     [t for t in traces if object in t.get_objects() ]
   for (i,trace) in enumerate(trace_selection): # A
     if (skip_existing and os.path.exists(file_for_trace(trace))) or \
-      z and i % 8 != z:
+      (z and i % 8 != z):
       continue
     
     t_start = time.perf_counter()
