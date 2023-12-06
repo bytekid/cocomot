@@ -17,7 +17,8 @@ default_options = {
     "skip existing": True,  # keep results
     "object": None,
     "numprocs": 1,  # number of processsors to use in parallel
-    "verbose": 1, # verbosity of output
+    "verbose": 1, # verbosity of output,
+    "z": None # debug
   }
 
 def file_for_trace(trace):
@@ -36,7 +37,7 @@ def conformance_check(encoding, trace, verbose):
   encoding.get_solver().require([encoding.cache_constraints()])
   encoding.get_solver().require([dconstr])
 
-  model = encoding.get_solver().minimize(dist, max=encoding.get_step_bound())
+  model = encoding.get_solver().minimize(dist, max=encoding.get_step_bound()-1)
   #model = encoding.get_solver().check_sat(encoding.get_solver().true())
   t_solve = encoding.get_solver().t_solve
   if model == None: # timeout or bug
@@ -69,15 +70,16 @@ def create_encoding(solver, trace, net):
   return (encoding, t_encode1)
 
 
-def process(net, log, verbose, object = None, skip_existing = True):
+def process(net, log, verbose, object = None, skip_existing = True, z=None):
   solver = YicesSolver() #
   traces = list(log.split_into_traces())
   print("%d traces" % len(traces))
   traces.sort(key=lambda t: (len(t), len(t.get_objects()), t.smallest_object()))
-  trace_selection = traces[:500] if object == None else \
+  trace_selection = traces if object == None else \
     [t for t in traces if object in t.get_objects() ]
   for (i,trace) in enumerate(trace_selection): # A
-    if skip_existing and os.path.exists(file_for_trace(trace)):
+    if (skip_existing and os.path.exists(file_for_trace(trace))) or \
+      z and i % z != 0:
       continue
     
     t_start = time.perf_counter()
@@ -96,13 +98,14 @@ def process(net, log, verbose, object = None, skip_existing = True):
     save_result(trace, out)
     solver.pop()
     solver.reset()
+    # time.sleep(20)
 
 
 def process_args(argv):
   usage = "cocomot.py <model_file> <log_file> [-o <object> | -s] [-x]"
   opts = default_options
   try:
-    optargs, args = getopt.getopt(argv,"hxo:v:d:l:n:")
+    optargs, args = getopt.getopt(argv,"hxo:v:d:l:n:z:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(1)
@@ -122,12 +125,14 @@ def process_args(argv):
       opts["verbose"] = int(arg)
     elif opt == "-n":
       opts["numprocs"] = int(arg)
+    elif opt == "-z":
+      opts["z"] = int(arg)
   return opts
 
 if __name__ == "__main__":
   ps = process_args(sys.argv[1:])
   net = OPI(read_pnml_input(ps["model"]))
   log = read_ocel(ps["log"])
-  process(net, log, ps["verbose"], object=ps["object"], skip_existing=ps["skip existing"])
+  process(net, log, ps["verbose"], object=ps["object"], skip_existing=ps["skip existing"], z=ps["z"])
 
   
