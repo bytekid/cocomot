@@ -18,7 +18,7 @@ class OPI(DPN):
       objs_silent = len(self.objects_created_by_silent_transitions())
       b = max(self.shortest_accepted(), len(trace)) + \
         (objs_silent if objs_silent > 0 else \
-          sum([ len(os) for os in self._objects.values()]) + 4)
+          2 * sum([ len(os) for os in self._objects.values()]))
       self._step_bound = b
       print("step bound:", b, "silent objs:", objs_silent)
     return self._step_bound
