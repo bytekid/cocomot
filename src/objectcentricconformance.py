@@ -15,7 +15,8 @@ default_options = {
     "log": None,    # log file to be used
     "model": None,  # model input (DPN) 
     "skip existing": True,  # keep results
-    "object": None,
+    "object": None, # specific object, do only trace that involes it
+    "fixed objects": False, # use exactly the objects in the trace
     "numprocs": 1,  # number of processsors to use in parallel
     "verbose": 1, # verbosity of output,
     "z": None # debug
@@ -29,7 +30,7 @@ def save_result(trace, content):
   f.write(content)
   f.close()
 
-def conformance_check(encoding, trace, verbose):
+def conformance_check(encoding, trace, options):
   t_start = time.perf_counter()
   (dist, dconstr) = encoding.edit_distance()
   t_encode2 = time.perf_counter() - t_start
@@ -37,7 +38,8 @@ def conformance_check(encoding, trace, verbose):
   encoding.get_solver().require([encoding.cache_constraints()])
   encoding.get_solver().require([dconstr])
 
-  model = encoding.get_solver().minimize(dist, max=encoding.get_step_bound()-1)
+  bound = encoding.get_step_bound()-1
+  model = encoding.get_solver().minimize(dist, max=bound)
   #model = encoding.get_solver().check_sat(encoding.get_solver().true())
   t_solve = encoding.get_solver().t_solve
   if model == None: # timeout or bug
@@ -52,12 +54,12 @@ def conformance_check(encoding, trace, verbose):
   return (distance, t_encode2, t_solve, out)
 
 
-def create_encoding(solver, trace, net):
+def create_encoding(solver, trace, net, fixed_obj):
   net.reset()
   encoding = Encoding(solver, net, trace)
   t_start = time.perf_counter()
   encoding.create_variables()
-  f_initial = encoding.initial_state()
+  f_initial = encoding.initial_state(fixed_obj)
   f_trans = encoding.transition_range()
   f_obj_types = encoding.object_types()
   f_moving = encoding.moving_tokens()
@@ -70,7 +72,11 @@ def create_encoding(solver, trace, net):
   return (encoding, t_encode1)
 
 
-def process(net, log, verbose, object = None, skip_existing = True, z=None):
+def process(net, log, options):
+  object = options["object"]
+  skip_existing = options["skip existing"]
+  z = options["z"]
+  fixed_obj = options["fixed objects"]
   solver = YicesSolver() #
   traces = list(log.split_into_traces())
   print("%d traces" % len(traces))
@@ -89,8 +95,8 @@ def process(net, log, verbose, object = None, skip_existing = True, z=None):
       len(trace.get_objects()))
     print(out)
     out += "trace" + str(trace) + "\n"
-    (encoding, t_enc1) = create_encoding(solver, trace, net)
-    (dist,t_enc2, t_solve, dec_out) = conformance_check(encoding, log, verbose)
+    (encoding, t_enc1) = create_encoding(solver, trace, net, fixed_obj)
+    (dist,t_enc2, t_solve, dec_out) = conformance_check(encoding, log, options)
     out += dec_out
     out += "encoding time: %.2f, solving time %.2f, total time %.2f\n" % \
       (t_enc1 + t_enc2, t_solve, time.perf_counter() - t_start)
@@ -105,7 +111,7 @@ def process_args(argv):
   usage = "cocomot.py <model_file> <log_file> [-o <object> | -s] [-x]"
   opts = default_options
   try:
-    optargs, args = getopt.getopt(argv,"hxo:v:d:l:n:z:")
+    optargs, args = getopt.getopt(argv,"hxfo:v:d:l:n:z:")
   except getopt.GetoptError:
     print(usage)
     sys.exit(1)
@@ -119,6 +125,8 @@ def process_args(argv):
       opts["log"] = arg
     elif opt == "-x":
       opts["skip existing"] = False
+    elif opt == "-f":
+      opts["fixed objects"] = True
     elif opt == "-o":
       opts["object"] = arg
     elif opt == "-v":
@@ -133,6 +141,6 @@ if __name__ == "__main__":
   ps = process_args(sys.argv[1:])
   net = OPI(read_pnml_input(ps["model"]))
   log = read_ocel(ps["log"])
-  process(net, log, ps["verbose"], object=ps["object"], skip_existing=ps["skip existing"], z=ps["z"])
+  process(net, log, ps)
 
   

@@ -25,11 +25,23 @@ class Encoding():
   def get_step_bound(self):
     return self._step_bound
 
-  def initial_state(self):
+  def initial_state(self, fixed_objects):
     s = self._solver
-    mvars0 = [v for vs in self._marking_vars[0].values() for v in vs.values()]
-    # FIXME for now fixed to empty marking
-    return s.land([s.neg(v) for v in mvars0])
+    if fixed_objects:
+      mvars0 = self._marking_vars[0]
+      cs = []
+      for (id, name) in self._object_name_by_id.items():
+        for p in self._net._places:
+          if not ("initial" in p and p["initial"]): # no tokens
+            cs += [s.neg(v) for v in mvars0[p["id"]].values()]
+          else: # all tokens of this color
+            assert(len(p["color"]) == 1)
+            cs += [v for v in mvars0[p["id"]].values()]
+      return s.land(cs)
+    else:
+      # initial marking is empty marking, nu transitions are assumed to create objects
+      mvars0 = [v for vs in self._marking_vars[0].values() for v in vs.values()]
+      return s.land([s.neg(v) for v in mvars0])
 
   def final_state_after_step(self, j):
     last_marking = self._marking_vars[j]
@@ -262,26 +274,8 @@ class Encoding():
     s = self._solver
     cnstr = [ s.iff(v,e) for (v,e) in self._consumed_token_cache.values() ]
     cnstr += [ s.iff(v,e) for (v,e) in self._produced_token_cache.values() ]
-
     # debugging
     debug = []
-    '''
-    mvars = self._marking_vars
-    tvars = self._transition_vars
-    token1 = tuple(["GIFT1"])
-    token2 = tuple(["GIFT2"])
-    debug.append(s.eq(tvars[0], s.num(16)))
-    debug.append(s.eq(tvars[1], s.num(17)))
-    debug.append(s.eq(tvars[2], s.num(8)))
-    debug.append(s.eq(tvars[3], s.num(10)))
-    debug.append(s.eq(tvars[4], s.num(9)))
-    debug.append(s.eq(tvars[5], s.num(12)))
-    debug.append(s.eq(tvars[6], s.num(11)))
-    debug.append(s.eq(tvars[7], s.num(13)))
-    #debug.append(s.neg(mvars[1][0][token2]))
-    #debug.append(s.eq(self._run_length_var, s.num(self._step_bound)))
-    '''
-
     return s.land(cnstr + debug)
 
   def create_marking_variables(self):

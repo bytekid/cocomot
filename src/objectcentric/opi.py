@@ -16,9 +16,11 @@ class OPI(DPN):
   def step_bound(self, trace):
     if not self._step_bound:
       objs_silent = len(self.objects_created_by_silent_transitions())
-      b = int(objs_silent) + max(self.shortest_accepted(), len(trace))
+      b = max(self.shortest_accepted(), len(trace)) + \
+        (objs_silent if objs_silent > 0 else \
+          sum([ len(os) for os in self._objects.values()]))
       self._step_bound = b
-      #print("step bound:", b, "silent objs:", objs_silent)
+      print("step bound:", b, "silent objs:", objs_silent)
     return self._step_bound
 
   # The following function is called in the super constructor.
