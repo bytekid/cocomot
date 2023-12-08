@@ -377,24 +377,21 @@ class Encoding():
     logcostup2 = lambda j: sum([len(trace[j].get_objects()) \
       for k in range(0,j+1)])
 
-    def object_diff(i,j): # i is position in transition sequence, j in trace 
+    def no_object_diff(i,j): # i is position in transition sequence, j in trace 
       # FIXME independent from i
       trace_objs = [s.num(self._ids_by_object_name[o]) \
         for o in trace[j].get_objects()]
       used = lambda id: s.lor([s.eq(v,id) for v in self._object_vars[i]])
-      traceused = [ s.ite(used(oid), one, zero) for oid in trace_objs ]
-      # num_tused is number of objects in trace[j] that are used in transition i
-      num_tused = reduce(lambda acc, u: s.plus(acc, u), traceused, zero)
-      num_tunused = s.minus(s.num(len(trace_objs)), num_tused)
-      return s.plus(num_tunused, s.minus(num_objs_used(i), num_tused))
+      allused = s.land([ used(oid) for oid in trace_objs ])
+      return s.land([s.eq(num_objs_used(i), s.num(len(trace_objs))), allused])
 
-    odiffvars = [ [ s.intvar("objdiff%d_%d" % (i,j)) \
+    no_odiff_vars = [ [ s.boolvar("noobjdiff%d_%d" % (i,j)) \
         for j in range(0,m)] for i in range(0,n) ]
-    constr += [ s.eq(odiffvars[i][j], object_diff(i,j)) \
+    constr += [ s.iff(no_odiff_vars[i][j], no_object_diff(i,j)) \
       for j in range(0,m) for i in range(0,n)]
     
     def sync_step(i, j):
-      return [ (s.eq(vs_trans[i], s.num(t["id"])), odiffvars[i][j]) \
+      return [ s.land([s.eq(vs_trans[i], s.num(t["id"])),no_odiff_vars[i][j]]) \
         for t in self._net.reachable(i) \
         if "label" in t and t["label"] == trace[j].get_activity() ]
 
@@ -416,12 +413,11 @@ class Encoding():
     # 4. if the ith step in the model and the jth step in the log have the
     #    the same label,  dist[i+1][j+1] >= dist[i][j] + penalty, where
     #    penalty accounts for the data mismatch (possibly 0)
-    sync_constr = [ s.implies(is_t, s.ge(dist[i+1][j+1], \
-          s.plus(penalty, dist[i][j]) )) \
-        for i in range(0,n) for j in range(0,m) \
-        for (is_t, penalty) in sync_step(i, j)]
+    sync_constr = [ s.implies(is_t, s.ge(dist[i+1][j+1], dist[i][j])) \
+      for i in range(0,n) for j in range(0,m) \
+      for is_t in sync_step(i, j)]
     sync_constr += [ s.implies(vs_sync[i+1][j+1], \
-      s.lor([ is_t for (is_t, _) in sync_step(i, j)])) \
+      s.lor([ is_t for is_t in sync_step(i, j)])) \
         for i in range(0,n) for j in range(0,m) ]
 
     # 5. the ith step in the model and the jth step in the log have different 
