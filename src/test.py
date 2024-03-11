@@ -5,6 +5,7 @@ import time
 import cocomot
 from dpn.dpn import *
 from smt.ysolver import YicesSolver
+from options import Options
 
 TEST_DIR = "tests"
 PREFIX = "test"
@@ -31,7 +32,9 @@ if __name__ == "__main__":
       start = time.time()
       if is_uncertain:
         ukind = "real" if "min" in xes else "like" # FIXME rename test cases
-        opts = {"uncertainty": ukind, "verbose":0, "numprocs":1, "solver":None}
+        opts = Options()
+        opts.uncertainty = ukind
+        opts.verbose = 0
         res = cocomot.cocomot_uncertain(dpn, [trace], opts)
       else:
         slv = YicesSolver()

@@ -4,8 +4,9 @@ import multiprocessing
 import pm4py
 from pm4py.objects.log.importer.xes import importer as xes_importer
 import json
-import getopt
+import argparse
 from collections import defaultdict
+from os.path import exists as file_exists
 
 from smt.ysolver import YicesSolver
 from smt.z3solver import Z3Solver
@@ -23,7 +24,7 @@ from uncertainty.encoding import UncertaintyEncoding
 from uncertainty.trace import UncertainTrace, UncertainLog, UncertainDataValue
 from uncertainty.uncertainize import all as uncertainize_all, extending as uncertainty_extending
 from utils import pad_to, spaces
-from options import default as default_options
+from options import *
 
 ### printing
 
@@ -157,8 +158,8 @@ def preprocess_log(log, dpn, replace_strings=True):
   return log_processed
 
 def conformance_check_trace_many(encoding, trace_data, opts):
-  cost_bound = opts["many"]
-  verbose = opts["verbose"]
+  cost_bound = opts.many
+  verbose = opts.verbose
   (index, trace, cnt) = trace_data
   t_start = time.perf_counter()
   (dist, dconstr) = encoding.edit_distance(trace)
@@ -255,7 +256,7 @@ def conformance_check_single_trace(solver, trace_record, dpn, verbose=0, many=No
 
 # conformance check multiple traces of same length
 def conformance_check_traces(solver, traces, dpn, opts):
-  (verbose, many) = (opts["verbose"], opts["many"])
+  (verbose, many) = (opts.verbose, opts.many)
   (enc, t_enc1) = create_encoding(solver, len(traces[0][1]), dpn, all_sol=many)
 
   results = []
@@ -321,23 +322,23 @@ def read_log(logfile):
 
 ### uncertainty
 def make_uncertainty_solver(opts):
-  if opts["solver"] == None:
-    return YicesSolver() if opts["uncertainty"] =="real" else Z3Solver()
+  if opts.solver == None:
+    return YicesSolver() if opts.uncertainty =="real" else Z3Solver()
   else:
-    if opts["solver"] == "yices":
+    if opts.solver == "yices":
       return YicesSolver()
-    elif opts["solver"] == "z3":
+    elif opts.solver == "z3":
       return Z3Solver()
-    elif opts["solver"] == "z3-inc":
+    elif opts.solver == "z3-inc":
       return Z3Solver(incremental=True)
-    elif opts["solver"] == "optimathsat":
+    elif opts.solver == "optimathsat":
       return OptiMathsatSolver()
-    elif opts["solver"] == "optimathsat-inc":
+    elif opts.solver == "optimathsat-inc":
       return OptiMathsatSolver(incremental=True)
 
 def work_uncertain(job):
   (i, trace, dpn, opts, solver) = job
-  ukind, verbose = opts["uncertainty"], opts["verbose"]
+  ukind, verbose = opts.uncertainty, opts.verbose
   own_solver = (solver == None)
   if not solver:
     solver = make_uncertainty_solver(opts)
@@ -379,17 +380,17 @@ def work_uncertain(job):
     solver.destroy()
   return (distance, t_enc, t_solve)
 
-def cocomot_uncertain(dpn, log, os):
-  (ukind, verbose, numprocs) = (os["uncertainty"], os["verbose"],os["numprocs"])
+def cocomot_uncertain(dpn, log, options):
+  ukind, verbose,numprocs = options.uncertainty,options.verbose,options.numprocs
   ts_encode = []
   ts_solve = []
   distances = defaultdict(lambda: 0)
   timeouts = 0
   if numprocs == 1:
     results = []
-    solver = make_uncertainty_solver(os)
+    solver = make_uncertainty_solver(options)
     for (i, trace) in enumerate(log):
-      results.append(work_uncertain((i, trace, dpn, os, solver)))
+      results.append(work_uncertain((i, trace, dpn, options, solver)))
     solver.destroy()
     for (d, t_enc, t_solv) in results:
       ts_encode.append(t_enc)
@@ -453,7 +454,7 @@ def work(job):
 
 def cocomot(dpn, log, opts):
   # preprocessing
-  (numprocs, verbose, many) = (opts["numprocs"], opts["verbose"], opts["many"])
+  (numprocs, verbose, many) = (options.numprocs, options.verbose, options.many)
   log = preprocess_log(log, dpn)
   if len(log) > 1 and verbose > 0:
     print("number of traces: %d" % len(log))
@@ -537,110 +538,88 @@ def cocomot(dpn, log, opts):
       for (d, cnt) in distances.items():
         print("distance %d: %d (%d overall)" % (d, cnt, alldistances[d]))
       print("timeouts: %d" % timeouts)
-  if opts["json"]:
+  if opts.json:
     print_alignments_json(alignments)
   YicesSolver.shutdown()
 
-def process_args(argv):
-  usage = "cocomot.py <model_file> <log_file> [-p <property_string> | -s] [-x <number>]"
-  opts = default_options
-  try:
-    optargs, args = getopt.getopt(argv,"hjmro:u:v:d:l:n:x:a:s:z:y:")
-  except getopt.GetoptError:
-    print(usage)
-    sys.exit(1)
-  for (opt, arg) in optargs:
-    if opt == '-h':
-      print(usage)
-      sys.exit()
-    elif opt == "-d":
-      opts["model"] = arg
-    elif opt == "-l":
-      opts["log"] = arg
-    elif opt == "-x":
-      opts["many"] = int(arg)
-    elif opt == "-u":
-      if arg not in ["like", "real"]:
-        print(usage)
-        sys.exit(1)
-      opts["uncertainty"] = arg
-    elif opt == "-m":
-      opts["multi"] = True
-    elif opt == "-r":
-      opts["realizations"] = True
-    elif opt == "-j":
-      opts["json"] = True
-      opts["verbose"] = 0
-    elif opt == "-a":
-      opts["anti"] = int(arg)
-    elif opt == "-z":
-      opts["z"] = int(arg)
-    elif opt == "-y":
-      opts["y"] = int(arg)
-    elif opt == "-o":
-      args = ["indet", "act", "time", "data", "mixed"]
-      if not (arg in args):
-        print ("arguments supported for -o are ", args)
-        sys.exit(1)
-      opts["obfuscate"] = arg
-    elif opt == "-s":
-      args = ["yices", "optimathsat", "optimathsat-inc", "z3", "z3-inc"]
-      if not (arg in args):
-        print ("arguments supported for -s are ", args)
-        sys.exit(1)
-      opts["solver"] = arg
-    elif opt == "-v":
-      opts["verbose"] = int(arg)
-    elif opt == "-n":
-      opts["numprocs"] = int(arg)
-  return opts
+def parse_arguments():
+  parser = argparse.ArgumentParser(
+    prog='CoCoMoT',
+    description='An SMT-based conformance checker for Petri nets with data.')
+  exists_check = lambda f: f if file_exists(f) else None
+  parser.add_argument('-a', '--anti',
+    help="compute anti-alignments",
+    action='store_true')
+  parser.add_argument('-c', '--cost-schema', type=ascii,
+    help="cost schma for glocal conformance checking",
+    action='store')
+  parser.add_argument('-d', '--dpn', type=exists_check,
+    help="the DPN model(s)",
+    action='append', dest='model')
+  parser.add_argument('-g', '--glocal',
+    help="do glocal conformance checking, requires cost-schema argument",
+    action='store_true')
+  parser.add_argument('-j', '--json',
+    help="produce json output",
+    action='store_true')
+  parser.add_argument('-l', '--log', type=exists_check,
+    help="the event log",
+    action='store')
+  parser.add_argument('-m', '--multi',
+    help="compute multi-alignments",
+    action='store_true')
+  parser.add_argument('-n', '--numprocs', type=int,
+    help="number of processors to process the log in parallel",
+    action='store')
+  parser.add_argument('-o', '--obfuscate', choices=["indet", "act", "time", "data", "mixed"],
+    help="kind of obfuscation applied to the log, if any",
+    action='store')
+  parser.add_argument('-r', '--realizations',
+    help="compute realizations",
+    action='store_true', dest='compute_realizations')
+  parser.add_argument('-s', '--solver', choices=["yices", "optimathsat", "optimathsat-inc", "z3", "z3-inc"],
+    help="solver to be used",
+    action='store')
+  parser.add_argument('-u', '--uncertainty', choices=['like', 'real'],
+    help="kind of uncertainty considered, if any",
+    action='store')
+  parser.add_argument('-v', '--verbosity', type=int,
+    help="output verbosity",
+    action='store')
+  parser.add_argument('-x', '--many', type=int,
+    help="number of traces considered at once",
+    action='store')
+  parser.add_argument('-z', '--zz',
+    help="debugging purposes",
+    action='store')
+  return parser.parse_args(namespace=Options())
 
 if __name__ == "__main__":
-  ps = process_args(sys.argv[1:])
-  (log, has_uncertainty) = read_log(ps["log"])
-  if ps["obfuscate"]:
-    log = uncertainty.read.xes(ps["log"])
-    uncertainty_extending(log, ps["obfuscate"])
-  elif ps["realizations"]:
-    log = uncertainty.read.xes(ps["log"])
+  options = parse_arguments()
+  #print(options)
+  (log, has_uncertainty) = read_log(options.log)
+  if options.obfuscate:
+    log = uncertainty.read.xes(options.log)
+    uncertainty_extending(log, options.obfuscate)
+  elif options.compute_realizations:
+    log = uncertainty.read.xes(options.log)
     compute_realizations(log)
   else:
-    dpn = DPN(read_pnml_input(ps["model"]))
-    if ps["multi"]:
-      conformance_check_multi(log, dpn, ps["verbose"])
-    elif ps["anti"]:
-      conformance_check_anti(log, dpn, ps["verbose"], ps["anti"])
-    elif ps["uncertainty"]: # has_uncertainty
-      cocomot_uncertain(dpn, log, ps)
-    elif ps["z"] != None:
+    dpn = DPN(read_pnml_input(options.model[0])) # assume a single model
+    if options.multi:
+      conformance_check_multi(log, dpn, options.verbose)
+    elif options.anti:
+      conformance_check_anti(log, dpn, options.verbose, options.anti)
+    elif options.uncertainty: # has_uncertainty
+      cocomot_uncertain(dpn, log, options)
+    elif options.z != None:
+      # temporary 
       playout = Playout(dpn)
-      abstracttraces, _ = playout.generate(ps["z"])
+      abstracttraces, _ = playout.generate(options.z)
       xml = traces_to_xes(abstracttraces)
       print("<?xml version='1.0' encoding='UTF-8'?>")
       print(xml.toprettyxml())
-    elif ps["y"] != None:
-      playout = Playout(dpn)
-      log = preprocess_log(log, dpn)
-      naive_part = NaivePartitioning([ (t,1) for t in log ])
-      interval_part = IntervalPartitioning(dpn, naive_part.representatives())
-      log = [t for (t, _) in interval_part.partitions]
-      abstracttraces, realtraces = playout.generate_test_set(ps["y"], log)
-      #
-      xml = traces_to_xes(abstracttraces)
-      f = open("training_set.xes", "w")
-      f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
-      f.close()
-      #
-      testset = [t for (t,_) in realtraces]
-      xml = traces_to_xes(testset)
-      f = open("test_set.xes", "w")
-      f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
-      #
-      testset_result = [t for (_,t) in realtraces]
-      xml = traces_to_xes(testset_result)
-      f = open("test_set_result.xes", "w")
-      f.write("<?xml version='1.0' encoding='UTF-8'?>" + xml.toprettyxml())
     else:
-        cocomot(dpn, log, ps)
+        cocomot(dpn, log, options)
   YicesSolver.shutdown()
   
