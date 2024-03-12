@@ -1,6 +1,6 @@
 class Options:
   anti = False        # check anti-alignments
-  cost_schema =  None # for glocal conformance
+  cost_schemas = None # for glocal conformance
   json = False        # output alignments as json
   glocal = False      # whether glocal conformance is checked
   log = None          # log file to be used

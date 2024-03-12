@@ -190,8 +190,9 @@ def conformance_check_trace(encoding, trace_data, verbose):
   (dist, dconstr) = encoding.edit_distance(trace)
   dpn = encoding._dpn
   t_encode2 = time.perf_counter() - t_start
+  solver = encoding.solver()
 
-  encoding.solver().require([dconstr])
+  solver.require([dconstr])
   if verbose > 0:
     print("##### CONFORMANCE CHECK TRACE %d (%d instances, length %d)" % \
     (index, cnt, len(trace)))
@@ -199,11 +200,12 @@ def conformance_check_trace(encoding, trace_data, verbose):
 
   #FIXME step_bound may in general not be valid upper bound due to writes
   distmin = dpn.lower_bound_alignment_cost(trace)
-  #print("lower bound for cost is", distmin)
-  model = encoding.solver().minimize(dist, encoding.step_bound(), start=distmin) if len(trace) < 100 \
-    else encoding.solver().minimize_binsearch(dist, max=encoding.step_bound())
-  t_solve = encoding.solver().t_solve
+  model = solver.minimize(dist, encoding.step_bound(), start=distmin) if len(trace) < 100 \
+    else solver.minimize_binsearch(dist, max=encoding.step_bound())
+
+  t_solve = solver.t_solve
   if model == None: # timeout
+    print("no model")
     return (None, None, t_encode2, t_solve)
 
   distance = model.eval_int(dist)
@@ -224,7 +226,7 @@ def conformance_check_trace(encoding, trace_data, verbose):
 def create_encoding(solver, trace_length, dpn, uncertain=False, all_sol=False):
   # estimate of upper bound on steps to be considered: length of trace + length
   # of shortest accepting path
-  # FIXME step bound if not ok for non-state machine
+  # FIXME step bound is not ok for non-state machine
   f = 0 if len(dpn.transitions()) < 30 else \
     int(trace_length/4)
   step_bound = trace_length + dpn.shortest_accepted() + 2 + f
@@ -479,7 +481,7 @@ def cocomot(dpn, log, opts):
   parts = interval_part.partitions
 
   if numprocs == 1:
-    solver = YicesSolver() # CVC5Solver()  #  Z3Solver() # 
+    solver = YicesSolver() # CVC5Solver() # Z3Solver() # 
     i = 0
     while i < len(parts):
       (trace, cnt) = parts[i]
@@ -552,7 +554,7 @@ def parse_arguments():
     action='store_true')
   parser.add_argument('-c', '--cost-schema', type=ascii,
     help="cost schma for glocal conformance checking",
-    action='store')
+    action='append')
   parser.add_argument('-d', '--dpn', type=exists_check,
     help="the DPN model(s)",
     action='append', dest='model')
@@ -585,7 +587,7 @@ def parse_arguments():
     action='store')
   parser.add_argument('-v', '--verbosity', type=int,
     help="output verbosity",
-    action='store')
+    action='store', dest='verbose')
   parser.add_argument('-x', '--many', type=int,
     help="number of traces considered at once",
     action='store')
@@ -596,7 +598,7 @@ def parse_arguments():
 
 if __name__ == "__main__":
   options = parse_arguments()
-  #print(options)
+  print(options)
   (log, has_uncertainty) = read_log(options.log)
   if options.obfuscate:
     log = uncertainty.read.xes(options.log)
@@ -604,6 +606,9 @@ if __name__ == "__main__":
   elif options.compute_realizations:
     log = uncertainty.read.xes(options.log)
     compute_realizations(log)
+  elif options.glocal:
+    dpns = [ DPN(read_pnml_input(m)) for m in options.model ] 
+    glocal_conformance.conformance_check_log(log, dpns, options)
   else:
     dpn = DPN(read_pnml_input(options.model[0])) # assume a single model
     if options.multi:

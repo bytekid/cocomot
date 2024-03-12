@@ -8,6 +8,7 @@ class Z3Solver(Solver):
 
   def __init__(self, incremental=False):
     self._incremental = incremental
+    self.t_solve = 0
     if not incremental:
       self.ctx = Optimize()
       self.ctx.set('optsmt_engine', 'symba') # no weird timeouts on simple traces 
@@ -174,7 +175,7 @@ class Z3Solver(Solver):
 
 
   # minimize given expression
-  def minimize(self, e, bound):
+  def minimize(self, e, bound, start=None):
     return self.minimize_inc(e, bound) if self._incremental \
       else self.minimize_builtin(e, bound) 
 

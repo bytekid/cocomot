@@ -298,6 +298,7 @@ class Encoding:
     delta = self._vs_dist
     vs_log = self._vs_log_move
     vs_mod = self._vs_mod_move
+    syn_move = lambda i, j: s.neg(s.lor([vs_mod[i][j], vs_log[i][j]]))
     n = self._step_bound
     m = len(trace)
     s = self._solver
@@ -306,13 +307,12 @@ class Encoding:
     vs_data = self._vs_data
     etrans = [(t["id"], t) for t in dpn.transitions()]
     trans_dict = dict(etrans)
-    vars = dpn.variables()
-
+    vars = dpn.variables()    
 
     # write cost of a transition (to determine model step penalty)
     # optimization: more efficient to use variables instead of just constants
     def wcostint(t):
-      write_t = len(t["write"] if "write" in t else [])
+      write_t = len(t["write"]) if "write" in t else 0
       return 0 if t["invisible"] else 1 + write_t # unless silent: #writes + 1
     wcs = [(t["id"], wcostint(t)) for t in dpn.transitions() ]
     per_cost = [ (c, [tid for (tid,c2) in wcs if c==c2]) for (_,c) in wcs ]
@@ -363,11 +363,17 @@ class Encoding:
     # 4. if the ith step in the model and the jth step in the log have the
     #    the same label,  delta[i+1][j+1] >= delta[i][j] + penalty, where
     #    penalty accounts for the data mismatch (possibly 0)
-    sync_step = [ s.implies(is_t, \
-      s.ge(delta[i+1][j+1], \
-           s.plus(penalty, delta[i][j]) if has_penalty else delta[i][j])) \
-        for i in range(0,n) for j in range(0,m) \
-        for (is_t, (penalty, has_penalty)) in self.sync_step(trace, i, j)]
+    sync_step = []
+    for i in range(0,n):
+      for j in range(0,m):
+        trans_options = self.sync_step(trace, i, j)
+        if len(trans_options) == 0:
+          sync_step.append(s.neg(syn_move(i+1,j+1)))
+        else:
+          sync_step += [ s.implies(is_t, \
+            s.ge(delta[i+1][j+1], \
+              s.plus(penalty, delta[i][j]) if has_penalty else delta[i][j])) \
+                for (is_t, (penalty, has_penalty)) in trans_options ]
 
     # 5. the ith step in the model and the jth step in the log have different 
     #    labels: delta[i+1][j+1] is minimum of delta[i][j+1], delta[i+1][j]
@@ -400,7 +406,8 @@ class Encoding:
     
     # 6. if the ith step in the model is silent, delta[i+1][j] = delta[i][j],
     #    that is, silent transitions do not increase the distance
-    silent = [ s.implies(self._silents[i], s.eq(delta[i+1][j], delta[i][j])) \
+    silent = [ s.implies(s.land([vs_mod[i+1][j], self._silents[i]]), 
+      s.eq(delta[i+1][j], delta[i][j])) \
       for i in range(0,n) for j in range(0,m+1) ]
     
     # run length, only relevant for multiple tokens/ no final places
@@ -457,6 +464,16 @@ class Encoding:
         d = d + " " + (s if len(s) == 2 else (" "+s))
       print(d)
 
+  def print_move_type_matrix(self, model):
+    print("MOVE TYPES:")
+    for j in range(0, len(self._vs_dist[0])):
+      d = ""
+      for i in range(0, len(self._vs_dist)):
+        s = "L" if model.eval_bool(self._vs_log_move[i][j]) else \
+          "M" if model.eval_bool(self._vs_mod_move[i][j]) else "S"
+        d = d + " " + (s if len(s) == 2 else (" "+s))
+      print(d)
+
   def decode_alignment(self, trace, model):
     m = len(trace)
     vs_dist = self._vs_dist
@@ -466,7 +483,8 @@ class Encoding:
     run = self.decode_process_run(model, run_length_dec)
     (markings, transitions, valuations) = run
     run_length = len(transitions)
-    #self.print_distance_matrix(model)
+    # self.print_distance_matrix(model)
+    # self.print_move_type_matrix(model)
 
     i = run_length # self._step_bound # n
     j = len(trace) # m
