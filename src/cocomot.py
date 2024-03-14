@@ -8,6 +8,8 @@ import argparse
 from collections import defaultdict
 from os.path import exists as file_exists
 
+from utils import pad_to, spaces
+from options import *
 from smt.ysolver import YicesSolver
 from smt.z3solver import Z3Solver
 from smt.omsolver import OptiMathsatSolver
@@ -23,8 +25,7 @@ import uncertainty.read
 from uncertainty.encoding import UncertaintyEncoding
 from uncertainty.trace import UncertainTrace, UncertainLog, UncertainDataValue
 from uncertainty.uncertainize import all as uncertainize_all, extending as uncertainty_extending
-from utils import pad_to, spaces
-from options import *
+from glocal.glocal_conformance import conformance_check as glocal_conformance_check
 
 ### printing
 
@@ -552,9 +553,9 @@ def parse_arguments():
   parser.add_argument('-a', '--anti',
     help="compute anti-alignments",
     action='store_true')
-  parser.add_argument('-c', '--cost-schema', type=ascii,
-    help="cost schma for glocal conformance checking",
-    action='append')
+  parser.add_argument('-c', '--cost-schema',
+    help="cost schema for glocal conformance checking",
+    action='append', dest='cost_schema')
   parser.add_argument('-d', '--dpn', type=exists_check,
     help="the DPN model(s)",
     action='append', dest='model')
@@ -607,8 +608,12 @@ if __name__ == "__main__":
     log = uncertainty.read.xes(options.log)
     compute_realizations(log)
   elif options.glocal:
+    if None in options.model:
+      print("DPN file does not exist.")
+      exit(0)
     dpns = [ DPN(read_pnml_input(m)) for m in options.model ] 
-    glocal_conformance.conformance_check_log(log, dpns, options)
+    log = preprocess_log(log, dpns[0])
+    glocal_conformance_check(log, dpns, options)
   else:
     dpn = DPN(read_pnml_input(options.model[0])) # assume a single model
     if options.multi:

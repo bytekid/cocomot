@@ -58,6 +58,9 @@ class DPN:
   def has_final_places(self):
     return len(self.final_places()) > 0
 
+  def get_labels(self):
+    return set([ t["label"] for t in self.transitions() if not t["invisible"]])
+
   ### add silent transition to one final place (without label and constraint)
   def add_silent_finals(self, map):
     id = len(map) + 1
