@@ -1,6 +1,7 @@
 import time 
 
 from smt.z3solver import Z3Solver
+from smt.ysolver import YicesSolver
 from glocal.cost_schema import CostSchema, parse_cost_schema
 from glocal.encoding import GlocalEncoding
 
@@ -31,7 +32,7 @@ def conformance_check_trace(trace, dpns, solver, options):
   cost_schemas = options.cost_schema
   assert(len(cost_schemas) == len(dpns)) # one schema per agent
   activities = get_all_activities(dpns)
-  vars = dpns[0]._variables
+  vars = [v["name"] for v in dpns[0].variables()] # assume all DPNs share vars
   cost_schemas = [ parse_cost_schema(c, activities, vars) for c in cost_schemas ]
   encodings = []
   total_cost = solver.num(0)
@@ -44,22 +45,20 @@ def conformance_check_trace(trace, dpns, solver, options):
     total_cost = solver.plus(total_cost, dist_i)
     solver.require([dconstr_i])
   
-  # FIXME compatibility
   enum_encodings = enumerate(encodings)
   compatible = [ e1.encode_compatible(e2) \
     for (i,e1) in enum_encodings for (j,e2) in enum_encodings if i < j]
   solver.require(compatible)
 
-  max_step_bound = max([ e.step_bound() for e in encodings ])
-  model = solver.minimize(total_cost, max_step_bound)
+  model = solver.minimize(total_cost, 10000)
   if model == None: # timeout
-    print("timeout")
-
-  distance = model.eval_int(total_cost)
-  print("overall cost ", distance)
+    print("timeout/no model found")
+  else:
+    distance = model.eval_int(total_cost)
+    print("overall cost ", distance)
 
 def conformance_check(log, dpns, options):
-  solver = Z3Solver()
+  solver = YicesSolver() # Z3Solver() # 
   for t in log:
     solver.push()
     conformance_check_trace(t, dpns, solver, options)

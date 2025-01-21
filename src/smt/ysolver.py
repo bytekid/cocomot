@@ -173,6 +173,7 @@ class YicesSolver(Solver):
 
   # minimize given expression
   def minimize(self, expr, max_val, start = 0):
+    print("start minimize")
     self.push()
     val = start
     self.ctx.assert_formulas([self.eq(expr, self.num(val))])
