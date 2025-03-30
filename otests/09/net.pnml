@@ -2,7 +2,7 @@
 	<net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
 		<page id="page1">
 			<name>
-				<text>Evaluation</text>
+				<text>OPID</text>
 			</name>
 			<place id="1" color="application">
 				<name>
