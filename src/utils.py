@@ -51,7 +51,10 @@ class VarType:
       "java.lang.Integer": VarType.int,
       "java.lang.Long"   : VarType.int,
       "java.lang.Double" : VarType.real,
-      "java.lang.String" : VarType.string
+      "java.lang.String" : VarType.string,
+      "Integer": VarType.int,
+      "Rational" : VarType.real,
+      "Real" : VarType.real
     }
     return map_java_type[t]
   

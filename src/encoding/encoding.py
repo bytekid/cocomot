@@ -244,9 +244,9 @@ class Encoding:
     vs = [v["name"] for v in self._dpn.variables()]
     sub_prime = [ (x + "'", v) for (x, v) in dvars[i+1].items() ]
     sub = dict(list(dvars[i].items()) + sub_prime)
-    is_constr = "constraint" in t
+    has_constr = "constraint" in t
     # encode guard constraint
-    trans_constr = t["constraint"].toSMT(s,sub) if "constraint" in t else s.true()
+    trans_constr = t["constraint"].toSMT(s,sub) if has_constr else s.true()
     # inertia
     keep = [v for v in vs if not v in t["write"] ] if "write" in t else vs
     keep_constr = [s.eq(dvars[i][v], dvars[i+1][v]) for v in keep \

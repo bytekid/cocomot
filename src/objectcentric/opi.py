@@ -8,7 +8,7 @@ from dpn.dpn import DPN
 # object-centric petri nets with identifiers
 class OPI(DPN):
 
-  _data_types = ["INTEGER", "RATIONAL"]
+  _data_types = ["Integer", "Rational", "Real"]
 
   def __init__(self, opi_as_array):
     super().__init__(opi_as_array)
@@ -69,13 +69,23 @@ class OPI(DPN):
       self._objects = objs_by_type
     return objs_by_type
 
+  # returns dictionary mapping a token type (possibly containing data types) to
+  # tuples of objects. However, in the resulting object tuples, entries for data
+  # types are missing, because inscription variables having a predefined data 
+  # type are treated separately, namely like data variables (after all, for such
+  # tokens there are infinitely many possibilities)
   def tokens_by_color(self, objs):
     objs_by_type = self.objects_by_type(objs, with_ids = False)
     colors = set([ p["color"] for p in self._places ])
     tokens_by_color = {}
     for color in colors:
-      prod = itertools.product(*[ objs_by_type[typ] for typ in color ])
+      # filter out data types from token type
+      color_no_data = [ t for t in color if t not in self._data_types ]
+      if len(color_no_data) == 0:
+        continue
+      prod = itertools.product(*[ objs_by_type[typ] for typ in color_no_data ])
       tokens_by_color[color] = list(prod)
+    print(tokens_by_color)
     return tokens_by_color
 
   # compute maximum number of objects involved in a transition firing
@@ -89,6 +99,8 @@ class OPI(DPN):
       obj_count = 0
       objs_by_type = self.objects_by_type(objs)
       for (name, typ) in set(inscs):
+        if typ in self._data_types:
+          continue # data variable
         if typ in objs_by_type: # simple inscription
           obj_count += 1
         else:
@@ -235,6 +247,16 @@ class OPI(DPN):
 
   def has_data(self):
     return len(self.get_data_variables()) > 0
+
+  def place_holds_data(self, p):
+    return any([ c for c in p["color"] if c in self._data_types ])
+      
+  def get_inscription(self, src, tgt):
+    arcs = [ a for a in self._arcs if a["source"] == src and a["target"] == tgt]
+    if len(arcs) == 0:
+      return None
+    return arcs[0]["inscription"]
+
 
   def reset(self):
     self._step_bound = None

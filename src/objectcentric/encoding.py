@@ -1,5 +1,11 @@
 from functools import reduce
 
+from dpn.expr import Expr
+from utils import VarType
+
+# TODO: if there are place/inscription types that contain ONLY data types, the
+#       current encoding does not work (need to add dummy black token for that)
+
 class Encoding():
   def __init__(self, solver, net, trace):
     self._solver = solver
@@ -12,7 +18,7 @@ class Encoding():
     oids = [ (n, id) for os in self._objects_by_type.values() for (n, id) in os]
     self._ids_by_object_name = dict(oids)
     self._object_name_by_id = dict([(id,n) for (n, id) in oids])
-    self._tokens_by_color = self._net.tokens_by_color(self._objects)
+    self._tokens_by_color = self._net.tokens_by_color(self._objects) # w/o data
     self._max_objs_per_trans = \
       self._net.get_max_objects_per_transition(self._objects)
     # cache encoding parts
@@ -78,6 +84,7 @@ class Encoding():
     params = [x for x in obj_params if x["place"] == p["id"] and \
       x["incoming"] == incoming]
     eqs = []
+    # FIXME use self._net.get_inscription
     inscription = next(a["inscription"] for a in self._net._arcs \
       if (incoming and a["source"] == p["id"] and a["target"] == t["id"]) or \
         (not incoming and a["target"] == p["id"] and a["source"] == t["id"]))
@@ -134,8 +141,8 @@ class Encoding():
           cnstr.append(s.implies(is_consumed, marked))
           # if there is an exact sync arc, also the reversed implication holds
           if self._net.is_exact_sync_arc(p,t):
-            print("exact sync arc found")
             cnstr.append(s.implies(marked, is_consumed))
+
       return s.land(cnstr)
 
     def trans_j_produced(t, j):
@@ -193,6 +200,7 @@ class Encoding():
     obj_disj_cache = {}
     objs_by_type = self._net.objects_by_type(self._objects)
     
+    # disjunction expressing which objects can instantiate an object param at j
     def cache_obj_disj(param, j):
       key = (j, param["type"], param["needed"], param["index"])
       if not key in obj_disj_cache:
@@ -200,14 +208,16 @@ class Encoding():
           for (obj_name, id) in objs_by_type[param["type"]]]
         if not param["needed"]:
           param_disj.append(s.eq(ovars[j][param["index"]], s.num(-1)))
-        #return s.lor(param_disj)
+        #return s.lor(param_disj) # without caching
         ojvar = s.boolvar("obj_cache_%d" % (len(obj_disj_cache)))
         obj_disj_cache[key] = ojvar
         cache_cstr.append(s.implies(ojvar, s.lor(param_disj)))
       return obj_disj_cache[key]
 
     def trans_j_constraint(t, j):
-      obj_params = self._net.object_params_of_transition(t, self._objects)
+      params = self._net.object_params_of_transition(t, self._objects)
+      # filter out parameters that are data variables
+      obj_params = [p for p in params if p["type"] not in self._net._data_types]
       obj_conj = [ cache_obj_disj(param, j) for param in obj_params ]
       for pidx in range(len(obj_params), max_objs): # unused object indices
         obj_conj.append(s.eq(ovars[j][pidx], s.num(-1)))
@@ -281,6 +291,72 @@ class Encoding():
     rng_constr = [rng(i, v) for (i, v) in enumerate(tvs)]
     return s.land(rng_constr) # + tau_constr)
 
+  # encode data constraints for transition t and instant i
+  def data_constraints(self):
+    s = self._solver
+    dvars = self._data_vars
+    svars = self._data_store_vars
+
+    def data_constr(t, i):
+      vs = [ v for (v, _) in self._net.get_data_variables()]
+      sub = dict(list(dvars[i].items()))
+      has_constr = "constraint" in t
+      # encode guard constraint
+      trans_constr = t["constraint"].toSMT(s,sub) if has_constr else s.true()
+
+      # connection to values stored in tokens
+      store_constr = []
+      # FIXME combine both cases
+      for p in self._net.pre(t):
+        pid = p["id"]
+        for tok in self._tokens_by_color[p["color"]]:
+          is_consumed = self.is_consumed_token(p, t, tok, i)
+          # if the token has data, its consumption sets data variables
+          if self._net.place_holds_data(p):
+            inscription = self._net.get_inscription(pid, t["id"])
+            params = [ n for (n, _) in inscription ]
+            transfer_vals = s.top()
+            keep_vals = s.top()
+            # for all data members in inscription, get stored values
+            data_insc = [ n for (n, t) in inscription \
+              if t in self._net._data_types]
+            for (k, vname) in enumerate(data_insc):
+              if not vtype in self._net._data_types:
+                continue
+              eq_trans = s.eq(dvars[i][vname], svars[i][pid][tok][k])
+              transfer_vals = s.land([transfer_vals, eq_trans])
+              eq_keep = s.eq(svars[i][pid][tok][k], svars[i+1][pid][tok][k])
+              keep_vals = s.land([keep_vals, eq_keep])
+            store_constr.append(s.implies(is_consumed, transfer_vals))
+            store_constr.append(s.implies(s.neg(is_consumed), keep_vals))
+      if i <= self._step_bound:
+        for p in self._net.post(t):
+          pid = p["id"]
+          for tok in self._tokens_by_color[p["color"]]:
+            is_produced = self.is_produced_token(p, t, tok, i)
+            # if the token has data, its production sets data variables
+            if self._net.place_holds_data(p):
+              inscription = self._net.get_inscription(t["id"], pid)
+              params = [ n for (n, _) in inscription ]
+              transfer_vals = []
+              # for all data members in inscription, get stored values
+              data_insc = [ n for (n, t) in inscription \
+                if t in self._net._data_types]
+              for (k, vname) in enumerate(data_insc):
+                print(i, vname, pid, tok, k)
+                print(dvars[i])
+                print(svars[i+1][pid][tok])
+                eq = s.eq(dvars[i][vname], svars[i+1][pid][tok][k])
+                transfer_vals.append(eq)
+              store_constr.append(s.implies(is_consumed, s.land(transfer_vals)))
+
+
+      return s.land([trans_constr] + store_constr)
+
+    constr = [ data_constr(t, i) for i in range(0, self._step_bound) \
+      for t in self._net._transitions ]
+    return s.land(constr)
+
   def cache_constraints(self):
     s = self._solver
     cnstr = [ s.iff(v,e) for (v,e) in self._consumed_token_cache.values() ]
@@ -323,8 +399,38 @@ class Encoding():
       for j in range(0, trace_len + 1)] for i in range(0, self._step_bound + 1)]
 
   def create_data_variables(self):
+    def create_var(name, vtype):
+      type = VarType.from_java(vtype)
+      return self._solver.realvar(name) if type == VarType.real else \
+        self._solver.intvar(name)
+
+    # data variables for each transition index, like for DPNs
     vs = self._net.get_data_variables()
-    
+    self._data_vars = []
+    for i in range(0, self._step_bound):
+      xis = dict([ (v,create_var("_%s_%i" % (v,i), vtype)) for (v,vtype) in vs])
+      self._data_vars.append(xis)
+
+    # variables that store for each place and each possible token for this place
+    # and each data member in the token (provided that such members exist) 
+    # its value for each instant
+    self._data_store_vars = []
+    for i in range(0, self._step_bound + 1):
+      store_vars_i = {}
+      for p in self._net._places:
+        store_vars_i[p["id"]] = {}
+        if not self._net.place_holds_data(p):
+          continue
+        for tok in self._tokens_by_color[p["color"]]:
+          dvs = []
+          for (idx, typ) in enumerate(p["color"]):
+            if typ in self._net._data_types:
+              name = "_store_%d_%d_%s_%d" % (i, p["id"], str(tok), idx)
+              dvs.append(create_var(name, typ))
+          store_vars_i[p["id"]][tok] = dvs
+      self._data_store_vars.append(store_vars_i)
+    print(self._data_store_vars)
+
 
   def move_vars(self, trace_len):
     s = self._solver
@@ -341,7 +447,8 @@ class Encoding():
     self.create_transition_variables()
     self.create_object_variables()
     self.create_distance_variables()
-    self.create_data_variables()
+    if self._net.has_data():
+      self.create_data_variables()
     self._vs_move = self.move_vars(len(self._trace))
     self._vs_log_move = self.move_varsx(len(self._trace), 2, "l")
     self._vs_mod_move = self.move_varsx(len(self._trace), 1, "m")
@@ -471,6 +578,12 @@ class Encoding():
       for t in self._tokens_by_color[p["color"]]:
         if model.eval_bool(mvars[p["id"]][t]):
          pstr += (", " if len(pstr) > 0 else "") + str(t)
+        if self._net.place_holds_data(p):
+          vars = self._data_store_vars[j][p["id"]][t]
+          dtypes = [t for t in p["color"] if t in self._net._data_types ]
+          for (tp, var) in zip(dtypes, vars):
+            val = model.eval_int(var) if tp=="Integer" else model.eval_real(var)
+            pstr += "," + str(val) # FIXME order of objects/data not correct
       mstr += ("%d: [%s] " % (p["id"], pstr))
     return ("MARKING %d: %s\n" % (j, mstr))
 

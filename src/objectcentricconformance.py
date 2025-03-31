@@ -65,10 +65,11 @@ def create_encoding(solver, trace, net, fixed_obj):
   f_obj_types = encoding.object_types()
   f_moving = encoding.moving_tokens()
   f_remaining = encoding.remaining_tokens()
+  f_data = encoding.data_constraints()
   f_fresh = encoding.freshness()
   f_final = encoding.final_state()
   solver.require([f_initial, f_trans, f_obj_types, f_fresh, f_moving, \
-    f_remaining, f_final])
+    f_remaining, f_data, f_final])
   t_encode1 = time.perf_counter() - t_start
   return (encoding, t_encode1)
 
