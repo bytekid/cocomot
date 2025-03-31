@@ -129,6 +129,7 @@ class Encoding():
           is_self_loop = pid in [ p["id"] for p in self._net.post(t)]
           marked = s.land([mvars[j][pid][tok], s.neg(mvars[j+1][pid][tok])]) \
             if not is_self_loop else mvars[j][pid][tok]
+          # if the token is consumed, the marking changes accordingly
           cnstr.append(s.implies(self.is_consumed_token(p, t, tok, j), marked))
       return s.land(cnstr)
 
@@ -140,7 +141,11 @@ class Encoding():
           cnstr.append(s.implies(self.is_produced_token(p, t, tok, j), marked))
       return s.land(cnstr)
 
-    cstr = [s.implies(s.eq(self._transition_vars[j], s.num(t["id"])), \
+    run_length_lt = lambda j: s.lt(s.num(j), self._run_length_var)
+    jth_trans_is = lambda j, tid: \
+      s.land([s.eq(self._transition_vars[j], s.num(tid)), run_length_lt(j)])
+
+    cstr = [s.implies(jth_trans_is(j, t["id"]), \
         s.land([trans_j_consumed(t, j), trans_j_produced(t, j)])) \
       for j in range(0, self._step_bound) \
       for t in self._net._transitions]
@@ -479,13 +484,15 @@ class Encoding():
         d = d + " " + (s if len(s) == 2 else (" "+s))
       print(d)
 
-  def decode_alignment(self, model):
+  def decode_alignment(self, model, run_length):
     vs_sync = self._vs_sync_move
     vs_mod = self._vs_mod_move
 
+    self.print_distance_matrix(model)
+
     step_type = lambda i, j: "model" if model.eval_bool(vs_mod[i][j]) else "sync" if model.eval_bool(vs_sync[i][j]) else "log"
 
-    i = self._step_bound # n
+    i = run_length # self._step_bound # n
     j = len(self._trace) # m
     alignment = [] # array mapping instant to one of {"log", "model","sync"}
     while i >= 0 and j >= 0 and (i > 0 or j > 0):
@@ -502,6 +509,11 @@ class Encoding():
       alignment.append((step, cost_step))
     alignment.reverse()
     return alignment
+
+  def decode_alignment_cost(self, model):
+    run_length = model.eval_int(self._run_length_var)
+    cost_var =  self._distance_vars[run_length][len(self._distance_vars[0])-1]
+    return model.eval_int(cost_var)
 
   def decode(self, model):
     s = self._solver
@@ -522,6 +534,6 @@ class Encoding():
       out += " " + trans["label"] + str(objns) + "\n"
       out += self.decode_marking(model, j+1)
     
-    alignment = self.decode_alignment(model)
+    alignment = self.decode_alignment(model, run_length)
     out += str(alignment) + "\n"
     return out

@@ -14,10 +14,10 @@ from smt.z3solver import Z3Solver
 default_options = {
     "log": None,    # log file to be used
     "model": None,  # model input (DPN) 
-    "skip existing": True,  # keep results
+    "skip existing": False,  # keep results
     "object": None, # specific object, do only trace that involes it
-    "fixed objects": False, # use exactly the objects in the trace
-    "numprocs": 1,  # number of processsors to use in parallel
+    "fixed objects": False, # use exactly the set of objects in the trace
+    "numprocs": 1,  # number of processors to use in parallel
     "verbose": 1, # verbosity of output,
     "z": None # debug
   }
@@ -46,7 +46,8 @@ def conformance_check(encoding, trace, options):
     print("no model found")
     return (None, None, t_encode2, t_solve)
 
-  distance = model.eval_int(dist)
+  distance = encoding.decode_alignment_cost(model)
+  #distance = model.eval_int(dist) # not true if using run length
   out = encoding.decode(model)
   out += "distance %d\n" % distance
 
@@ -86,6 +87,7 @@ def process(net, log, options):
   for (i,trace) in enumerate(trace_selection): # A
     if (skip_existing and os.path.exists(file_for_trace(trace))) or \
       (z != None and i % 8 != z):
+      print("skip this trace")
       continue
     
     t_start = time.perf_counter()
@@ -124,7 +126,7 @@ def process_args(argv):
     elif opt == "-l":
       opts["log"] = arg
     elif opt == "-x":
-      opts["skip existing"] = False
+      opts["skip existing"] = False # for experiments, skip existing results
     elif opt == "-f":
       opts["fixed objects"] = True
     elif opt == "-o":
