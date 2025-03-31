@@ -8,6 +8,8 @@ from dpn.dpn import DPN
 # object-centric petri nets with identifiers
 class OPI(DPN):
 
+  _data_types = ["INTEGER", "RATIONAL"]
+
   def __init__(self, opi_as_array):
     super().__init__(opi_as_array)
     self._step_bound = None
@@ -219,6 +221,20 @@ class OPI(DPN):
 
   def reachable(self, i):
     return self._reachable[i]
+
+  def is_exact_sync_arc(self, p, t):
+    arcs = [ a for a in self._arcs if a["source"] == p and a["target"] == t ]
+    if len(arcs) == 0:
+      return False
+    return "synchronization" in arcs[0] and arcs[0]["synchronization"] =="exact"
+
+  def get_data_variables(self):
+    params = [ t for a in self._arcs for t in a["inscription"] ]
+    dparams = set([ (name, t) for (name,t) in params if t in self._data_types ])
+    return dparams
+
+  def has_data(self):
+    return len(self.get_data_variables()) > 0
 
   def reset(self):
     self._step_bound = None

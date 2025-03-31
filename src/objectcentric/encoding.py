@@ -130,7 +130,12 @@ class Encoding():
           marked = s.land([mvars[j][pid][tok], s.neg(mvars[j+1][pid][tok])]) \
             if not is_self_loop else mvars[j][pid][tok]
           # if the token is consumed, the marking changes accordingly
-          cnstr.append(s.implies(self.is_consumed_token(p, t, tok, j), marked))
+          is_consumed = self.is_consumed_token(p, t, tok, j)
+          cnstr.append(s.implies(is_consumed, marked))
+          # if there is an exact sync arc, also the reversed implication holds
+          if self._net.is_exact_sync_arc(p,t):
+            print("exact sync arc found")
+            cnstr.append(s.implies(marked, is_consumed))
       return s.land(cnstr)
 
     def trans_j_produced(t, j):
@@ -145,6 +150,7 @@ class Encoding():
     jth_trans_is = lambda j, tid: \
       s.land([s.eq(self._transition_vars[j], s.num(tid)), run_length_lt(j)])
 
+    # demand that chosen transition must consume and produce as intended
     cstr = [s.implies(jth_trans_is(j, t["id"]), \
         s.land([trans_j_consumed(t, j), trans_j_produced(t, j)])) \
       for j in range(0, self._step_bound) \
@@ -316,6 +322,10 @@ class Encoding():
     self._distance_vars = [[var(i,j) \
       for j in range(0, trace_len + 1)] for i in range(0, self._step_bound + 1)]
 
+  def create_data_variables(self):
+    vs = self._net.get_data_variables()
+    
+
   def move_vars(self, trace_len):
     s = self._solver
     var = lambda i, j: s.intvar("move" + str(i) + "_" + str(j))
@@ -331,6 +341,7 @@ class Encoding():
     self.create_transition_variables()
     self.create_object_variables()
     self.create_distance_variables()
+    self.create_data_variables()
     self._vs_move = self.move_vars(len(self._trace))
     self._vs_log_move = self.move_varsx(len(self._trace), 2, "l")
     self._vs_mod_move = self.move_varsx(len(self._trace), 1, "m")

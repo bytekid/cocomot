@@ -75,6 +75,9 @@ def read_pnml_input(pnmlfile):
         typ = insc[insc.find(":")+1:]
         split_insc.append((name, typ))
         arc["inscription"] = tuple(split_insc)
+    sync = a.getAttribute('synchronization')
+    if sync:
+      arc["synchronization"] = sync
     dpn["arcs"].append(arc)
   
   # transitions
