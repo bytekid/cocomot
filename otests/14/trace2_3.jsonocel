@@ -39,10 +39,10 @@
       "ocel:vmap": {}
     },
     "3": {
-      "ocel:activity": "pay credit card",
+      "ocel:activity": "pay bank transfer",
       "ocel:timestamp": "2021-03-03T09:00:00+01:00",
       "ocel:omap": [
-        "o1"
+        "o1", "p1"
       ],
       "ocel:vmap": {}
     },

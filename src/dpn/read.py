@@ -19,7 +19,7 @@ def mkVarOrFun(vars, toks):
 
 ### parsing stuff
 def parse_expr(s):
-  print("parsing", s)
+  # print("parsing", s)
   LPAR = pyp.Literal('(').suppress()
   RPAR = pyp.Literal(')').suppress()
   COMMA = pyp.Literal(',').suppress()

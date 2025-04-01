@@ -25,7 +25,7 @@ class OPI(DPN):
         (objs_silent if objs_silent > 0 else \
           2 * sum([ len(os) for os in self._objects.values()]))
       
-      self._step_bound = 7 # b
+      self._step_bound = b
       print("step bound: %d (objects created by silent transitions: %d)" % 
         (b, objs_silent))
     return self._step_bound

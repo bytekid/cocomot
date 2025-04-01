@@ -154,7 +154,8 @@ class Encoding():
           is_consumed = self.is_consumed_token(p, t, tok, j)
           cnstr.append(s.implies(is_consumed, marked))
           # if there is an exact sync arc, also the reversed implication holds
-          if self._net.is_exact_sync_arc(p,t):
+          if self._net.is_exact_sync_arc(p["id"],t["id"]):
+            print("exact sync", p["name"], t["label"])
             cnstr.append(s.implies(marked, is_consumed))
 
       return s.land(cnstr)

@@ -115,8 +115,8 @@
 			<arc source="pc" target="q3" inscription="o:ORDER"/>
 			<arc source="q2" target="pb" inscription="o:ORDER"/>
 			<arc source="pb" target="q3" inscription="o:ORDER"/>
-			<arc source="q5" target="pb" inscription="o:ORDER,P:PRODUCT" synchronization="exact"/>
-			<arc source="pb" target="q5" inscription="o:ORDER,P:PRODUCT"/>
+			<arc source="q5" target="pb" inscription="o:ORDER,P:PRODUCT LIST" synchronization="exact"/>
+			<arc source="pb" target="q5" inscription="o:ORDER,P:PRODUCT LIST"/>
 		</page>
 		<variables/>
 	</net>
