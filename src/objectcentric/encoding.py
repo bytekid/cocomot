@@ -518,6 +518,18 @@ class Encoding():
         for t in self._net.reachable(i) \
         if "label" in t and t["label"] == trace[j].get_activity() ]
 
+    def syncost(i,j):
+      if not self._net.has_data():
+        return s.num(0)
+      diff = s.num(0)
+      datavars = dict(self._net.get_data_variables())
+      for (x, val) in trace[j].get_valuation().items():
+        typ = VarType.from_java(datavars[x])
+        valexpr = s.real(val) if typ == VarType.real else s.num(val)
+        diff = s.ite(s.eq(self._data_vars[i][x], valexpr), diff, s.inc(diff))
+      return diff
+      
+
     # dist[i][j] represents the edit distance of transition sequence up to
     # including i, and the log up to including j
     # optimization: constraints of form dist[i+1][j+1] = e are equivalent to
@@ -536,7 +548,8 @@ class Encoding():
     # 4. if the ith step in the model and the jth step in the log have the
     #    the same label,  dist[i+1][j+1] >= dist[i][j] + penalty, where
     #    penalty accounts for the data mismatch (possibly 0)
-    sync_constr = [ s.implies(is_t, s.ge(dist[i+1][j+1], dist[i][j])) \
+    sync_constr = [ s.implies(is_t, s.ge(dist[i+1][j+1], \
+        s.plus(dist[i][j], syncost(i,j)))) \
       for i in range(0,n) for j in range(0,m) \
       for is_t in sync_step(i, j)]
     sync_constr += [ s.implies(vs_sync[i+1][j+1], \

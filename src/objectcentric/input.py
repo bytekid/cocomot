@@ -1,11 +1,12 @@
 from functools import reduce 
 
 class Event:
-  def __init__(self, id, activity, time, objects):
+  def __init__(self, id, activity, time, objects, valuation):
     self._id = id
     self._activity = activity
     self._time = time
     self._objects = objects
+    self._valuation = valuation
 
   def __eq__(self, other):
     return self._id == other._id
@@ -18,6 +19,9 @@ class Event:
 
   def get_objects(self):
     return self._objects
+
+  def get_valuation(self):
+    return self._valuation
 
   def get_id(self):
     return self._id

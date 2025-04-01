@@ -15,9 +15,9 @@ def ocel(jsonfile):
     act = e["ocel:activity"]
     time = e["ocel:timestamp"]
     objs = e["ocel:omap"]
-    event = Event(int(id), act, time, objs)
+    vals = e["ocel:vmap"] if "ocel:vmap" in e else None
+    event = Event(int(id), act, time, objs, vals)
     events.append(event)
-    # FIXME what is ocel:vmap?
   objects = {}
   for (name, data) in content["ocel:objects"].items():
     objects[name] = data["ocel:type"]
