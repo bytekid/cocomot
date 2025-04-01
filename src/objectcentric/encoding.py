@@ -16,7 +16,7 @@ class Encoding():
     net.compute_reachable(trace)
     self._step_bound = net.step_bound(trace)
     oids = [ (n, id) for os in self._objects_by_type.values() for (n, id) in os]
-    self._ids_by_object_name = dict(oids)
+    self._id_by_object_name = dict(oids)
     self._object_name_by_id = dict([(id,n) for (n, id) in oids])
     self._tokens_by_color = self._net.tokens_by_color(self._objects) # w/o data
     self._max_objs_per_trans = \
@@ -69,9 +69,20 @@ class Encoding():
     # FIXME how to specify final marking?
     # currently we only require that places marked as final have some token
     s = self._solver
-    run_length = lambda j: s.eq(self._run_length_var, s.num(j))
-    return s.lor([ s.land([run_length(j), self.final_state_after_step(j)]) \
-      for j in range(0,self._step_bound+1)])
+    rlvar = self._run_length_var
+    run_length_is = lambda i: s.eq(rlvar, s.num(i))
+
+    # need to ensure that after the run_length'th step, no sync moves occur
+    def no_sync_step_after(i):
+      return s.land([ s.neg(self._vs_sync_move[k][j]) \
+        for j in range(0, len(self._trace)+1) \
+        for k in range(i+1, self._step_bound+1) ])
+
+    len_reqs = s.land([ s.implies(run_length_is(i), \
+        s.land([self.final_state_after_step(i), no_sync_step_after(i)])) \
+      for i in range(0,self._step_bound+1)])
+    rl_rng = s.land([s.le(s.num(0),rlvar), s.le(rlvar,s.num(self._step_bound))])
+    return s.land([len_reqs, rl_rng])
   
   # Returns formula expressing whether token tok is involved in the firing of
   # transition t at step j, where the token is
@@ -93,7 +104,7 @@ class Encoding():
       params_for_insc.append([x for x in params if x["name"] == pname])
     # loop over pairs of token element and parameter name
     for (obj, params) in zip(tok, params_for_insc):
-      objid = self._ids_by_object_name[obj]
+      objid = self._id_by_object_name[obj]
       inst2token = [ s.eq(ovars[j][p["index"]], s.num(objid)) for p in params]
       eqs.append(s.lor(inst2token))
     return s.land(eqs)
@@ -294,6 +305,9 @@ class Encoding():
   # encode data constraints for transition t and instant i
   def data_constraints(self):
     s = self._solver
+    if not self._net.has_data():
+      return s.true()
+
     dvars = self._data_vars
     svars = self._data_store_vars
 
@@ -497,16 +511,15 @@ class Encoding():
     logcostup2 = lambda j: sum([len(trace[j].get_objects()) \
       for k in range(0,j+1)])
 
-    def no_object_diff(i,j): # i is position in transition sequence, j in trace 
-      # FIXME independent from i
-      trace_objs = [s.num(self._ids_by_object_name[o]) \
+    def no_object_diff(i,j): # i is position in transition sequence, j in trace
+      trace_objs = [s.num(self._id_by_object_name[o]) \
         for o in trace[j].get_objects()]
       used = lambda id: s.lor([s.eq(v,id) for v in self._object_vars[i]])
       allused = s.land([ used(oid) for oid in trace_objs ])
       return s.land([s.eq(num_objs_used(i), s.num(len(trace_objs))), allused])
 
     no_odiff_vars = [ [ s.boolvar("noobjdiff%d_%d" % (i,j)) \
-        for j in range(0,m)] for i in range(0,n) ]
+      for j in range(0,m)] for i in range(0,n) ]
     constr += [ s.iff(no_odiff_vars[i][j], no_object_diff(i,j)) \
       for j in range(0,m) for i in range(0,n)]
     
@@ -518,6 +531,7 @@ class Encoding():
     def syncost(i,j):
       if not self._net.has_data():
         return s.num(0)
+      
       diff = s.num(0)
       datavars = dict(self._net.get_data_variables())
       for (x, val) in trace[j].get_valuation().items():
@@ -583,19 +597,23 @@ class Encoding():
   def decode_marking(self, model, j):
     mvars = self._marking_vars[j]
     mstr = ""
+    tokstr = lambda tok: reduce(lambda acc,o: "%s,%s" % (acc,o), tok, "")
+
     for p in self._net._places:
-      pstr = ""
+      ostr = ""
       for t in self._tokens_by_color[p["color"]]:
+        pstr = ""
         if model.eval_bool(mvars[p["id"]][t]):
-          pstr += (", " if len(pstr) > 0 else "") + str(t)
+          pstr += (", " if len(pstr) > 0 else "") + tokstr(t)[1:]
           if self._net.place_holds_data(p):
             vars = self._data_store_vars[j][p["id"]][t]
             dtypes = [t for t in p["color"] if t in self._net._data_types ]
             for (tp, var) in zip(dtypes, vars):
-              val = model.eval_int(var) if tp=="Integer" else model.eval_real(var)
-              pstr += "," + str(val) #FIXME order of objects/data in token not ok
-      mstr += ("%d: [%s] " % (p["id"], pstr))
-    return ("MARKING %d: %s\n" % (j, mstr))
+              val=model.eval_int(var) if tp=="Integer" else model.eval_real(var)
+              pstr += "," +str(val) #FIXME order of objects/data in token not ok
+        ostr += "("+pstr+")" if len(pstr) > 0 else ""
+      mstr += ("%d: {%s} " % (p["id"], ostr))
+    return (" marking %d: %s\n" % (j, mstr))
 
   def print_distance_matrix(self, model):
     vs_dist = self._distance_vars
@@ -614,7 +632,7 @@ class Encoding():
         val = model.eval_int(vs_move[i][j])
         if val == 0:
           assert(model.eval_bool(self._vs_sync_move[i][j]))
-        s = str(val)
+        s = "s" if val == 0 else "m" if val == 1 else "l"
         d = d + " " + (s if len(s) == 2 else (" "+s))
       print(d)
 
@@ -624,11 +642,13 @@ class Encoding():
 
     self.print_distance_matrix(model)
 
-    step_type = lambda i, j: "model" if model.eval_bool(vs_mod[i][j]) else "sync" if model.eval_bool(vs_sync[i][j]) else "log"
+    step_type = lambda i, j: "model" if model.eval_bool(vs_mod[i][j]) else \
+      "sync" if model.eval_bool(vs_sync[i][j]) else "log"
 
-    i = run_length # self._step_bound # n
-    j = len(self._trace) # m
+    i = run_length # self._step_bound 
+    j = len(self._trace) 
     alignment = [] # array mapping instant to one of {"log", "model","sync"}
+    align_str = ""
     while i >= 0 and j >= 0 and (i > 0 or j > 0):
       cost_current = model.eval_int(self._distance_vars[i][j])
       step = step_type(i,j)
@@ -641,8 +661,9 @@ class Encoding():
         j -= 1
       cost_step = cost_current - model.eval_int(self._distance_vars[i][j])
       alignment.append((step, cost_step))
-    alignment.reverse()
-    return alignment
+      align_str = " %s move (cost %d)\n%s" % (step, cost_step, align_str)
+    alignment.reverse() # currently not used
+    return align_str
 
   def decode_alignment_cost(self, model):
     run_length = model.eval_int(self._run_length_var)
@@ -656,7 +677,8 @@ class Encoding():
     max_objs_per_trans = self._max_objs_per_trans
     out = "DECODE\n"
     run_length = model.eval_int(self._run_length_var)
-    out += ("run length %d (bound %d)\n" % (run_length, self._step_bound))
+    out += (" run length is %d (bound %d)\n" % (run_length, self._step_bound))
+    out += "MODEL RUN:\n"
     out += self.decode_marking(model, 0)
     for j in range(0, run_length):
       val = model.eval_int(tvars[j])
@@ -665,9 +687,10 @@ class Encoding():
         for k in range(0, max_objs_per_trans)]
       objns = [(self._object_name_by_id[id]) \
         for (id, v) in objs if id in self._object_name_by_id]
-      out += " " + trans["label"] + str(objns) + "\n"
+      out += "  " + trans["label"] + str(objns) + "\n"
       out += self.decode_marking(model, j+1)
     
+    out += "\nOPTIMAL ALIGNMENT:\n"
     alignment = self.decode_alignment(model, run_length)
     out += str(alignment) + "\n"
     return out

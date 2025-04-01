@@ -40,16 +40,16 @@ def conformance_check(encoding, trace, options):
 
   bound = encoding.get_step_bound()-1
   model = encoding.get_solver().minimize(dist, max=bound)
-  #model = encoding.get_solver().check_sat(encoding.get_solver().true())
+  #model = encoding.get_solver().check_sat(encoding.get_solver().eq(dist, encoding.get_solver().num(0)))
   t_solve = encoding.get_solver().t_solve
   if model == None: # timeout or bug
     print("no model found")
-    return (None, None, t_encode2, t_solve)
+    return (None, t_encode2, t_solve, "unsatisfiable")
 
   distance = encoding.decode_alignment_cost(model)
   #distance = model.eval_int(dist) # not true if using run length
   out = encoding.decode(model)
-  out += "alignment cost: %d\n" % distance
+  out += "ALIGNMENT COST: %d\n" % distance
 
   model.destroy()
   return (distance, t_encode2, t_solve, out)
