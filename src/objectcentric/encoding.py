@@ -306,7 +306,7 @@ class Encoding():
 
       # connection to values stored in tokens
       store_constr = []
-      # FIXME combine both cases
+      # FIXME combine both cases?
       for p in self._net.pre(t):
         pid = p["id"]
         for tok in self._tokens_by_color[p["color"]]:
@@ -345,7 +345,7 @@ class Encoding():
               for (k, vname) in enumerate(data_insc):
                 eq = s.eq(dvars[i][vname], svars[i+1][pid][tok][k])
                 transfer_vals.append(eq)
-              store_constr.append(s.implies(is_consumed, s.land(transfer_vals)))
+              store_constr.append(s.implies(is_produced, s.land(transfer_vals)))
 
 
       return s.land([trans_constr] + store_constr)
