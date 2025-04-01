@@ -78,7 +78,7 @@ def process(net, log, options):
   skip_existing = options["skip existing"]
   z = options["z"]
   fixed_obj = options["fixed objects"]
-  solver = YicesSolver() #
+  solver = YicesSolver(euf=True) # FIXME only if EUF used
   traces = list(log.split_into_traces())
   print("%d traces" % len(traces))
   traces.sort(key=lambda t: (len(t), len(t.get_objects()), t.smallest_object()))

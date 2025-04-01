@@ -3,27 +3,44 @@ import json
 from xml.dom import minidom
 from html import unescape
 
-from dpn.expr import Expr, Num, Var, Charstr, Cmp, BinOp, BinCon
+from dpn.expr import Expr, Num, Var, Charstr, Cmp, BinOp, BinCon, Fun
 
 pyp.ParserElement.enablePackrat()
 
+def mkVarOrFun(vars, toks):
+  name = toks[0]
+  if len(toks) == 1 or (len(toks) == 2 and toks[1] == "'"):
+    prime = toks[1] if len(toks) > 1 else None
+    #print("make var", name, toks)
+    return Var(name, prime)
+  else:
+    #print("make fun", name, toks)
+    return Fun(name, toks[1:])
+
 ### parsing stuff
 def parse_expr(s):
+  print("parsing", s)
   LPAR = pyp.Literal('(').suppress()
   RPAR = pyp.Literal(')').suppress()
+  COMMA = pyp.Literal(',').suppress()
   quote = pyp.Literal('"').suppress()
   sp = pyp.OneOrMore(pyp.White()).suppress()
   sps = pyp.ZeroOrMore(pyp.White()).suppress()
   nums = pyp.Word(pyp.srange("[0-9]"))
   num = (nums + pyp.Optional(pyp.Literal('.') + nums))\
     .setParseAction(lambda toks: Num(''.join(toks)))
-  var = (pyp.Word(pyp.alphas.lower(), pyp.srange("[a-zA-Z0-9]")) + pyp.Optional(pyp.Literal("'"))).\
-    setParseAction(lambda toks: Var(toks[0], toks[1] if len(toks) > 1 else None))
+  term = pyp.Forward()
+  funargs = LPAR + term + pyp.ZeroOrMore(COMMA + term) + RPAR
+  fun = (pyp.Word(pyp.alphas.lower(), pyp.srange("[a-zA-Z0-9]")) + funargs).\
+    setParseAction(mkVarOrFun)
+  var_or_fun = (pyp.Word(pyp.alphas.lower(), pyp.srange("[a-zA-Z0-9]")) + pyp.Optional(pyp.Literal("'")) + pyp.Optional(funargs)).\
+    setParseAction(mkVarOrFun)
+  listvar = (pyp.Word(pyp.alphas.upper(), pyp.srange("[a-zA-Z0-9]"))).\
+    setParseAction(mkVarOrFun)
   chars = (pyp.QuotedString('"')).setParseAction(lambda toks: Charstr(toks[0]))
   boolean = (pyp.oneOf("True False true false")).setParseAction(lambda toks: Bool(toks[0]))
-  term = pyp.Forward()
   pterm = (LPAR + sps + term + sps + RPAR).setParseAction(lambda toks: toks[0])
-  term << pyp.infixNotation(num | var | pterm | chars | boolean, [
+  term << pyp.infixNotation(num | fun | var_or_fun | listvar | pterm | chars | boolean, [
         (pyp.oneOf("+ -"), 2, pyp.opAssoc.LEFT, lambda ts: BinOp(ts[0][0], ts[0][1], ts[0][2])),
     ])
 

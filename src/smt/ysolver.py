@@ -9,10 +9,10 @@ from smt.solver import Solver, Model
 
 class YicesSolver(Solver):
 
-  def __init__(self):
+  def __init__(self, euf = None):
     sys.stdout.flush()
     self.cfg = Config()
-    self.cfg.default_config_for_logic('QF_LRA')
+    self.cfg.default_config_for_logic('QF_UFLRA' if euf else 'QF_LRA')
     self.ctx = Context(self.cfg)
     self.t_solve = 0
     self.cfg.set_config("mode", "push-pop")
@@ -50,6 +50,14 @@ class YicesSolver(Solver):
   def realvar(self, n):
     real_t = Types.real_type()
     return Terms.new_uninterpreted_term(real_t)
+  
+  # uninterpreted term
+  def mk_fun(self, n, args):
+    real_t = Types.real_type() # FIXME currently all is real
+    doms = [real_t for a in args]
+    ftype = Types.new_function_type(doms, real_t)
+    fun = Terms.new_uninterpreted_term(ftype, n)
+    return Terms.application(fun, args)
   
   # logical conjunction
   def land(self, l):
