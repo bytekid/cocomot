@@ -343,9 +343,6 @@ class Encoding():
               data_insc = [ n for (n, t) in inscription \
                 if t in self._net._data_types]
               for (k, vname) in enumerate(data_insc):
-                print(i, vname, pid, tok, k)
-                print(dvars[i])
-                print(svars[i+1][pid][tok])
                 eq = s.eq(dvars[i][vname], svars[i+1][pid][tok][k])
                 transfer_vals.append(eq)
               store_constr.append(s.implies(is_consumed, s.land(transfer_vals)))
@@ -590,13 +587,13 @@ class Encoding():
       pstr = ""
       for t in self._tokens_by_color[p["color"]]:
         if model.eval_bool(mvars[p["id"]][t]):
-         pstr += (", " if len(pstr) > 0 else "") + str(t)
-        if self._net.place_holds_data(p):
-          vars = self._data_store_vars[j][p["id"]][t]
-          dtypes = [t for t in p["color"] if t in self._net._data_types ]
-          for (tp, var) in zip(dtypes, vars):
-            val = model.eval_int(var) if tp=="Integer" else model.eval_real(var)
-            pstr += "," + str(val) # FIXME order of objects/data not correct
+          pstr += (", " if len(pstr) > 0 else "") + str(t)
+          if self._net.place_holds_data(p):
+            vars = self._data_store_vars[j][p["id"]][t]
+            dtypes = [t for t in p["color"] if t in self._net._data_types ]
+            for (tp, var) in zip(dtypes, vars):
+              val = model.eval_int(var) if tp=="Integer" else model.eval_real(var)
+              pstr += "," + str(val) #FIXME order of objects/data in token not ok
       mstr += ("%d: [%s] " % (p["id"], pstr))
     return ("MARKING %d: %s\n" % (j, mstr))
 

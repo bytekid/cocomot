@@ -27,7 +27,14 @@ class Event:
     return self._id
 
   def __str__(self):
-    return "(" + str(self._id) + ": " + self._activity + " {" + reduce(lambda acc, e: acc + str(e) + ",", self._objects, "") + "} )"
+    objs = reduce(lambda acc, e: acc + str(e) + ",", self._objects, "")
+    if len(objs) > 0:
+      objs = objs[0:-1] # cut last ,
+    bstr = lambda b: b + " -> " + str(self._valuation[b]) + ","
+    vals = reduce(lambda acc,b: "%s%s" % (acc, bstr(b)), self._valuation, "")
+    if len(vals) > 0:
+      vals = vals[0:-1] # cut last ,
+    return "(%d: %s {%s} {%s})" % (self._id, self._activity, objs, vals)
 
 
 class Trace:

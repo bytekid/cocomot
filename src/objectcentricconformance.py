@@ -49,7 +49,7 @@ def conformance_check(encoding, trace, options):
   distance = encoding.decode_alignment_cost(model)
   #distance = model.eval_int(dist) # not true if using run length
   out = encoding.decode(model)
-  out += "distance %d\n" % distance
+  out += "alignment cost: %d\n" % distance
 
   model.destroy()
   return (distance, t_encode2, t_solve, out)
