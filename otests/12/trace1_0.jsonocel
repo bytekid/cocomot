@@ -1,0 +1,43 @@
+{
+  "ocel:global-log": {
+    "ocel:attribute-names": [],
+    "ocel:object-types": [
+      "GIFT"
+    ],
+    "ocel:version": [
+      "1.0"
+    ],
+    "ocel:ordering": [
+      "timestamp"
+    ]
+  },
+  "ocel:events": {
+    "0": {
+      "ocel:activity": "place order",
+      "ocel:timestamp": "2021-03-01T09:00:00+01:00",
+      "ocel:omap": [
+        "o1"
+      ],
+      "ocel:vmap": {
+        "d": 3
+      }
+    },
+    "1": {
+      "ocel:activity": "increase order",
+      "ocel:timestamp": "2021-03-01T09:00:00+01:00",
+      "ocel:omap": [
+        "o1"
+      ],
+      "ocel:vmap": {
+        "d": 3,
+        "dout": 4
+      }
+    }
+  },
+  "ocel:objects": {
+    "o1": {
+      "ocel:type": "ORDER",
+      "ocel:ovmap": {}
+    }
+  }
+}

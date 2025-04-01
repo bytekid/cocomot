@@ -32,15 +32,14 @@ def save_result(trace, content):
 
 def conformance_check(encoding, trace, options):
   t_start = time.perf_counter()
-  (dist, dconstr) = encoding.edit_distance()
+  dist = encoding.optimization_expression()
+  encoding.get_solver().require([encoding.cache_constraints()])
+  encoding.get_solver().require([encoding.edit_distance()])
   t_encode2 = time.perf_counter() - t_start
 
-  encoding.get_solver().require([encoding.cache_constraints()])
-  encoding.get_solver().require([dconstr])
-
-  bound = encoding.get_step_bound()-1
-  model = encoding.get_solver().minimize(dist, max=bound)
-  #model = encoding.get_solver().check_sat(encoding.get_solver().eq(dist, encoding.get_solver().num(0)))
+  optbound = encoding.get_step_bound() * encoding.get_max_objs_per_trans()
+  model = encoding.get_solver().minimize(dist, max=optbound)
+  #model = encoding.get_solver().check_sat(encoding.get_solver().eq(dist, encoding.get_solver().num(5)))
   t_solve = encoding.get_solver().t_solve
   if model == None: # timeout or bug
     print("no model found")

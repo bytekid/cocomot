@@ -31,6 +31,9 @@ class Encoding():
   def get_step_bound(self):
     return self._step_bound
 
+  def get_max_objs_per_trans(self):
+    return self._max_objs_per_trans
+
   def initial_state(self, fixed_objects):
     s = self._solver
     if fixed_objects:
@@ -227,6 +230,7 @@ class Encoding():
 
     def trans_j_constraint(t, j):
       params = self._net.object_params_of_transition(t, self._objects)
+      #print("object_params_of_transition\n", t["label"], "\n", params)
       # filter out parameters that are data variables
       obj_params = [p for p in params if p["type"] not in self._net._data_types]
       obj_conj = [ cache_obj_disj(param, j) for param in obj_params ]
@@ -329,14 +333,12 @@ class Encoding():
           if self._net.place_holds_data(p):
             inscription = self._net.get_inscription(pid, t["id"])
             params = [ n for (n, _) in inscription ]
-            transfer_vals = s.top()
-            keep_vals = s.top()
+            transfer_vals = s.true()
+            keep_vals = s.true()
             # for all data members in inscription, get stored values
             data_insc = [ n for (n, t) in inscription \
               if t in self._net._data_types]
             for (k, vname) in enumerate(data_insc):
-              if not vtype in self._net._data_types:
-                continue
               eq_trans = s.eq(dvars[i][vname], svars[i][pid][tok][k])
               transfer_vals = s.land([transfer_vals, eq_trans])
               eq_keep = s.eq(svars[i][pid][tok][k], svars[i+1][pid][tok][k])
@@ -440,7 +442,6 @@ class Encoding():
               dvs.append(create_var(name, typ))
           store_vars_i[p["id"]][tok] = dvs
       self._data_store_vars.append(store_vars_i)
-    print(self._data_store_vars)
 
 
   def move_vars(self, trace_len):
@@ -591,8 +592,21 @@ class Encoding():
         constr.append(c)
 
     constraints = non_neg + base_model + base_log + sync_constr + constr
-    return (dist[n][m], s.land(constraints))
+    return s.land(constraints)
 
+  def optimization_expression(self):
+    # due to the use of run_length, cannot just use the last distance variable:
+    # moves beyond run_length are insufficiently restricted
+    s = self._solver
+    run_length_is = lambda i: s.eq(self._run_length_var, s.num(i))
+    dvars = self._distance_vars
+    m  = len(self._trace)
+    i = self._step_bound
+    opt_expr = dvars[i][m]
+    while i > 0:
+      i = i - 1
+      opt_expr = s.ite(run_length_is(i), dvars[i][m], opt_expr)
+    return opt_expr
 
   def decode_marking(self, model, j):
     mvars = self._marking_vars[j]

@@ -15,6 +15,9 @@ class OPI(DPN):
     self._step_bound = None
     self._objects = None
 
+  def sanity_check(self):
+    pass
+
   def step_bound(self, trace):
     if not self._step_bound:
       objs_silent = len(self.objects_created_by_silent_transitions())
@@ -22,7 +25,7 @@ class OPI(DPN):
         (objs_silent if objs_silent > 0 else \
           2 * sum([ len(os) for os in self._objects.values()]))
       
-      self._step_bound = b
+      self._step_bound = 7 # b
       print("step bound: %d (objects created by silent transitions: %d)" % 
         (b, objs_silent))
     return self._step_bound
@@ -85,7 +88,6 @@ class OPI(DPN):
         continue
       prod = itertools.product(*[ objs_by_type[typ] for typ in color_no_data ])
       tokens_by_color[color] = list(prod)
-    print(tokens_by_color)
     return tokens_by_color
 
   # compute maximum number of objects involved in a transition firing
@@ -118,7 +120,8 @@ class OPI(DPN):
     return set([ o for t in types for o in self._objects[t]])
 
   def object_inscriptions_of_transition(self, trans, objs):
-    # returns tuples (index, name, needed, type, in, place)
+    # returns tuples (index, name, needed, type, in, place) 
+    # where type is not a data type
     objs_by_type = self.objects_by_type(objs)
     arcs = [ a for a in self._arcs if a["target"] == trans["id"] or \
       a["source"] == trans["id"] ]
@@ -128,6 +131,8 @@ class OPI(DPN):
       place, is_in = (a["source"], True) if a["target"] == trans["id"] else \
         (a["target"], False)
       for (oname, otype) in a["inscription"]:
+        if otype in self._data_types:
+          continue # ignore data inscriptions
         if "LIST" in otype:
           basetype = otype[0:otype.rfind(" LIST")]
           for i in range(0, len(objs_by_type[basetype])):
