@@ -151,7 +151,7 @@ class YicesSolver(Solver):
     return m
 
   # minimize given expression
-  def minimize_linear(self, expr, max, start = 0):
+  def minimize(self, expr, max, start = 0):
     self.push()
     val = start
     self.ctx.assert_formulas([self.eq(expr, self.num(val))])
@@ -179,10 +179,10 @@ class YicesSolver(Solver):
       m = YicesModel(self.ctx) if status == Status.SAT else None
       self.pop()
       self.t_solve += time.perf_counter() - t_start
-    return None if val > max_val else m
+    return m
 
   # minimize given expression via binary search, with guessed initial value
-  def minimize(self, expr, max=100):
+  def minimize_binary(self, expr, max=100):
     upper = max
     lower = 0
     to_pop = 0

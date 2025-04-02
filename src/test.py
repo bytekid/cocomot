@@ -25,6 +25,7 @@ if __name__ == "__main__":
 
     dpn = DPN(cocomot.read_pnml_input(os.path.join(path, pnmls[0])))
     for xes in xess:
+      print(t, pnmls[0])
       # desired distance result is given by the test name, e.g. 0 for test_1_0
       real_distance = float(xes[xes.rfind("_")+1:xes.rfind(".")])
       log, is_uncertain = cocomot.read_log(os.path.join(path, xes))

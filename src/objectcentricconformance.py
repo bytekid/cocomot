@@ -38,7 +38,7 @@ def conformance_check(encoding, trace, options):
   t_encode2 = time.perf_counter() - t_start
 
   optbound = encoding.get_step_bound() * encoding.get_max_objs_per_trans()
-  model = encoding.get_solver().minimize(dist, max=optbound)
+  model = encoding.get_solver().minimize_binary(dist, max=optbound)
   #model = encoding.get_solver().check_sat(encoding.get_solver().eq(dist, encoding.get_solver().num(5)))
   t_solve = encoding.get_solver().t_solve
   if model == None: # timeout or bug

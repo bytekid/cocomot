@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+   <net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+      <name>
+         <text>Fig 2</text>
+      </name>
+      <page id="n0">
+         <name>
+            <text/>
+         </name>
+         <place id="n0">
+            <name>
+               <text>pl0</text>
+            </name>
+            <initialMarking>
+               <text>1</text>
+            </initialMarking>
+         </place>
+         <place id="n1">
+            <name>
+               <text>pl1</text>
+            </name>
+         </place>
+         <place id="n2">
+            <name>
+               <text>pl2</text>
+            </name>
+            <finalMarking>
+               <text>1</text>
+            </finalMarking>
+         </place>
+         <transition id="ta">
+            <name>
+               <text>a</text>
+            </name>
+         </transition>
+         <transition id="tb">
+            <name>
+               <text>b</text>
+            </name>
+         </transition>
+         <arc id="arc29" source="n0" target="ta"></arc>
+         <arc id="arc30" source="ta" target="n1"></arc>
+         <arc id="arc31" source="n1" target="tb"></arc>
+         <arc id="arc32" source="tb" target="n2"></arc>
+      <finalmarkings />
+      <variables />
+    </page>
+   </net>
+</pnml>

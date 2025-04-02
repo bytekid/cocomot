@@ -202,7 +202,7 @@ def conformance_check_trace(encoding, trace_data, verbose):
   #FIXME step_bound may in general not be valid upper bound due to writes
   distmin = dpn.lower_bound_alignment_cost(trace)
   model = solver.minimize(dist, encoding.step_bound(), start=distmin) if len(trace) < 100 \
-    else solver.minimize_binsearch(dist, max=encoding.step_bound())
+    else solver.minimize_binary(dist, max=encoding.step_bound())
 
   t_solve = solver.t_solve
   if model == None: # timeout

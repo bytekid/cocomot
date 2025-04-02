@@ -12,7 +12,6 @@ class Z3Solver(Solver):
     if not incremental:
       self.ctx = Optimize()
       self.ctx.set('optsmt_engine', 'symba') # no weird timeouts on simple traces 
-      self.ctx.set('incremental', True) # seems a bit faster
     else:
       self.ctx = z3.Solver()
     set_param('model.completion', True)
