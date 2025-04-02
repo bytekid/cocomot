@@ -20,6 +20,6 @@ def ocel(jsonfile):
     events.append(event)
   objects = {}
   for (name, data) in content["ocel:objects"].items():
-    objects[name] = data["ocel:type"]
+    objects[name] = {"type": data["ocel:type"], "ovmap": data["ocel:ovmap"] if "ocel:ovmap" in data else None }
   return Log(events, ordering, objects)
 

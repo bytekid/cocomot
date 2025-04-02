@@ -83,6 +83,7 @@ class Log:
     self._events = events
     self._ordering = ordering
     self._objects = objects
+    print("Log objects", objects)
 
   def split_into_traces(self):
     trace_of_object = {}

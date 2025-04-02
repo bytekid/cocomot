@@ -1,3 +1,4 @@
+from itertools import combinations, chain
 
 def spaces(n):
   return "" if n <= 0 else " " + spaces(n-1) 
@@ -63,3 +64,7 @@ def val_type(val):
     VarType.int if isinstance(val, int) else \
     VarType.real if isinstance(val, float) else VarType.string
   return vtype
+
+def powerset(iterable):
+  s = list(iterable)
+  return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))

@@ -53,11 +53,14 @@ class YicesSolver(Solver):
   
   # uninterpreted term
   def mk_fun(self, n, args):
-    real_t = Types.real_type() # FIXME currently all is real
-    doms = [real_t for a in args]
-    ftype = Types.new_function_type(doms, real_t)
-    fun = Terms.new_uninterpreted_term(ftype, n)
-    return Terms.application(fun, args)
+    if n == "sum": # FIXME more predefined funs
+      return Terms.sum(args)
+    else:
+      real_t = Types.real_type() # FIXME currently all is real
+      doms = [real_t for a in args]
+      ftype = Types.new_function_type(doms, real_t)
+      fun = Terms.new_uninterpreted_term(ftype, n)
+      return Terms.application(fun, args)
   
   # logical conjunction
   def land(self, l):
@@ -200,10 +203,12 @@ class YicesSolver(Solver):
         print("yices returned unknown")
         return None
       elif status == Status.SAT:
+        #print("sat", mid)
         upper = mid
         m = YicesModel(self.ctx) if upper-lower < 1 else None
         to_pop += 1
       else:
+        #print("unsat", mid)
         lower = mid + 1
         m = None
         self.pop()

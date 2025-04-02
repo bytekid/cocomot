@@ -1,7 +1,10 @@
 from functools import reduce
+from copy import deepcopy
 
 from dpn.expr import Expr
 from utils import VarType
+from utils import powerset
+from dpn.expr_utils import VarReplacer, ListExpander, ObjectPropertyReplacer
 
 # TODO: if there are place/inscription types that contain ONLY data types, the
 #       current encoding does not work (need to add dummy black token for that)
@@ -155,7 +158,6 @@ class Encoding():
           cnstr.append(s.implies(is_consumed, marked))
           # if there is an exact sync arc, also the reversed implication holds
           if self._net.is_exact_sync_arc(p["id"],t["id"]):
-            print("exact sync", p["name"], t["label"])
             cnstr.append(s.implies(marked, is_consumed))
 
       return s.land(cnstr)
@@ -307,6 +309,81 @@ class Encoding():
     rng_constr = [rng(i, v) for (i, v) in enumerate(tvs)]
     return s.land(rng_constr) # + tau_constr)
 
+  # get constraint expression for transition t (that has guard) at time i
+  # need to treat object variables and uninterpreted functions
+  def transition_constraint(self, t,i):
+    s = self._solver
+    sub = dict(list(self._data_vars[i].items()))
+    constr = t["constraint"]
+
+    s = self._solver
+    inscrs = self._net.get_all_inscriptions()
+    obj_inscrs = [ (v,t) for (v,t) in inscrs if t not in self._net._data_types]
+    plain_obj_vars = [ v for (v,t) in obj_inscrs if "LIST" not in t]
+    list_obj_vars = [ v for (v,t) in obj_inscrs if "LIST" in t]
+    inscr_types = dict(obj_inscrs)
+    all_vars = set(plain_obj_vars+list_obj_vars)
+    constr_vars = constr.vars().intersection(all_vars)
+
+    if len(constr_vars) == 0: # easy case
+      return constr.toSMT(s,sub)
+    
+    # create all possible instantiations of inscription
+    substs = [[]]
+    for v in constr_vars:
+      if not "LIST" in inscr_types[v]:
+        insts = [ oi for oi in self._objects_by_type[inscr_types[v]]]
+      else:
+        otype = inscr_types[v]
+        basetype = otype[0:otype.rfind(" LIST")]
+        objs = [ oi for oi in self._objects_by_type[basetype]]
+        insts = powerset(objs)
+      substsx = [ [(v,o)] + s for s in substs for o in insts]
+      substs = substsx
+    #print(substs)
+
+    oparams = [ p for p in \
+        self._net.object_params_of_transition(t, self._objects) \
+        if p["type"] not in self._net._data_types]
+    ovars = self._object_vars
+    real_guard = None
+    for sub in substs:
+      real_sub = []
+      sub_conds = [] # conditions that substitution becomes relevant
+      for (v, obj) in sub:
+        vtype = inscr_types[v]
+        vparams = [ p for p in oparams if p["name"] == v]
+        if "LIST" not in vtype:
+          (oname, oid) = obj
+          real_sub.append((v, oname))
+          assert(len(vparams) == 1)
+          param = vparams[0]
+          sub_conds.append(s.eq(ovars[i][param["index"]], s.num(oid)))
+        else:
+          obj = list(obj)
+          k = len(obj)
+          sub_conds+=[s.eq(ovars[i][p["index"]],s.num(-1)) for p in vparams[k:]]
+          used_vparams = vparams[:k]
+          # all objects of substitution occur
+          for (oname, oid) in obj:
+            sub_conds.append(s.lor([s.eq(ovars[i][p["index"]],s.num(oid)) \
+              for p in used_vparams]))
+          real_sub.append((v, [ n for (n,_) in obj]))
+      sub_guard = deepcopy(constr)
+      sub_guard.accept(VarReplacer(dict(real_sub)))
+      exp = ListExpander()
+      sub_guard.accept(exp)
+      while(exp._change):
+        sub_guard.accept(exp)
+        exp._change = False
+      #print("final guard", sub_guard)
+      sub_guard.accept(ObjectPropertyReplacer(self._trace._objects))
+      sub_guard_smt = sub_guard.toSMT(s,sub)
+      real_guard = sub_guard_smt if not real_guard else \
+        s.ite(s.land(sub_conds), sub_guard_smt, real_guard)
+    return real_guard
+    
+
   # encode data constraints for transition t and instant i
   def data_constraints(self):
     s = self._solver
@@ -317,11 +394,9 @@ class Encoding():
     svars = self._data_store_vars
 
     def data_constr(t, i):
-      vs = [ v for (v, _) in self._net.get_data_variables()]
-      sub = dict(list(dvars[i].items()))
       has_constr = "constraint" in t
       # encode guard constraint
-      trans_constr = t["constraint"].toSMT(s,sub) if has_constr else s.true()
+      trans_constr = self.transition_constraint(t,i) if has_constr else s.true()
 
       # connection to values stored in tokens
       store_constr = []

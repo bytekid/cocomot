@@ -54,7 +54,7 @@ class OPI(DPN):
 
   def get_types(self, objs):
     place_types = [ t for p in  self._places for t in p["color"]]
-    obj_types = [ t for (o,t) in objs.items() ]
+    obj_types = [ t["type"] for (o,t) in objs.items() ]
     return set(place_types + obj_types)
 
   def objects_by_type(self, objs, with_ids = True):
@@ -66,7 +66,7 @@ class OPI(DPN):
     objs_by_type = dict([ (typ,[]) for typ in self.get_types(objs)])
     id = 0
     for (o,t) in objs.items():
-      objs_by_type[t].append((o, id) if with_ids else o)
+      objs_by_type[t["type"]].append((o, id) if with_ids else o)
       id += 1
     if with_ids:
       self._objects = objs_by_type
@@ -251,7 +251,9 @@ class OPI(DPN):
     return dparams
 
   def has_data(self):
-    return len(self.get_data_variables()) > 0
+    guard_exists = any(t for t in self._transitions if "constraint" in t)
+    data_vars = len(self.get_data_variables()) > 0
+    return guard_exists or data_vars
 
   def place_holds_data(self, p):
     return any([ c for c in p["color"] if c in self._data_types ])
@@ -262,6 +264,8 @@ class OPI(DPN):
       return None
     return arcs[0]["inscription"]
 
+  def get_all_inscriptions(self):
+    return set ([ v for a in self._arcs for v in a["inscription"]])
 
   def reset(self):
     self._step_bound = None

@@ -58,7 +58,7 @@ class Var(Term):
     return self.name
   
   def __str__(self):
-    return self.name + ("'" if self.is_prime else "")
+    return str(self.name) + ("'" if self.is_prime else "")
 
   def toSMT(self, solver, subst):
     return subst[str(self)] if str(self) in subst else solver.realvar(str(self))
@@ -71,6 +71,9 @@ class Var(Term):
       return subst[str(self)]
     else:
       raise NotFound
+
+  def accept(self, visitor):
+    visitor.visit_var(self)
 
 
 class Num(Term):
@@ -90,6 +93,9 @@ class Num(Term):
   def value(self, subst):
     return float(self.num)
 
+  def accept(self, visitor):
+    visitor.visit_num(self)
+
 
 class Charstr(Term):
 
@@ -107,6 +113,9 @@ class Charstr(Term):
 
   def value(self, subst):
     return Expr.numval(self.chr)
+
+  def accept(self, visitor):
+    visitor.visit_char(self)
 
 
 class Bool(Term):
@@ -128,6 +137,9 @@ class Bool(Term):
 
   def value(self, subst):
     return Expr.numval(self.chr)
+
+  def accept(self, visitor):
+    visitor.visit_bool(self)
 
 top = Bool("True")
 
@@ -159,6 +171,12 @@ class BinOp(Term):
       return self.left.value(subst) + self.right.value(subst)
     else:
       return self.left.value(subst) - self.right.value(subst)
+
+  def accept(self, visitor):
+    stop = visitor.visit_binop(self)
+    if not (stop == visitor.STOP_RECURSION):
+      self.left.accept(visitor)
+      self.right.accept(visitor)
 
 
 class Cmp(Term):
@@ -208,6 +226,12 @@ class Cmp(Term):
     except NotFound: # variable not found
       return False
 
+  def accept(self, visitor):
+    stop = visitor.visit_cmp(self)
+    if not (stop == visitor.STOP_RECURSION):
+      self.left.accept(visitor)
+      self.right.accept(visitor)
+
 
 class BinCon(Term):
 
@@ -243,6 +267,12 @@ class BinCon(Term):
         return self.left.valid(subst) or self.right.valid(subst)
     except NotFound: # variable not found
       return False
+
+  def accept(self, visitor):
+    stop = visitor.visit_bincon(self)
+    if not (stop == visitor.STOP_RECURSION):
+      self.left.accept(visitor)
+      self.right.accept(visitor)
 
 class Fun(Term):
   def __init__(self, name, args, output_type=None, domain=None):
@@ -284,3 +314,9 @@ class Fun(Term):
 
   def basevars(self):
     return reduce(lambda acc, a: acc.union(a.basevars()), self._args, set([]))
+
+  def accept(self, visitor):
+    stop = visitor.visit_fun(self)
+    if not (stop == visitor.STOP_RECURSION):
+      for a in self._args:
+        a.accept(visitor)
