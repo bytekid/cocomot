@@ -51,6 +51,11 @@ class DPN:
       str2int[n] = id
       id += 1
     for a in dpn["arcs"]:
+      if a["source"] not in str2int or a["target"] not in str2int:
+        kind, key = ("source", a["source"]) if a["source"] not in str2int \
+          else ("target", a["target"])
+        print("Input error: arc %s %s unknown" % (kind, key))
+        exit(1)
       a["source"] = str2int[a["source"]]
       a["target"] = str2int[a["target"]]
     return dpn, int2plc

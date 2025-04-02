@@ -1,0 +1,89 @@
+{
+"ocel:global-log": {
+"ocel:attribute-names": [],
+"ocel:object-types": [
+"Package",
+"Item"
+],
+"ocel:version": [
+"1.0"
+],
+"ocel:ordering": [
+"timestamp"
+]
+},
+"ocel:events": {
+"0": {
+"ocel:activity": "receive sample order",
+"ocel:timestamp": "2021-03-01T09:00:00+01:00",
+"ocel:omap": [
+"p1",
+"i1",
+"i2"
+],
+"ocel:vmap": {}
+},
+"1": {
+"ocel:activity": "setup box",
+"ocel:timestamp": "2021-03-04T09:00:00+01:00",
+"ocel:omap": [
+"p1"
+],
+"ocel:vmap": {}
+},
+"2": {
+"ocel:activity": "add bill",
+"ocel:timestamp": "2021-03-05T09:00:00+01:00",
+"ocel:omap": [
+"p1"
+],
+"ocel:vmap": {}
+},
+"3": {
+"ocel:activity": "prepare sample",
+"ocel:timestamp": "2021-03-08T09:00:00+01:00",
+"ocel:omap": [
+"i1"
+],
+"ocel:vmap": {}
+},
+"4": {
+"ocel:activity": "prepare sample",
+"ocel:timestamp": "2021-03-11T09:00:00+01:00",
+"ocel:omap": [
+"i2"
+],
+"ocel:vmap": {}
+},
+  "5": {
+"ocel:activity": "add sample",
+"ocel:timestamp": "2021-03-13T09:00:00+01:00",
+"ocel:omap": [
+"i2"
+],
+"ocel:vmap": {}
+},
+  "6": {
+"ocel:activity": "add sample",
+"ocel:timestamp": "2021-03-15T09:00:00+01:00",
+"ocel:omap": [
+"i2"
+],
+"ocel:vmap": {}
+}
+},
+"ocel:objects": {
+"p1": {
+"ocel:type": "Package",
+"ocel:ovmap": {}
+},
+"i1": {
+"ocel:type": "Item",
+"ocel:ovmap": {}
+},
+  "i2": {
+"ocel:type": "Item",
+"ocel:ovmap": {}
+}
+}
+}

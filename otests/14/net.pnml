@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?><pnml>
+	<net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+		<page id="page1">
+			<name>
+				<text>DOPID of an order-to-ship process (CAiSE'25 submission)</text>
+			</name>
+			<place id="q0" color="ORDER">
+				<name>
+					<text>q0</text>
+				</name>
+			</place>
+			<place id="q1" color="PRODUCT">
+				<name>
+					<text>q1</text>
+				</name>
+			</place>
+			<place id="q2" color="ORDER">
+				<name>
+					<text>q2</text>
+				</name>
+			</place>
+			<place id="q3" color="ORDER">
+				<name>
+					<text>q3</text>
+				</name>
+			</place>
+			<place id="q4" color="ORDER,Integer">
+				<name>
+					<text>q4</text>
+				</name>
+			</place>
+			<place id="q5" color="ORDER,PRODUCT">
+				<name>
+					<text>q5</text>
+				</name>
+			</place>
+			<place id="q6" color="ORDER,PRODUCT">
+				<name>
+					<text>q6</text>
+				</name>
+			</place>
+			<place id="q7" color="ORDER,PRODUCT">
+				<name>
+					<text>q7</text>
+				</name>
+			</place>
+			<place id="q8" color="ORDER,Integer">
+				<name>
+					<text>q8</text>
+				</name>
+				<finalMarking>
+					<text>1</text>
+				</finalMarking>
+			</place>
+			<place id="q9" color="ORDER,PRODUCT">
+				<name>
+					<text>q9</text>
+				</name>
+				<finalMarking>
+					<text>1</text>
+				</finalMarking>
+			</place>
+			<transition id="t0" invisible="true">
+				<name>
+					<text>create order</text>
+				</name>
+			</transition>
+			<transition id="t1" invisible="true">
+				<name>
+					<text>create product</text>
+				</name>
+			</transition>
+			<transition id="po" guard="(d &gt; 2)">
+				<name>
+					<text>place order</text>
+				</name>
+			</transition>
+			<transition id="pi">
+				<name>
+					<text>pick item</text>
+				</name>
+			</transition>
+			<transition id="sh" guard="(((d &lt;= 5) &amp;&amp; (m == 0)) || ((d &gt; 5) &amp;&amp; (m == 1)))">
+				<name>
+					<text>ship</text>
+				</name>
+			</transition>
+			<transition id="pc">
+				<name>
+					<text>pay credit card</text>
+				</name>
+			</transition>
+			<transition id="pb" guard="(sum(cost(P)) &lt;= 1000)">
+				<name>
+					<text>pay bank transfer</text>
+				</name>
+			</transition>
+			<arc source="t0" target="q0" inscription="nu:ORDER"/>
+			<arc source="t1" target="q1" inscription="nu:PRODUCT"/>
+			<arc source="q0" target="po" inscription="o:ORDER"/>
+			<arc source="q1" target="po" inscription="P:PRODUCT LIST"/>
+			<arc source="po" target="q5" inscription="o:ORDER,P:PRODUCT LIST"/>
+			<arc source="po" target="q4" inscription="o:ORDER,d:Integer"/>
+			<arc source="q4" target="sh" inscription="o:ORDER,d:Integer"/>
+			<arc source="q5" target="sh" inscription="o:ORDER,P:PRODUCT LIST" synchronization="exact"/>
+			<arc source="sh" target="q8" inscription="o:ORDER,m:Integer"/>
+			<arc source="sh" target="q9" inscription="o:ORDER,P:PRODUCT LIST"/>
+			<arc source="po" target="q6" inscription="o:ORDER,P:PRODUCT LIST"/>
+			<arc source="q6" target="pi" inscription="o:ORDER,p:PRODUCT"/>
+			<arc source="pi" target="q7" inscription="o:ORDER,p:PRODUCT"/>
+			<arc source="q7" target="sh" inscription="o:ORDER,P:PRODUCT LIST" synchronization="exact"/>
+			<arc source="po" target="q2" inscription="o:ORDER"/>
+			<arc source="q3" target="sh" inscription="o:ORDER"/>
+			<arc source="q2" target="pc" inscription="o:ORDER"/>
+			<arc source="pc" target="q3" inscription="o:ORDER"/>
+			<arc source="q2" target="pb" inscription="o:ORDER"/>
+			<arc source="pb" target="q3" inscription="o:ORDER"/>
+			<arc source="q5" target="pb" inscription="o:ORDER,P:PRODUCT LIST" synchronization="exact"/>
+			<arc source="pb" target="q5" inscription="o:ORDER,P:PRODUCT LIST"/>
+		</page>
+		<variables/>
+	</net>
+</pnml>

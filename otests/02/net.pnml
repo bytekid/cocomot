@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?><pnml>
+	<net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+		<page id="page1">
+			<name>
+				<text>Running Example (from Liss et al, ER 2023)</text>
+			</name>
+			<place id="0" color="Package">
+				<name>
+					<text>p1</text>
+				</name>
+			</place>
+			<place id="1" color="Package">
+				<name>
+					<text>p4</text>
+				</name>
+			</place>
+			<place id="2" color="Package">
+				<name>
+					<text>p5</text>
+				</name>
+			</place>
+			<place id="3" color="Package">
+				<name>
+					<text>p3</text>
+				</name>
+			</place>
+			<place id="4" color="Package">
+				<name>
+					<text>p6</text>
+				</name>
+				<finalMarking>
+					<text>1</text>
+				</finalMarking>
+			</place>
+			<place id="5" color="Item">
+				<name>
+					<text>pi1</text>
+				</name>
+			</place>
+			<place id="6" color="Item">
+				<name>
+					<text>pi3</text>
+				</name>
+			</place>
+			<place id="7" color="Item">
+				<name>
+					<text>pi5</text>
+				</name>
+			</place>
+			<place id="8" color="Package">
+				<name>
+					<text>p2</text>
+				</name>
+			</place>
+			<place id="9" color="Item">
+				<name>
+					<text>pi2</text>
+				</name>
+			</place>
+			<place id="10" color="Item">
+				<name>
+					<text>pi4</text>
+				</name>
+			</place>
+			<place id="11" color="Item">
+				<name>
+					<text>pi6</text>
+				</name>
+				<finalMarking>
+					<text>1</text>
+				</finalMarking>
+			</place>
+			<transition id="12">
+				<name>
+					<text>receive sample order</text>
+				</name>
+			</transition>
+			<transition id="13">
+				<name>
+					<text>add bill</text>
+				</name>
+			</transition>
+			<transition id="14">
+				<name>
+					<text>setup box</text>
+				</name>
+			</transition>
+			<transition id="15">
+				<name>
+					<text>prepare sample</text>
+				</name>
+			</transition>
+			<transition id="16">
+				<name>
+					<text>add sample</text>
+				</name>
+			</transition>
+			<transition id="17">
+				<name>
+					<text>add advertisement</text>
+				</name>
+			</transition>
+			<transition id="18">
+				<name>
+					<text>setup envelope</text>
+				</name>
+			</transition>
+			<transition id="19">
+				<name>
+					<text>receive product order</text>
+				</name>
+			</transition>
+			<transition id="20">
+				<name>
+					<text>prepare product</text>
+				</name>
+			</transition>
+			<transition id="21">
+				<name>
+					<text>add product</text>
+				</name>
+			</transition>
+			<transition id="22" invisible="true">
+				<name>
+					<text>create package</text>
+				</name>
+			</transition>
+			<transition id="23" invisible="true">
+				<name>
+					<text>create item</text>
+				</name>
+			</transition>
+			<arc source="5" target="12" inscription="I:Item LIST"/>
+			<arc source="9" target="15" inscription="i:Item"/>
+			<arc source="15" target="10" inscription="i:Item"/>
+			<arc source="10" target="16" inscription="i:Item"/>
+			<arc source="16" target="11" inscription="i:Item"/>
+			<arc source="12" target="8" inscription="p:Package"/>
+			<arc source="8" target="18" inscription="p:Package"/>
+			<arc source="0" target="19" inscription="p:Package"/>
+			<arc source="12" target="9" inscription="I:Item LIST"/>
+			<arc source="3" target="14" inscription="p:Package"/>
+			<arc source="14" target="2" inscription="p:Package"/>
+			<arc source="2" target="13" inscription="p:Package"/>
+			<arc source="13" target="4" inscription="p:Package"/>
+			<arc source="5" target="19" inscription="I:Item LIST"/>
+			<arc source="0" target="12" inscription="p:Package"/>
+			<arc source="18" target="1" inscription="p:Package"/>
+			<arc source="1" target="17" inscription="p:Package"/>
+			<arc source="17" target="4" inscription="p:Package"/>
+			<arc source="19" target="3" inscription="p:Package"/>
+			<arc source="19" target="6" inscription="I:Item LIST"/>
+			<arc source="6" target="20" inscription="i:Item"/>
+			<arc source="20" target="7" inscription="i:Item"/>
+			<arc source="7" target="21" inscription="i:Item"/>
+			<arc source="21" target="11" inscription="i:Item"/>
+			<arc source="22" target="0" inscription="nu:Package"/>
+			<arc source="23" target="5" inscription="nu:Item"/>
+		</page>
+		<variables/>
+	</net>
+</pnml>

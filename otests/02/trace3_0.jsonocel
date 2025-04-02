@@ -1,0 +1,68 @@
+{
+"ocel:global-log": {
+"ocel:attribute-names": [],
+"ocel:object-types": [
+"Package",
+"Item"
+],
+"ocel:version": [
+"1.0"
+],
+"ocel:ordering": [
+"timestamp"
+]
+},
+"ocel:events": {
+"0": {
+"ocel:activity": "receive sample order",
+"ocel:timestamp": "2021-03-01T09:00:00+01:00",
+"ocel:omap": [
+"p1",
+"i1"
+],
+"ocel:vmap": {}
+},
+"1": {
+"ocel:activity": "setup envelope",
+"ocel:timestamp": "2021-03-04T09:00:00+01:00",
+"ocel:omap": [
+"p1"
+],
+"ocel:vmap": {}
+},
+"2": {
+"ocel:activity": "add advertisement",
+"ocel:timestamp": "2021-03-05T09:00:00+01:00",
+"ocel:omap": [
+"p1"
+],
+"ocel:vmap": {}
+},
+"3": {
+"ocel:activity": "prepare sample",
+"ocel:timestamp": "2021-03-08T09:00:00+01:00",
+"ocel:omap": [
+"i1"
+],
+"ocel:vmap": {}
+},
+"4": {
+"ocel:activity": "add sample",
+"ocel:timestamp": "2021-03-13T09:00:00+01:00",
+"ocel:omap": [
+"i1"
+],
+"ocel:vmap": {}
+}
+},
+"ocel:objects": {
+"p1": {
+"ocel:type": "Package",
+"ocel:ovmap": {}
+},
+"i1": {
+"ocel:type": "Item",
+"ocel:ovmap": {}
+}
+}
+}

@@ -9,13 +9,14 @@ from smt.solver import Solver, Model
 
 class YicesSolver(Solver):
 
-  def __init__(self):
+  def __init__(self, euf = None):
     sys.stdout.flush()
     self.cfg = Config()
-    self.cfg.default_config_for_logic('QF_LRA')
+    self.cfg.default_config_for_logic('QF_UFLRA' if euf else 'QF_LRA')
     self.ctx = Context(self.cfg)
     self.t_solve = 0
     self.cfg.set_config("mode", "push-pop")
+    self._cost_is_int = True # true for object-centric
     self._timeout = 120
 
   def are_equal_expr(self, a, b):
@@ -49,6 +50,14 @@ class YicesSolver(Solver):
   def realvar(self, n):
     real_t = Types.real_type()
     return Terms.new_uninterpreted_term(real_t)
+  
+  # uninterpreted term
+  def mk_fun(self, n, args):
+    real_t = Types.real_type() # FIXME currently all is real
+    doms = [real_t for a in args]
+    ftype = Types.new_function_type(doms, real_t)
+    fun = Terms.new_uninterpreted_term(ftype, n)
+    return Terms.application(fun, args)
   
   # logical conjunction
   def land(self, l):
@@ -129,36 +138,6 @@ class YicesSolver(Solver):
   def require(self, formulas):
     self.ctx.assert_formulas(formulas)
 
-  # minimize given expression, with guessed initial value
-  def minimize_binsearch(self, expr, max=100):
-    upper = max
-    lower = 0
-    to_pop = 0
-    m = None
-    while (upper-lower >= 0.01 or m == None):
-      #print("max %.2f min %.2f" % (upper, lower))
-      self.push()
-      mid = floor(lower + (upper-lower)/2)
-      self.ctx.assert_formulas([self.le(expr, self.real(mid))])
-      t_start = time.perf_counter()
-      status = self.ctx.check_context(timeout=self._timeout)
-      self.t_solve += time.perf_counter() - t_start
-      if status == Status.UNKNOWN:
-        print("yices returned unknown")
-        return None
-      elif status == Status.SAT:
-        upper = mid
-        m = YicesModel(self.ctx) if upper-lower < 0.01 else None
-        to_pop += 1
-      else:
-        lower = mid + 1
-        m = None
-        self.pop()
-      self.t_solve += time.perf_counter() - t_start
-    for i in range(0, to_pop):
-      self.pop()
-    return m
-
   def is_sat(self):
     status = self.ctx.check_context(timeout=self._timeout)
     return status == Status.SAT
@@ -172,8 +151,7 @@ class YicesSolver(Solver):
     return m
 
   # minimize given expression
-  def minimize(self, expr, max_val, start = 0):
-    print("start minimize")
+  def minimize_linear(self, expr, max, start = 0):
     self.push()
     val = start
     self.ctx.assert_formulas([self.eq(expr, self.num(val))])
@@ -184,7 +162,7 @@ class YicesSolver(Solver):
     m = YicesModel(self.ctx) if status == Status.SAT else None
     self.pop()
     self.t_solve = time.perf_counter() - t_start
-    while status != Status.SAT and val <= max_val:
+    while status != Status.SAT and val <= max:
       #self.require([self.ge(expr, self.num(val))])
       self.push()
       val += 1
@@ -202,6 +180,36 @@ class YicesSolver(Solver):
       self.pop()
       self.t_solve += time.perf_counter() - t_start
     return None if val > max_val else m
+
+  # minimize given expression via binary search, with guessed initial value
+  def minimize(self, expr, max=100):
+    upper = max
+    lower = 0
+    to_pop = 0
+    m = None
+    # assumes optimization expression is integer 
+    while (upper > lower or m == None):
+      #print("max %.2f min %.2f" % (upper, lower))
+      self.push()
+      mid = floor(lower + (upper-lower)/2)
+      self.ctx.assert_formulas([self.le(expr, self.real(mid))])
+      t_start = time.perf_counter()
+      status = self.ctx.check_context(timeout=self._timeout)
+      self.t_solve += time.perf_counter() - t_start
+      if status == Status.UNKNOWN:
+        print("yices returned unknown")
+        return None
+      elif status == Status.SAT:
+        upper = mid
+        m = YicesModel(self.ctx) if upper-lower < 1 else None
+        to_pop += 1
+      else:
+        lower = mid + 1
+        m = None
+        self.pop()
+    for i in range(0, to_pop):
+      self.pop()
+    return m
 
   # second version of minimize: use unsatisfiable core (does not seem faster)
   def minimize_core(self, expr, max_val):

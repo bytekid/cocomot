@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pnml>
+   <net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+      <name>
+         <text>Example from CAiSE submission</text>
+      </name>
+      <page id="n0">
+         <place id="b0" color="ORDER">
+            <name>
+               <text>b0</text>
+            </name>
+         </place>
+         <place id="b1" color="ORDER">
+            <name>
+               <text>b1</text>
+            </name>
+         </place>
+         <place id="b2" color="ORDER">
+            <name>
+               <text>b2</text>
+            </name>
+         </place>
+         <place id="b3" color="ORDER">
+            <name>
+               <text>b3</text>
+            </name>
+            <finalMarking>
+               <text>1</text>
+            </finalMarking>
+         </place>
+         <place id="y0" color="ITEM">
+            <name>
+               <text>y0</text>
+            </name>
+         </place>
+         <place id="g0" color="ORDER,ITEM">
+            <name>
+               <text>g0</text>
+            </name>
+         </place>
+         <place id="g1" color="ORDER,ITEM">
+            <name>
+               <text>g1</text>
+            </name>
+         </place>
+         <place id="g2" color="ORDER,ITEM">
+            <name>
+               <text>g2</text>
+            </name>
+            <finalMarking>
+               <text>1</text>
+            </finalMarking>
+         </place>
+         <transition id="co" invisible="true">
+            <name>
+               <text>create order</text>
+            </name>
+         </transition>
+         
+         <transition id="ci" invisible="true">
+            <name>
+               <text>create item</text>
+            </name>
+         </transition>
+         
+         <transition id="po" >
+            <name>
+               <text>place order</text>
+            </name>
+         </transition>
+         
+         <transition id="pay">
+            <name>
+               <text>payment</text>
+            </name>
+         </transition>
+         
+         <transition id="pi">
+            <name>
+               <text>pick item</text>
+            </name>
+         </transition>
+         
+         <transition id="ship">
+            <name>
+               <text>ship</text>
+            </name>
+         </transition>
+         
+         <arc id="arc0" source="co" target="b0" inscription="nu:ORDER"></arc>
+         <arc id="arc1" source="b0" target="po" inscription="o:ORDER"></arc>
+         <arc id="arc2" source="po" target="b1" inscription="o:ORDER"></arc>
+         <arc id="arc3" source="b1" target="pay" inscription="o:ORDER"></arc>
+         <arc id="arc4" source="pay" target="b2" inscription="o:ORDER"></arc>
+         <arc id="arc5" source="b2" target="ship" inscription="o:ORDER"></arc>
+         <arc id="arc6" source="ship" target="b3" inscription="o:ORDER"></arc>
+         <arc id="arc7" source="ci" target="y0" inscription="nu:ITEM"></arc>
+         <arc id="arc8" source="y0" target="po" inscription="P:ITEM LIST"></arc>
+         <arc id="arc9" source="po" target="g0" inscription="o:ORDER,P:ITEM LIST"></arc>
+         <arc id="arc10" source="g0" target="pi" inscription="o:ORDER,p:ITEM"></arc>
+         <arc id="arc11" source="pi" target="g1" inscription="o:ORDER,p:ITEM"></arc>
+         <arc id="arc12" source="g1" target="ship" inscription="o:ORDER,P:ITEM LIST"></arc>
+         <arc id="arc13" source="ship" target="g2" inscription="o:ORDER,P:ITEM LIST"></arc>
+      <finalmarkings />
+      <variables/>
+    </page>
+   </net>
+</pnml>

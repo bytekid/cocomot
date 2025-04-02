@@ -1,0 +1,75 @@
+{
+  "ocel:global-log": {
+    "ocel:attribute-names": [],
+    "ocel:object-types": [
+      "ORDER", "PRODUCT"
+    ],
+    "ocel:version": [
+      "1.0"
+    ],
+    "ocel:ordering": [
+      "timestamp"
+    ]
+  },
+  "ocel:events": {
+    "0": {
+      "ocel:activity": "place order",
+      "ocel:timestamp": "2021-03-01T09:00:00+01:00",
+      "ocel:omap": [
+        "o1", "p1", "p2"
+      ],
+      "ocel:vmap": {
+        "d": 3
+      }
+    },
+    "1": {
+      "ocel:activity": "pick item",
+      "ocel:timestamp": "2021-03-02T09:00:00+01:00",
+      "ocel:omap": [
+        "o1", "p1"
+      ],
+      "ocel:vmap": {}
+    },
+    "2": {
+      "ocel:activity": "pick item",
+      "ocel:timestamp": "2021-03-03T09:00:00+01:00",
+      "ocel:omap": [
+        "o1", "p2"
+      ],
+      "ocel:vmap": {}
+    },
+    "3": {
+      "ocel:activity": "pay bank transfer",
+      "ocel:timestamp": "2021-03-03T09:00:00+01:00",
+      "ocel:omap": [
+        "o1", "p1"
+      ],
+      "ocel:vmap": {}
+    },
+    "4": {
+      "ocel:activity": "ship",
+      "ocel:timestamp": "2021-03-10T09:00:00+01:00",
+      "ocel:omap": [
+        "o1", "p1", "p2"
+      ],
+      "ocel:vmap": {
+        "d": 3,
+        "m": 0
+      }
+    }
+  },
+  "ocel:objects": {
+    "o1": {
+      "ocel:type": "ORDER",
+      "ocel:ovmap": {}
+    },
+    "p1": {
+      "ocel:type": "PRODUCT",
+      "ocel:ovmap": {}
+    },
+    "p2": {
+      "ocel:type": "PRODUCT",
+      "ocel:ovmap": {}
+    }
+  }
+}

@@ -1,4 +1,6 @@
 from abc import ABCMeta, abstractmethod
+from functools import reduce
+
 from utils import VarType
 
 class Expr:
@@ -241,3 +243,44 @@ class BinCon(Term):
         return self.left.valid(subst) or self.right.valid(subst)
     except NotFound: # variable not found
       return False
+
+class Fun(Term):
+  def __init__(self, name, args, output_type=None, domain=None):
+    self._name = name
+    self._args = args
+    # FIXME domain might be variadic, and is in any case unknown
+    self._domain = domain if domain else VarType.real
+    self._type = output_type if output_type else VarType.real
+  
+  @staticmethod
+  def mk_const(name, output_type):
+    return Fun(name, [], output_type, [])
+
+  def __eq__(self, obj):
+    return isinstance(obj, Fun) and obj._name == self._name and \
+      len(obj._args) == len(self._args) and \
+      all(obj._args[i] == self._args[i] for i in range(0, len(self._args)))
+  
+  def __hash__(self):
+      return hash((self.__class__.__name__, self._name, len(self._args), \
+        tuple([hash(a) for a in self._args])))
+  
+  def __str__(self):
+    argstr = reduce(lambda acc, a: acc + ", " + str(a), self._args, "")
+    return self._name + "(" + (argstr[2:] if len(argstr) > 0 else "") + ")"
+
+  def set_type(self, t):
+    assert(t == self._type)
+  
+  def toSMT(self, solver, subst):
+    args = [a.toSMT(solver, subst) for a in self._args]
+    return solver.mk_fun(self._name, args)
+
+  def vars(self):
+    return reduce(lambda acc, a: acc.union(a.vars()), self._args, set([]))
+
+  def comparisons(self):
+    return set([ a.comparisons() for a in self._args])
+
+  def basevars(self):
+    return reduce(lambda acc, a: acc.union(a.basevars()), self._args, set([]))

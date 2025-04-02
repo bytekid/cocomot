@@ -45,34 +45,12 @@ class CVC5Solver(Solver):
   # integer constants
   def num(self, n):
     # FIXME
-    #return self._solver.mkInteger(n)
-    return self._solver.mkReal(n)
+    return self._solver.mkInteger(n)
+    #return self._solver.mkReal(n)
   
   # real constants
   def real(self, n):
     return self._solver.mkReal(n)
-  
-  # boolean variable with name
-  def boolconst(self, n):
-    boolSort = self._solver.getBooleanSort()
-    if n in self._consts:
-      return self._consts[n]
-    else:
-      c = self._solver.mkConst(boolSort, n)
-      self._consts[n] = c
-    return c
-  
-  # integer variable with name
-  def intconst(self, n):
-    intSort = self._solver.getIntegerSort()
-    # FIXME
-    #return self._solver.mkConst(intSort, n)
-    return self._solver.mkConst(realSort, n)
-  
-  # real variable with name
-  def realconst(self, n):
-    realSort = self._solver.getRealSort()
-    return self._solver.mkConst(realSort, n)
   
   # boolean variable with name (might be used for quantification)
   def boolvar(self, n):
@@ -82,10 +60,7 @@ class CVC5Solver(Solver):
   # integer variable with name (might be used for quantification)
   def intvar(self, n):
     intSort = self._solver.getIntegerSort()
-    # FIXME
-    #return self._solver.mkConst(intSort, n)
-    realSort = self._solver.getRealSort()
-    return self._solver.mkConst(realSort, n)
+    return self._solver.mkConst(intSort, n)
   
   # real variable with name (might be used for quantification)
   def realvar(self, n):
@@ -107,7 +82,7 @@ class CVC5Solver(Solver):
   # logical disjunction
   def lor(self, l):
     if len(l) == 0:
-      return self.true().notTerm()
+      return self.neg(self.true())
     elif len(l) == 1:
       return l[0]
     return self._solver.mkTerm(Kind.OR, *l)

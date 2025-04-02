@@ -227,7 +227,7 @@ def conformance_check_trace(encoding, trace_data, verbose):
 def create_encoding(solver, trace_length, dpn, uncertain=False, all_sol=False):
   # estimate of upper bound on steps to be considered: length of trace + length
   # of shortest accepting path
-  # FIXME step bound is not ok for non-state machine
+  # FIXME step bound if not safe for non-state machine
   f = 0 if len(dpn.transitions()) < 30 else \
     int(trace_length/4)
   step_bound = trace_length + dpn.shortest_accepted() + 2 + f

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><pnml>
+	<net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+		<page id="page1">
+			<name>
+				<text>Evaluation</text>
+			</name>
+			<place id="0" color="application">
+				<name>
+					<text>p1</text>
+				</name>
+				<initialMarking>
+					<text>1</text>
+				</initialMarking>
+			</place>
+			<place id="1" color="application">
+				<name>
+					<text>p2</text>
+				</name>
+			</place>
+			<place id="2" color="application">
+				<name>
+					<text>p3</text>
+				</name>
+			</place>
+			<place id="3" color="offer">
+				<name>
+					<text>p5</text>
+				</name>
+				<initialMarking>
+					<text>1</text>
+				</initialMarking>
+			</place>
+			<place id="4" color="application">
+				<name>
+					<text>p4</text>
+				</name>
+				<finalMarking>
+					<text>1</text>
+				</finalMarking>
+			</place>
+			<place id="5" color="offer">
+				<name>
+					<text>p6</text>
+				</name>
+			</place>
+			<place id="6" color="offer">
+				<name>
+					<text>p7</text>
+				</name>
+			</place>
+			<place id="7" color="offer">
+				<name>
+					<text>p8</text>
+				</name>
+				<finalMarking>
+					<text>1</text>
+				</finalMarking>
+			</place>
+			<transition id="8">
+				<name>
+					<text>Create application</text>
+				</name>
+			</transition>
+			<transition id="9">
+				<name>
+					<text>Create offer</text>
+				</name>
+			</transition>
+			<transition id="10">
+				<name>
+					<text>Accept</text>
+				</name>
+			</transition>
+			<transition id="11">
+				<name>
+					<text>Call</text>
+				</name>
+			</transition>
+			<transition id="12">
+				<name>
+					<text>Send (mail and online)</text>
+				</name>
+			</transition>
+			<transition id="13">
+				<name>
+					<text>Validate</text>
+				</name>
+			</transition>
+			<transition id="14" invisible="true">
+				<name>
+					<text>s1</text>
+				</name>
+			</transition>
+			<transition id="15" invisible="true">
+				<name>
+					<text>s2</text>
+				</name>
+			</transition>
+			<arc source="4" target="15" inscription="a:application"/>
+			<arc source="0" target="8" inscription="a:application"/>
+			<arc source="8" target="1" inscription="a:application"/>
+			<arc source="3" target="9" inscription="o:offer"/>
+			<arc source="9" target="2" inscription="a:application"/>
+			<arc source="9" target="5" inscription="o:offer"/>
+			<arc source="2" target="11" inscription="a:application"/>
+			<arc source="15" target="2" inscription="a:application"/>
+			<arc source="12" target="6" inscription="o:offer"/>
+			<arc source="6" target="14" inscription="o:offer"/>
+			<arc source="13" target="4" inscription="a:application"/>
+			<arc source="10" target="2" inscription="a:application"/>
+			<arc source="1" target="10" inscription="a:application"/>
+			<arc source="2" target="9" inscription="a:application"/>
+			<arc source="5" target="12" inscription="o:offer"/>
+			<arc source="11" target="2" inscription="a:application"/>
+			<arc source="2" target="13" inscription="a:application"/>
+			<arc source="11" target="7" inscription="o:offer"/>
+			<arc source="6" target="11" inscription="o:offer"/>
+			<arc source="14" target="7" inscription="o:offer"/>
+		</page>
+		<variables/>
+	</net>
+</pnml>

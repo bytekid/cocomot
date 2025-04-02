@@ -32,6 +32,12 @@ can be run as follows:
 
  `$ python3 src/test.py`
 
+### Object-centric conformance checking
+CoCoMoT can also do object-centric conformance checking. In this case, the input format
+is an OPID/DOPID extension of the [OCPM format](https://www.ocpm.info/) introduced by Berti and van der Aalst.
+An example call is:
+ `python3 src/objectcentricconformance.py -d otests/02/net.pnml -l otests/02/trace2_0.jsonocel`
+
 ## Data and Experiments
 
 ### Experiments with uncertainty

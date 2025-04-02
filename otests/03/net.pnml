@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><pnml>
+	<net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+		<page id="page1">
+			<name>
+				<text>Nue-Net (from ER 2023)</text>
+			</name>
+			<place id="0" color="GIFT">
+				<name>
+					<text>p1</text>
+				</name>
+			</place>
+			<place id="1" color="GIFT">
+				<name>
+					<text>p3</text>
+				</name>
+			</place>
+			<place id="2" color="GIFT">
+				<name>
+					<text>p5</text>
+				</name>
+				<finalMarking>
+					<text>1</text>
+				</finalMarking>
+			</place>
+			<place id="3" color="GIFT">
+				<name>
+					<text>p4</text>
+				</name>
+			</place>
+			<place id="4" color="GIFT">
+				<name>
+					<text>p2</text>
+				</name>
+			</place>
+			<transition id="5">
+				<name>
+					<text>Receive Material</text>
+				</name>
+			</transition>
+			<transition id="6">
+				<name>
+					<text>Premium Packaging</text>
+				</name>
+			</transition>
+			<transition id="7">
+				<name>
+					<text>Standard Packaging</text>
+				</name>
+			</transition>
+			<transition id="8">
+				<name>
+					<text>Premium Ribbon</text>
+				</name>
+			</transition>
+			<transition id="9">
+				<name>
+					<text>Standard Ribbon</text>
+				</name>
+			</transition>
+			<transition id="10" invisible="true">
+				<name>
+					<text>create gift</text>
+				</name>
+			</transition>
+			<arc source="0" target="5" inscription="G:GIFT LIST"/>
+			<arc source="4" target="7" inscription="g:GIFT"/>
+			<arc source="6" target="1" inscription="g:GIFT"/>
+			<arc source="7" target="3" inscription="g:GIFT"/>
+			<arc source="1" target="8" inscription="g:GIFT"/>
+			<arc source="3" target="9" inscription="g:GIFT"/>
+			<arc source="8" target="2" inscription="g:GIFT"/>
+			<arc source="9" target="2" inscription="g:GIFT"/>
+			<arc source="5" target="4" inscription="G:GIFT LIST"/>
+			<arc source="4" target="6" inscription="g:GIFT"/>
+			<arc source="10" target="0" inscription="nu:GIFT"/>
+		</page>
+		<variables/>
+	</net>
+</pnml>

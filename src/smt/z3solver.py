@@ -18,6 +18,7 @@ class Z3Solver(Solver):
     set_param('model.completion', True)
     self.ctx.set("timeout", 600000) # timeout in milliseconds
     self.cnt = 0
+    self.t_solve = 0
 
   def to_string(self, e):
     return str(e)
@@ -175,9 +176,9 @@ class Z3Solver(Solver):
 
 
   # minimize given expression
-  def minimize(self, e, bound, start=None):
-    return self.minimize_inc(e, bound) if self._incremental \
-      else self.minimize_builtin(e, bound) 
+  def minimize(self, e, max):
+    return self.minimize_inc(e, max) if self._incremental \
+      else self.minimize_builtin(e, max)
 
   # minimize given expression
   def minimize_builtin(self, expr, max_val):

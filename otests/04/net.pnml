@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><pnml>
+	<net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+		<page id="page1">
+			<name>
+				<text>Variable arc test</text>
+			</name>
+			<place id="0" color="GIFT">
+				<name>
+					<text>p1</text>
+				</name>
+			</place>
+			<place id="4" color="GIFT">
+				<name>
+					<text>p2</text>
+				</name>
+				<finalMarking>
+					<text>1</text>
+				</finalMarking>
+			</place>
+			<transition id="5">
+				<name>
+					<text>Receive Material</text>
+				</name>
+			</transition>
+			<transition id="10" invisible="true">
+				<name>
+					<text>create gift</text>
+				</name>
+			</transition>
+			<arc source="0" target="5" inscription="G:GIFT LIST"/>
+			<arc source="5" target="4" inscription="G:GIFT LIST"/>
+			<arc source="10" target="0" inscription="nu:GIFT"/>
+		</page>
+		<variables/>
+	</net>
+</pnml>
